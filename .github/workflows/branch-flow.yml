@@ -1,0 +1,35 @@
+name: Validate Branch Flow
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-flow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate branch flow
+        run: |
+          SOURCE=${{ github.head_ref }}
+          TARGET=${{ github.base_ref }}
+
+          echo "Source: $SOURCE"
+          echo "Target: $TARGET"
+
+          if [[ "$TARGET" == "prod" && "$SOURCE" != "test" ]]; then
+            echo "❌ Only test can merge into prod"
+            exit 1
+          fi
+
+          if [[ "$TARGET" == "test" && "$SOURCE" != "dev" ]]; then
+            echo "❌ Only dev can merge into test"
+            exit 1
+          fi
+
+          if [[ "$TARGET" == "dev" && "$SOURCE" != feature/* ]]; then
+            echo "❌ Only feature branches can merge into dev"
+            exit 1
+          fi
+
+          echo "✅ Branch flow valid"
