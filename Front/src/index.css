@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
+
+
+:root{
+  --branco: #fff;
+  --rosa-1: #F2C1C4;
+  --rosa-2: #E7BDB1;
+  --verde-1: #3B6456;
+  --cinza-1: #dadada;
+
+  --font-1: "Baloo 2", sans-serif;
+
+  --thin: 100;
+  --extralight: 200;
+  --light: 300;
+  --normal: 400;
+  --medium: 500;
+  --semibold: 600;
+  --bold: 700;
+  --extrabold: 800;
+  --black: 900;
+}
+
+*{
+  font-family: var(--font-1);
+}

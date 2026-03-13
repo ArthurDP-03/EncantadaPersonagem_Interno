@@ -1,0 +1,11 @@
+.section-login{background-color: var(--cinza-1);height: 100vh; display: flex; justify-content: center; align-items: center; background: url('src/assets/arvore.png'); background-repeat: no-repeat; background-position: 25% 100%; background-size: 60vh;}
+.section-login .form-container{width: fit-content; box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.25); padding: 20px 50px 40px; border-radius: 20px; background: var(--cinza-1);}
+.section-login .imagem-container{margin: 0 20px ;}
+.section-login .title{color: var(--verde-1); text-align: center; font-weight: var(--semibold); font-size: 2rem;}
+.section-login .form{display: flex; flex-direction: column; gap: 5px;}
+.section-login .input-container.text{display: flex; flex-direction: column;}
+.section-login .input-container.checkbox{display: flex; align-items: center; gap: 5px;}
+.section-login .input-container .label{font: var(--normal) 0.75rem var(--font-1);}
+.section-login .input-container.text .label{padding: 0 0 0 10px; color: var(--verde-1);}
+.section-login .input-container.text .input{background-color: var(--rosa-1); padding: 8px 15px; border-radius: 20px; }
+.section-login .button{background: var(--verde-1); border-radius: 20px; padding: 8px 15px; color: var(--branco); margin: 20px 0 0; cursor: pointer;}
