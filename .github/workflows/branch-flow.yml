@@ -17,7 +17,7 @@ jobs:
           echo "Source: $SOURCE"
           echo "Target: $TARGET"
 
-          if [[ "$TARGET" == "prod" && "$SOURCE" != "test" ]]; then
+          if [[ "$TARGET" == "prod" && "$SOURCE" != "testes" ]]; then
             echo "❌ Only test can merge into prod"
             exit 1
           fi
@@ -27,9 +27,5 @@ jobs:
             exit 1
           fi
 
-          if [[ "$TARGET" == "dev" && "$SOURCE" != feature/* ]]; then
-            echo "❌ Only feature branches can merge into dev"
-            exit 1
-          fi
 
           echo "✅ Branch flow valid"
