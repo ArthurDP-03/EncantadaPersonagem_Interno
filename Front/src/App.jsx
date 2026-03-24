@@ -1,14 +1,21 @@
 import { useState } from 'react'
 import Login from './components/login'
+import Demo from './components/demo'
 import './App.css'
 
+const views = {
+  login: 'login',
+  demo: 'demo',
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentView, setCurrentView] = useState(views.login)
 
   return (
-    <>
-      <Login />
-    </>
+    <div className="app-shell">
+
+      {currentView === views.login ? <Login /> : <Demo />}
+    </div>
   )
 }
 
