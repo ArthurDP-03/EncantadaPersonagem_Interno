@@ -25,7 +25,7 @@ function Login() {
                 </form>
             </div>
         </section>
-    )
+    );
 }
 
 export default Login;
