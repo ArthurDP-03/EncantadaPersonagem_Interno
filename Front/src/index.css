@@ -24,3 +24,5 @@
 *{
   font-family: var(--font-1);
 }
+
+.conteudo-90{width: 100%; max-width: 90vw; margin: 0 auto;}
