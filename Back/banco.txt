@@ -11,6 +11,7 @@ CREATE TABLE Ator (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL,
   telefone VARCHAR(20),
   genero VARCHAR(20),
   altura DECIMAL(5,2),
@@ -109,3 +110,5 @@ CREATE TABLE Escalacao (
     FOREIGN KEY (idAdministrador) REFERENCES Administrador(id),
   CONSTRAINT UQ_Escalacao_EP UNIQUE (idEventoPersonagem)
 );
+
+PC RANDOM -> PUC@1234
