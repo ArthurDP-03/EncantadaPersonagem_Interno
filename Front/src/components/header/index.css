@@ -1,2 +1,20 @@
-.cabecalho{}
-.conteudo-90{width: 100%; max-width: 90vw; margin: 0 auto;}
+body{position: relative;}
+.cabecalho{position: fixed; top: 0; left: 0; width: 100%; background: var(--branco); }
+.cabecalho .conteudo{display: flex; justify-content: space-between;}
+.cabecalho .perfil {display: flex; align-items: center; gap: 9px; flex: 1;}
+.cabecalho .perfil .imagem-container{width: 46px; aspect-ratio: 1/1; background: var(--cinza-2); border-radius: 100%;}
+.cabecalho .perfil .textos {color: var(--verde-1); }
+.cabecalho .perfil .textos .nome{font-size: 21px; font-weight: var(--semibold);}
+.cabecalho .perfil .textos .cargo{}
+.cabecalho .logo .imagem-container{width: 140px; margin: 14px 0 10px; }
+.cabecalho .funcionalidades {display: flex; gap: 14px; align-items: center;flex: 1;  justify-content: flex-end;}
+.cabecalho .funcionalidades .imagem-container{width: 34px; aspect-ratio: 1/1; background: var(--verde-1); }
+
+
+
+.navegacao{position: fixed; left: 0; top: 30vh; }
+.navegacao .lista-link{display:flex;flex-direction : column;align-items: flex-start;}
+.navegacao .link {position: relative; margin: 0 0 5px; padding: 0 0 0 2.5vw; border-radius: 0 30px 30px 0; background: var(--verde-1); display: flex; justify-content:center; align-items: center; }
+.navegacao .link .texto {color: var(--branco); position: relative; opacity: 0; width: 0; }
+.navegacao .link:hover .texto { opacity: 1; width: 100%;}
+.navegacao .icone{min-width: 20px; aspect-ratio: 1 / 1; background: var(--rosa-1); margin: 10px; border-radius: 100%;} 
