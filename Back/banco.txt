@@ -1,0 +1,114 @@
+CREATE TABLE Administrador (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20),
+  tipo VARCHAR(50)
+);
+
+CREATE TABLE Ator (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20),
+  genero VARCHAR(20),
+  altura DECIMAL(5,2),
+  peso DECIMAL(5,2),
+  observacao VARCHAR(255),
+  ativo BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE Cliente (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  telefone VARCHAR(20),
+  email VARCHAR(150)
+);
+
+CREATE TABLE Personagem (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  descricao VARCHAR(255),
+  foto VARCHAR(255)
+);
+
+CREATE TABLE PersonagemItem (
+  idPersonagemItem INT AUTO_INCREMENT PRIMARY KEY,
+  idPersonagem INT NOT NULL,
+  codigo VARCHAR(50) NOT NULL UNIQUE,
+  status VARCHAR(20) NOT NULL,
+  CONSTRAINT chk_personagem_item_status
+    CHECK (status IN ('DISPONIVEL', 'EM_USO', 'MANUTENCAO')),
+  CONSTRAINT FK_PI_Personagem
+    FOREIGN KEY (idPersonagem) REFERENCES Personagem(id)
+);
+
+CREATE TABLE Evento (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(150) NOT NULL,
+  descricao VARCHAR(255),
+  data_inicio DATETIME NOT NULL,
+  data_fim DATETIME NOT NULL,
+  endereco VARCHAR(255),
+  status VARCHAR(50),
+  tipo_pagamento VARCHAR(50),
+  valor_total DECIMAL(10,2),
+  idAdministradorCriador INT NOT NULL,
+  idCliente INT NOT NULL,
+  CONSTRAINT FK_Evento_Admin
+    FOREIGN KEY (idAdministradorCriador) REFERENCES Administrador(id),
+  CONSTRAINT FK_Evento_Cliente
+    FOREIGN KEY (idCliente) REFERENCES Cliente(id)
+);
+
+CREATE TABLE EventoPersonagem (
+  idEventoPersonagem INT AUTO_INCREMENT PRIMARY KEY,
+  idEvento INT NOT NULL,
+  idPersonagem INT NOT NULL,
+  CONSTRAINT FK_EP_Evento
+    FOREIGN KEY (idEvento) REFERENCES Evento(id),
+  CONSTRAINT FK_EP_Personagem
+    FOREIGN KEY (idPersonagem) REFERENCES Personagem(id),
+  CONSTRAINT UQ_Evento_Personagem UNIQUE (idEvento, idPersonagem)
+);
+
+CREATE TABLE Convite (
+  idConvite INT AUTO_INCREMENT PRIMARY KEY,
+  idEventoPersonagem INT NOT NULL,
+  idAtor INT NOT NULL,
+  idAdministrador INT NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
+  dataEnvio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dataResposta DATETIME NULL,
+  CONSTRAINT chk_convite_status
+    CHECK (status IN ('PENDENTE', 'ACEITO', 'RECUSADO')),
+  CONSTRAINT FK_Convite_EP
+    FOREIGN KEY (idEventoPersonagem) REFERENCES EventoPersonagem(idEventoPersonagem),
+  CONSTRAINT FK_Convite_Ator
+    FOREIGN KEY (idAtor) REFERENCES Ator(id),
+  CONSTRAINT FK_Convite_Admin
+    FOREIGN KEY (idAdministrador) REFERENCES Administrador(id),
+  CONSTRAINT UQ_Convite UNIQUE (idEventoPersonagem, idAtor)
+);
+
+CREATE TABLE Escalacao (
+  idEscalacao INT AUTO_INCREMENT PRIMARY KEY,
+  idEventoPersonagem INT NOT NULL,
+  idAtor INT NOT NULL,
+  idPersonagemItem INT NOT NULL,
+  idAdministrador INT NOT NULL,
+  dataEscolha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT FK_Escalacao_EP
+    FOREIGN KEY (idEventoPersonagem) REFERENCES EventoPersonagem(idEventoPersonagem),
+  CONSTRAINT FK_Escalacao_Ator
+    FOREIGN KEY (idAtor) REFERENCES Ator(id),
+  CONSTRAINT FK_Escalacao_Item
+    FOREIGN KEY (idPersonagemItem) REFERENCES PersonagemItem(idPersonagemItem),
+  CONSTRAINT FK_Escalacao_Admin
+    FOREIGN KEY (idAdministrador) REFERENCES Administrador(id),
+  CONSTRAINT UQ_Escalacao_EP UNIQUE (idEventoPersonagem)
+);
+
+PC RANDOM -> PUC@1234

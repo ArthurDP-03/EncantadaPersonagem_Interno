@@ -7,6 +7,7 @@
   --rosa-2: #E7BDB1;
   --verde-1: #3B6456;
   --cinza-1: #dadada;
+  --cinza-2: #B4b4b4;
 
   --font-1: "Baloo 2", sans-serif;
 
@@ -24,3 +25,6 @@
 *{
   font-family: var(--font-1);
 }
+
+.conteudo-90{width: 100%; max-width: 90vw; margin: 0 auto;}
+.imagem-container img{width: 100%; }

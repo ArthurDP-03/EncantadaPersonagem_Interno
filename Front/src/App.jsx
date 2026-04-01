@@ -1,5 +1,8 @@
+
+import { Routes, Route } from "react-router-dom";
+import Login from "./components/login";
+import Header from "./components/header";
 import { useState } from 'react'
-import Login from './components/login'
 import Demo from './components/demo'
 import './App.css'
 
@@ -9,14 +12,16 @@ const views = {
 }
 
 function App() {
-  const [currentView, setCurrentView] = useState(views.login)
-
   return (
-    <div className="app-shell">
+    <>
+      <Header />
 
-      {currentView === views.login ? <Login /> : <Demo />}
-    </div>
-  )
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/testes" element={<Demo />} />
+      </Routes>
+    </>
+  );
 }
 
-export default App
+export default App;
