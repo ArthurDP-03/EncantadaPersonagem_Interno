@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS EncantadaPersonagem;
+CREATE DATABASE EncantadaPersonagem;
+USE EncantadaPersonagem;
+
 CREATE TABLE Administrador (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
@@ -109,3 +113,8 @@ CREATE TABLE Escalacao (
     FOREIGN KEY (idAdministrador) REFERENCES Administrador(id),
   CONSTRAINT UQ_Escalacao_EP UNIQUE (idEventoPersonagem)
 );
+
+DROP USER 'encantada'@'localhost';
+CREATE USER 'encantada'@'localhost' IDENTIFIED BY 'encantada';
+GRANT ALL PRIVILEGES ON EncantadaPersonagem.* TO 'encantada'@'localhost';
+FLUSH PRIVILEGES;
