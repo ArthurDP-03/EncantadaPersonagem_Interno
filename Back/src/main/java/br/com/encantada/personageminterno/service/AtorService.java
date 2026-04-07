@@ -6,6 +6,7 @@ import br.com.encantada.personageminterno.repository.AtorRepository;
 import br.com.encantada.personageminterno.web.dto.ator.AtorRequest;
 import br.com.encantada.personageminterno.web.dto.ator.AtorResponse;
 import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AtorService {
 
     private final AtorRepository atorRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AtorService(AtorRepository atorRepository) {
+    public AtorService(AtorRepository atorRepository, PasswordEncoder passwordEncoder) {
         this.atorRepository = atorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)

@@ -14,6 +14,17 @@ const endpointGroups = [
                     email: 'admin@encantada.com',
                     senha: 'Senha123!'
                 }
+            },
+            {
+                label: 'Login de ator',
+                method: 'POST',
+                path: '/auth/login',
+                description: 'Autentica um ator e retorna o token JWT.',
+                body: {
+                    email: 'ator@encantada.com',
+                    senha: 'Senha123!'
+                }
+
             }
         ]
     },
@@ -60,6 +71,7 @@ const endpointGroups = [
                 body: {
                     nome: 'Pedro Lima',
                     email: 'pedro@encantada.com',
+                    senha: 'Senha123!',
                     telefone: '(11) 98888-1111',
                     genero: 'Masculino',
                     altura: 1.8,
@@ -348,7 +360,7 @@ function Demo() {
 
                 <div className="demo-layout">
                     <aside className="demo-sidebar">
-                        <div className="demo-panel sticky">
+                        <div className="demo-panel">
                             <h2>Configuracao</h2>
                             <label className="demo-field">
                                 <span>Base da API</span>
@@ -436,12 +448,12 @@ function Demo() {
                             <h2>Guia rapido</h2>
                             <div className="demo-help-grid">
                                 <article>
-                                    <h3>1. Criar administrador</h3>
-                                    <p>Use o preset de criacao para registrar o primeiro usuario com senha criptografada.</p>
+                                    <h3>1. Criar usuario</h3>
+                                    <p>Use os presets de criacao para registrar administrador ou ator com senha criptografada.</p>
                                 </article>
                                 <article>
                                     <h3>2. Fazer login</h3>
-                                    <p>Execute o preset de login. Se der certo, o token entra automaticamente no campo JWT.</p>
+                                    <p>Execute um dos presets de login. Se der certo, o token entra automaticamente no campo JWT.</p>
                                 </article>
                                 <article>
                                     <h3>3. Testar modulos</h3>
