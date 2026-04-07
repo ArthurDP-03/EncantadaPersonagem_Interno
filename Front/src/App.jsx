@@ -3,8 +3,8 @@ import { AuthProvider } from './context/AuthContext'
 import Login from './components/login'
 import Header from './components/header'
 import Demo from './components/demo'
-import HomeTeste from './components/HomeTeste'
-import PrivateRoute from './components/PrivateRoute/PrivateRoute'
+import HomeTeste from './components/homeTeste'
+import PrivateRoute from './components/PrivateRoute'
 import './App.css'
 
 function App() {
