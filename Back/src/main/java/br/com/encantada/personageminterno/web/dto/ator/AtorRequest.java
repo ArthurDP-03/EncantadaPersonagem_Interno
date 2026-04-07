@@ -15,4 +15,5 @@ public record AtorRequest(
         BigDecimal peso,
         @Size(max = 255) String observacao,
         Boolean ativo
-) 
+) {
+}
