@@ -34,7 +34,6 @@ public class AtorService {
         Ator ator = Ator.builder()
                 .nome(request.nome())
                 .email(request.email())
-                .senha(passwordEncoder.encode(request.senha()))
                 .telefone(request.telefone())
                 .genero(request.genero())
                 .altura(request.altura())
