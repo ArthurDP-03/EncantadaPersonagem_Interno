@@ -110,5 +110,4 @@ CREATE TABLE Escalacao (
     FOREIGN KEY (idAdministrador) REFERENCES Administrador(id),
   CONSTRAINT UQ_Escalacao_EP UNIQUE (idEventoPersonagem)
 );
-
-PC RANDOM -> PUC@1234
+// PC RANDOM -> PUC@1234

@@ -360,7 +360,7 @@ function Demo() {
 
                 <div className="demo-layout">
                     <aside className="demo-sidebar">
-                        <div className="demo-panel sticky">
+                        <div className="demo-panel">
                             <h2>Configuracao</h2>
                             <label className="demo-field">
                                 <span>Base da API</span>
