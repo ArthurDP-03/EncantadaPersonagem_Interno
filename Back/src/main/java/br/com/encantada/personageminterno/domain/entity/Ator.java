@@ -32,6 +32,9 @@ public class Ator {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
+    @Column(nullable = false, length = 255)
+    private String senha;
+
     @Column(length = 20)
     private String telefone;
 
