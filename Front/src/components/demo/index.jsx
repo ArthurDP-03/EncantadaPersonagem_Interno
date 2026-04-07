@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import './index.css'
 
 const endpointGroups = [
@@ -275,18 +275,32 @@ function Demo() {
     const [statusText, setStatusText] = useState('Nenhuma requisicao executada ainda.')
     const [isLoading, setIsLoading] = useState(false)
     const [errorText, setErrorText] = useState('')
-
-    const flattenedActions = useMemo(
-        () => endpointGroups.flatMap((group) => group.actions.map((action) => ({ ...action, entity: group.entity }))),
-        []
+    const [collapsedGroups, setCollapsedGroups] = useState(
+        () => new Set(endpointGroups.map((g) => g.entity))
     )
 
-    function selectAction(action) {
+    function selectAction(action, entity) {
         setSelectedActionLabel(action.label)
         setMethod(action.method)
         setPath(action.path)
         setBody(formatBody(action.body))
         setErrorText('')
+        if (entity) {
+            setCollapsedGroups((prev) => {
+                const next = new Set(prev)
+                next.delete(entity)
+                return next
+            })
+        }
+    }
+
+    function toggleGroup(entity) {
+        setCollapsedGroups((prev) => {
+            const next = new Set(prev)
+            if (next.has(entity)) next.delete(entity)
+            else next.add(entity)
+            return next
+        })
     }
 
     async function handleSubmit(event) {
@@ -382,20 +396,32 @@ function Demo() {
                             <div className="demo-groups">
                                 {endpointGroups.map((group) => (
                                     <section key={group.entity} className="demo-group">
-                                        <h3>{group.entity}</h3>
-                                        <div className="demo-action-list">
-                                            {group.actions.map((action) => (
-                                                <button
-                                                    key={action.label}
-                                                    type="button"
-                                                    className={selectedActionLabel === action.label ? 'demo-action active' : 'demo-action'}
-                                                    onClick={() => selectAction(action)}
-                                                >
-                                                    <span>{action.label}</span>
-                                                    <small>{action.method} {action.path}</small>
-                                                </button>
-                                            ))}
-                                        </div>
+                                        <button
+                                            type="button"
+                                            className="demo-group-toggle"
+                                            onClick={() => toggleGroup(group.entity)}
+                                        >
+                                            <h3>{group.entity}</h3>
+                                            <span className={collapsedGroups.has(group.entity) ? 'demo-chevron collapsed' : 'demo-chevron'} />
+                                        </button>
+                                        {!collapsedGroups.has(group.entity) && (
+                                            <div className="demo-action-list">
+                                                {group.actions.map((action) => (
+                                                    <button
+                                                        key={action.label}
+                                                        type="button"
+                                                        className={selectedActionLabel === action.label ? 'demo-action active' : 'demo-action'}
+                                                        onClick={() => selectAction(action, group.entity)}
+                                                    >
+                                                        <span>{action.label}</span>
+                                                        <small>
+                                                            <span className={`method-badge method-${action.method.toLowerCase()}`}>{action.method}</span>
+                                                            {action.path}
+                                                        </small>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
                                     </section>
                                 ))}
                             </div>
@@ -423,15 +449,17 @@ function Demo() {
                                     </label>
                                 </div>
 
-                                <label className="demo-field">
-                                    <span>Body JSON</span>
-                                    <textarea
-                                        value={body}
-                                        onChange={(event) => setBody(event.target.value)}
-                                        rows={16}
-                                        placeholder={"{\n  \"campo\": \"valor\"\n}"}
-                                    />
-                                </label>
+                                {!['GET', 'DELETE'].includes(method) && (
+                                    <label className="demo-field">
+                                        <span>Body JSON</span>
+                                        <textarea
+                                            value={body}
+                                            onChange={(event) => setBody(event.target.value)}
+                                            rows={10}
+                                            placeholder={"{\n  \"campo\": \"valor\"\n}"}
+                                        />
+                                    </label>
+                                )}
 
                                 <div className="demo-form-actions">
                                     <button type="submit" className="demo-submit" disabled={isLoading}>
@@ -444,52 +472,13 @@ function Demo() {
                             </form>
                         </div>
 
-                        <div className="demo-panel">
-                            <h2>Guia rapido</h2>
-                            <div className="demo-help-grid">
-                                <article>
-                                    <h3>1. Criar usuario</h3>
-                                    <p>Use os presets de criacao para registrar administrador ou ator com senha criptografada.</p>
-                                </article>
-                                <article>
-                                    <h3>2. Fazer login</h3>
-                                    <p>Execute um dos presets de login. Se der certo, o token entra automaticamente no campo JWT.</p>
-                                </article>
-                                <article>
-                                    <h3>3. Testar modulos</h3>
-                                    <p>Depois do login, rode os presets protegidos para atores, clientes, personagens e eventos.</p>
-                                </article>
-                                <article>
-                                    <h3>4. Ler a resposta</h3>
-                                    <p>O painel abaixo mostra status HTTP, payload retornado e mensagens de erro do backend.</p>
-                                </article>
-                            </div>
-                        </div>
-
                         <div className="demo-panel response-panel">
-                            <div className="response-header">
-                                <h2>Resposta</h2>
-                                <span>{statusText}</span>
-                            </div>
+                            <h2>Resposta</h2>
                             <pre>
                                 {responseData === null
                                     ? 'A resposta do backend aparecera aqui.'
                                     : JSON.stringify(responseData, null, 2)}
                             </pre>
-                        </div>
-
-                        <div className="demo-panel">
-                            <h2>Mapa de cobertura</h2>
-                            <div className="demo-coverage">
-                                {flattenedActions.map((action) => (
-                                    <div key={`${action.entity}-${action.label}`} className="demo-coverage-item">
-                                        <strong>{action.entity}</strong>
-                                        <span>{action.label}</span>
-                                        <small>{action.method} {action.path}</small>
-                                        <p>{action.description}</p>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </main>
                 </div>

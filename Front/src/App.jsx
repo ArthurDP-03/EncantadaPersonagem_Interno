@@ -1,20 +1,17 @@
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./components/login";
 import Header from "./components/header";
-import { useState } from 'react'
 import Demo from './components/demo'
 import './App.css'
 
-const views = {
-  login: 'login',
-  demo: 'demo',
-}
-
 function App() {
+  const location = useLocation()
+  const hideHeader = location.pathname === '/testes'
+
   return (
     <>
-      <Header />
+      {!hideHeader && <Header />}
 
       <Routes>
         <Route path="/" element={<Login />} />

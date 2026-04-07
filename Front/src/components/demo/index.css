@@ -46,10 +46,10 @@
 .demo-status-card {
   min-width: 280px;
   padding: 18px 20px;
-  border-radius: 22px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 18px 40px rgba(59, 100, 86, 0.12);
-  display: s;
+  display: flex;
   flex-direction: column;
   gap: 8px;
 }
@@ -68,7 +68,7 @@
 
 .demo-layout {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: minmax(300px, 360px) 1fr;
   gap: 24px;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .demo-panel {
-  border-radius: 26px;
+  border-radius: 14px;
   padding: 22px;
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(10px);
@@ -118,12 +118,21 @@
 .demo-field input,
 .demo-field select,
 .demo-field textarea {
-  border: 1px solid rgba(59, 100, 86, 0.15);
-  border-radius: 18px;
+  border: 1px solid rgba(59, 100, 86, 0.25);
+  border-radius: 10px;
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.86);
   color: #27463a;
   resize: vertical;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.demo-field input:focus,
+.demo-field select:focus,
+.demo-field textarea:focus {
+  outline: none;
+  border-color: var(--verde-1);
+  box-shadow: 0 0 0 3px rgba(59, 100, 86, 0.12);
 }
 
 .demo-groups {
@@ -145,11 +154,11 @@
 .demo-action {
   text-align: left;
   border: 1px solid transparent;
-  border-radius: 18px;
+  border-radius: 10px;
   padding: 12px 14px;
   background: rgba(231, 189, 177, 0.2);
   cursor: pointer;
-  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
 }
 
 .demo-action:hover,
@@ -157,6 +166,7 @@
   transform: translateY(-1px);
   border-color: rgba(59, 100, 86, 0.25);
   background: rgba(242, 193, 196, 0.35);
+  box-shadow: 0 4px 12px rgba(59, 100, 86, 0.08);
 }
 
 .demo-action span,
@@ -216,72 +226,80 @@
   cursor: progress;
 }
 
-.demo-help-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.demo-help-grid article {
-  padding: 16px;
-  border-radius: 18px;
-  background: rgba(59, 100, 86, 0.06);
-}
-
-.demo-help-grid p {
-  margin-bottom: 0;
-}
-
 .response-panel pre {
   margin: 0;
   min-height: 280px;
   max-height: 520px;
   overflow: auto;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 18px;
   background: #1f2b27;
   color: #d9f6ea;
+  font-size: 0.85rem;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  line-height: 1.5;
 }
 
-.response-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
+.response-panel h2 {
   margin-bottom: 16px;
 }
 
-.response-header span {
-  color: #55776a;
+/* Group toggle */
+.demo-group-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: background 120ms ease;
 }
 
-.demo-coverage {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.demo-coverage-item {
-  padding: 16px;
-  border-radius: 18px;
-  border: 1px solid rgba(59, 100, 86, 0.1);
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.demo-coverage-item strong,
-.demo-coverage-item span,
-.demo-coverage-item small {
-  display: block;
-}
-
-.demo-coverage-item small {
-  color: #55776a;
-  margin-bottom: 8px;
-}
-
-.demo-coverage-item p {
+.demo-group-toggle h3 {
   margin: 0;
 }
+
+.demo-group-toggle:hover {
+  background: rgba(59, 100, 86, 0.06);
+}
+
+.demo-chevron {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--verde-1);
+  border-bottom: 2px solid var(--verde-1);
+  transform: rotate(45deg);
+  transition: transform 200ms ease;
+  flex-shrink: 0;
+}
+
+.demo-chevron.collapsed {
+  transform: rotate(-45deg);
+}
+
+/* Method badges */
+.method-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-right: 6px;
+  color: #fff;
+}
+
+.method-get { background: #2e7d5b; }
+.method-post { background: #2b6cb0; }
+.method-put { background: #b07d2b; }
+.method-patch { background: #9b6f1e; }
+.method-delete { background: #b03030; }
 
 @media (max-width: 1100px) {
   .demo-layout {
