@@ -115,21 +115,8 @@ CREATE TABLE Escalacao (
   CONSTRAINT UQ_Escalacao_EP UNIQUE (idEventoPersonagem)
 );
 
--- Senha: admin123 (bcrypt hash)
-INSERT INTO Administrador (nome, email, senha, telefone, tipo) VALUES
-('Admin Principal', 'admin@encantada.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lkii', '11999999999', 'SUPER_ADMIN'),
-
--- Senha: senha456 (bcrypt hash)
-('Admin Secundário', 'admin2@encantada.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '11988888888', 'ADMIN');
-
-
 -- Cria um usuario com todos os privilégios.
 DROP USER IF EXISTS 'encantada'@'localhost';
 CREATE USER 'encantada'@'localhost' IDENTIFIED BY 'encantada';
 GRANT ALL PRIVILEGES ON encantada.* TO 'encantada'@'localhost';
 FLUSH PRIVILEGES;
-
-
-
--- PC RANDOM -> PUC@1234
-// PC RANDOM -> PUC@1234
