@@ -1,21 +1,33 @@
-import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
 import Login from './components/login'
+import Header from './components/header'
 import Demo from './components/demo'
+import HomeTeste from './components/homeTeste'
+import PrivateRoute from './components/PrivateRoute'
 import './App.css'
 
-const views = {
-  login: 'login',
-  demo: 'demo',
-}
-
 function App() {
-  const [currentView, setCurrentView] = useState(views.login)
-
   return (
-    <div className="app-shell">
+    <AuthProvider>
+      <Header />
+      <Routes>
 
-      {currentView === views.login ? <Login /> : <Demo />}
-    </div>
+        <Route path="/" element={<Login />} />
+        <Route path="/testes" element={<Demo />} />
+
+        {/* rota protegida */}
+        <Route
+          path="/HomeTeste"
+          element={
+            <PrivateRoute>
+              <HomeTeste />
+            </PrivateRoute>
+          }
+        />
+
+      </Routes>
+    </AuthProvider>
   )
 }
 
