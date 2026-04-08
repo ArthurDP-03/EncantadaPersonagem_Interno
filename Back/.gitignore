@@ -1,4 +1,4 @@
-target# ======================
+# ======================
 # Java / Maven
 # ======================
 target/
@@ -30,8 +30,8 @@ Thumbs.db
 # Arquivos sensíveis
 # ======================
 .env
-#application.properties
-#application.yml
+# application.properties
+application.yml
 
 # ======================
 # Logs
