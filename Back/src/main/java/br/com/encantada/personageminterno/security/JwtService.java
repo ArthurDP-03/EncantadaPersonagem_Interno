@@ -1,7 +1,6 @@
 package br.com.encantada.personageminterno.security;
 
 import br.com.encantada.personageminterno.domain.entity.Administrador;
-import br.com.encantada.personageminterno.domain.entity.Ator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -28,22 +27,14 @@ public class JwtService {
     }
 
     public String generateToken(Administrador administrador) {
-        return generateToken(administrador.getEmail(), administrador.getNome(), administrador.getTipo());
-    }
-
-    public String generateToken(Ator ator) {
-        return generateToken(ator.getEmail(), ator.getNome(), "ATOR");
-    }
-
-    private String generateToken(String email, String nome, String tipo) {
         Instant now = Instant.now();
         Instant expiration = now.plusMillis(expirationMs);
 
         return Jwts.builder()
-                .subject(email)
+                .subject(administrador.getEmail())
                 .claims(Map.of(
-                        "role", normalizeRole(tipo),
-                        "name", nome
+                        "role", normalizeRole(administrador.getTipo()),
+                        "name", administrador.getNome()
                 ))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiration))
