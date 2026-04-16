@@ -15,16 +15,7 @@ function HomeTeste() {
   }
 
   return (
-    <section style={{ padding: '2rem' }}>
-      <h1>Bem-vindo!</h1>
-
-      {usuario && (
-        <div>
-          <p><strong>Email:</strong> {usuario.sub}</p>
-          <p><strong>Expira em:</strong> {new Date(usuario.exp * 1000).toLocaleString()}</p>
-        </div>
-      )}
-
+    <section>
       <button onClick={handleLogout}>Sair</button>
     </section>
   )
