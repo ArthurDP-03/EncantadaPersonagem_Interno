@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute'
 import PrivateLayout from './components/PrivateLayout'
 
 import './App.css'
+import Personagens from './components/personagens'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           }
         >
           <Route path="/HomeTeste" element={<HomeTeste />} />
+          <Route path="/personagens" element={<Personagens />} />
         </Route>
 
       </Routes>

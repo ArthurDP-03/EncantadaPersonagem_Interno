@@ -1,55 +1,40 @@
+// components/Login.jsx
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
-import { login } from '../../services/authService'  // ← importa o service
+import { useLogin } from '../../hooks/useLogin'
+import logo from '../../assets/logo.png'
 import './index.css'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [erro, setErro] = useState('')
-  const [carregando, setCarregando] = useState(false)
+  const { entrar, erro, setErro, carregando } = useLogin()
 
-  const { salvarToken } = useAuth()
-  const navigate = useNavigate()
-
-  async function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault()
-    setErro('')
-    setCarregando(true)
-
-    try {
-      const dados = await login(email, senha)  // ← chama o AuthService
-      salvarToken(dados.token)
-      navigate('/HomeTeste')
-    } catch (e) {
-      if (e.status === 401) {
-        setErro('Email ou senha inválidos')
-      } else {
-        setErro('Não foi possível conectar ao servidor')
-      }
-    } finally {
-      setCarregando(false)
-    }
+    entrar(email, senha)
   }
 
   return (
     <section className="section-login">
       <div className='form-container'>
         <div className="imagem-container">
-          <img src="src/assets/logo.png" alt="Logo" className='imagem' />
+          <img src={logo} alt="Logo" className='imagem' />
         </div>
+
         <h1 className='title'>Login</h1>
 
         <form className='form' onSubmit={handleSubmit}>
           <div className='input-container text'>
-            <label htmlFor="user" className='label'>Usuário</label>
+            <label htmlFor="email" className='label'>Email</label>
             <input
-              type="text"
-              id="user"
+              type="email"
+              id="email"
               className='input'
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                setErro('')
+              }}
             />
           </div>
 
@@ -60,7 +45,10 @@ function Login() {
               id="password"
               className='input'
               value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              onChange={(e) => {
+                setSenha(e.target.value)
+                setErro('')
+              }}
             />
           </div>
 
