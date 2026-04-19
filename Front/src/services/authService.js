@@ -6,5 +6,3 @@ export async function login(email, senha) {
     body: JSON.stringify({ email, senha })
   })
 }
-
-// adicionar mais endpoints
