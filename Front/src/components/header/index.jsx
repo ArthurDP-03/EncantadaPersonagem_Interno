@@ -1,10 +1,14 @@
 import './index.css'
+import { useAuth } from '../../context/AuthContext'
+
 
 function Header() {
+    const { user } = useAuth()  
+    console.log(user)
     return (
         <header>
             <section className="cabecalho">
-                <div className="conteudo-90">
+                <div className="conteudo-95">
                     <div className="conteudo">
                         <div className="perfil">
                             <div className="imagem-container">
@@ -12,10 +16,10 @@ function Header() {
                             </div>
                             <div className="textos">
                                 <div className="nome">
-                                    <p>UserName</p>
+                                    <p>{user?.name ?? 'UserName'}</p>                     
                                 </div>
                                 <div className="cargo">
-                                    <p>Administrador</p>
+                                    <p>{user?.role == 'ADMIN' ? 'Administrador' : 'Ator'}</p>
                                 </div>
                             </div>
                         </div>
