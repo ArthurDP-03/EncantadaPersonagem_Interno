@@ -35,7 +35,7 @@ export function useLogin() {
       if (!dados?.token) throw new Error('Token não recebido')
 
       salvarToken(dados.token)
-      navigate('/HomeTeste')
+      navigate('/')
     } catch (e) {
       const status = e?.status
 

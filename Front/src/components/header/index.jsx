@@ -1,10 +1,19 @@
 import './index.css'
 import { useAuth } from '../../context/AuthContext'
-
+import { House, CalendarDays, BarChart2, Handshake, Drama, Users, Bell, Moon } from 'lucide-react'
 
 function Header() {
-    const { user } = useAuth()  
-    console.log(user)
+    const { user } = useAuth()
+
+    const links = [
+        { label: 'Geral', href: '/', icone: <House size={18} /> },
+        { label: 'Eventos', href: '/eventos', icone: <CalendarDays size={18} /> },
+        { label: 'Financeiro', href: '/financeiro', icone: <BarChart2 size={18} /> },
+        { label: 'Clientes', href: '/clientes', icone: <Handshake size={18} /> },
+        { label: 'Personagens', href: '/personagens', icone: <Drama size={18} /> },
+        { label: 'Colaboradores', href: '/colaboradores', icone: <Users size={18} /> },
+    ]
+
     return (
         <header>
             <section className="cabecalho">
@@ -16,7 +25,7 @@ function Header() {
                             </div>
                             <div className="textos">
                                 <div className="nome">
-                                    <p>{user?.name ?? 'UserName'}</p>                     
+                                    <p>{user?.name ?? 'UserName'}</p>
                                 </div>
                                 <div className="cargo">
                                     <p>{user?.role == 'ADMIN' ? 'Administrador' : 'Ator'}</p>
@@ -29,11 +38,11 @@ function Header() {
                             </div>
                         </div>
                         <div className="funcionalidades">
-                            <div className="imagem-container">
-                                <img src="" alt="" />
+                            <div className="icone">
+                                <Moon size={30} />
                             </div>
-                            <div className="imagem-container">
-                                <img src="" alt="" />
+                            <div className="icone">
+                                <Bell size={30} />
                             </div>
                         </div>
                     </div>
@@ -41,31 +50,12 @@ function Header() {
             </section>
             <section className='navegacao'>
                 <div className='lista-link'>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
+                    {links.map(({ label, href, icone }) => (
+                        <a key={href} href={href} className='link'>
+                            <div className="texto"><p>{label}</p></div>
+                            <div className="icone">{icone}</div>
+                        </a>
+                    ))}
                 </div>
             </section>
         </header>

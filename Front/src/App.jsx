@@ -17,7 +17,7 @@ function App() {
       <Routes>
 
         {/* rotas públicas */}
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/testes" element={<Demo />} />
 
         {/* rotas protegidas com layout */}
@@ -28,7 +28,7 @@ function App() {
             </PrivateRoute>
           }
         >
-          <Route path="/HomeTeste" element={<HomeTeste />} />
+          <Route path="/" element={<HomeTeste />} />
           <Route path="/personagens" element={<Personagens />} />
         </Route>
 
