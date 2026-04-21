@@ -9,7 +9,7 @@ function Personagens() {
 
   return (
     <section className="section-personagens">
-      <div className="conteudo-90">
+      <div className="conteudo-95">
         <h1>Personagens</h1>
         <ul>
           {personagens.map(personagem => (

@@ -1,10 +1,26 @@
 import './index.css'
+import { NavLink, useLocation } from 'react-router-dom'
+import useLogout from '../../hooks/useLogout'
+import { useAuth } from '../../context/AuthContext'
+import { House, CalendarDays, BarChart2, Handshake, Drama, Users, Bell, Moon, LogOut } from 'lucide-react'
 
 function Header() {
+    const { user } = useAuth()
+    const { handleLogout } = useLogout()
+
+    const links = [
+        { label: 'Geral', href: '/', icone: <House size={18} /> },
+        { label: 'Eventos', href: '/eventos', icone: <CalendarDays size={18} /> },
+        { label: 'Financeiro', href: '/financeiro', icone: <BarChart2 size={18} /> },
+        { label: 'Clientes', href: '/clientes', icone: <Handshake size={18} /> },
+        { label: 'Personagens', href: '/personagens', icone: <Drama size={18} /> },
+        { label: 'Colaboradores', href: '/colaboradores', icone: <Users size={18} /> },
+    ]
+
     return (
         <header>
             <section className="cabecalho">
-                <div className="conteudo-90">
+                <div className="conteudo-95">
                     <div className="conteudo">
                         <div className="perfil">
                             <div className="imagem-container">
@@ -12,10 +28,10 @@ function Header() {
                             </div>
                             <div className="textos">
                                 <div className="nome">
-                                    <p>UserName</p>
+                                    <p>{user?.name ?? 'UserName'}</p>
                                 </div>
                                 <div className="cargo">
-                                    <p>Administrador</p>
+                                    <p>{user?.role == 'ADMIN' ? 'Administrador' : 'Ator'}</p>
                                 </div>
                             </div>
                         </div>
@@ -25,11 +41,11 @@ function Header() {
                             </div>
                         </div>
                         <div className="funcionalidades">
-                            <div className="imagem-container">
-                                <img src="" alt="" />
+                            <div className="icone">
+                                <Moon size={30} />
                             </div>
-                            <div className="imagem-container">
-                                <img src="" alt="" />
+                            <div className="icone">
+                                <Bell size={30} />
                             </div>
                         </div>
                     </div>
@@ -37,32 +53,20 @@ function Header() {
             </section>
             <section className='navegacao'>
                 <div className='lista-link'>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
-                    </a>
-                    <a href="" className='link'>
-                        <div className="texto"><p>Eventos</p></div>
-                        <div className="icone">
-                        </div>
+                    {links.map(({ label, href, icone }) => (
+                        <NavLink key={href} to={href} end={href === '/'} className={({ isActive }) => `link ${isActive ? 'ativo' : ''}`}>
+                            <div className="texto"><p>{label}</p></div>
+                            <div className="icone">{icone}</div>
+                        </NavLink>
+                    ))}
+                </div>
+                <div className='lista-link'>
+                    <a onClick={handleLogout} className='link'>
+                        <div className="texto"><p>Sair</p></div>
+                        <div className="icone"><LogOut size={18} /></div>
                     </a>
                 </div>
+
             </section>
         </header>
     )

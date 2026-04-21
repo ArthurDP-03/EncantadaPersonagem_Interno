@@ -26,5 +26,6 @@
   font-family: var(--font-1);
 }
 
-.conteudo-90{width: 100%; max-width: 90vw; margin: 0 auto;}
+body {background: var(--cinza-1);}
+.conteudo-95{width: 100%; max-width: 95vw; margin: 0 auto;}
 .imagem-container img{width: 100%; }

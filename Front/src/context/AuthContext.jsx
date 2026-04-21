@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { jwtDecode } from 'jwt-decode'
 
 const AuthContext = createContext(null)
 
@@ -12,13 +13,16 @@ export function AuthProvider({ children }) {
     setToken(novoToken)
   }
 
+  const user = token ? jwtDecode(token) : null
+
+
   function logout() {
     localStorage.removeItem('token')
     setToken(null)
   }
 
   return (
-    <AuthContext.Provider value={{ token, salvarToken, logout }}>
+    <AuthContext.Provider value={{ token, user, salvarToken, logout }}>
       {children}
     </AuthContext.Provider>
   )
