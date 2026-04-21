@@ -1,26 +1,7 @@
 import { createContext, useContext, useState } from 'react'
+import { jwtDecode } from 'jwt-decode'
 
 const AuthContext = createContext(null)
-
-function decodificarToken(token) {
-  if (!token) return null
-  try {
-    const base64 = token.split('.')[1]
-      .replace(/-/g, '+')
-      .replace(/_/g, '/')
-    
-    const jsonString = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
-        .join('')
-    )
-    
-    return JSON.parse(jsonString)
-  } catch {
-    return null
-  }
-}
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(
@@ -32,7 +13,7 @@ export function AuthProvider({ children }) {
     setToken(novoToken)
   }
 
-  const user = decodificarToken(token)
+  const user = token ? jwtDecode(token) : null
 
 
   function logout() {

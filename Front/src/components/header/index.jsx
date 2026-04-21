@@ -1,9 +1,12 @@
 import './index.css'
+import { NavLink, useLocation } from 'react-router-dom'
+import useLogout from '../../hooks/useLogout'
 import { useAuth } from '../../context/AuthContext'
-import { House, CalendarDays, BarChart2, Handshake, Drama, Users, Bell, Moon } from 'lucide-react'
+import { House, CalendarDays, BarChart2, Handshake, Drama, Users, Bell, Moon, LogOut } from 'lucide-react'
 
 function Header() {
     const { user } = useAuth()
+    const { handleLogout } = useLogout()
 
     const links = [
         { label: 'Geral', href: '/', icone: <House size={18} /> },
@@ -51,12 +54,19 @@ function Header() {
             <section className='navegacao'>
                 <div className='lista-link'>
                     {links.map(({ label, href, icone }) => (
-                        <a key={href} href={href} className='link'>
+                        <NavLink key={href} to={href} end={href === '/'} className={({ isActive }) => `link ${isActive ? 'ativo' : ''}`}>
                             <div className="texto"><p>{label}</p></div>
                             <div className="icone">{icone}</div>
-                        </a>
+                        </NavLink>
                     ))}
                 </div>
+                <div className='lista-link'>
+                    <a onClick={handleLogout} className='link'>
+                        <div className="texto"><p>Sair</p></div>
+                        <div className="icone"><LogOut size={18} /></div>
+                    </a>
+                </div>
+
             </section>
         </header>
     )

@@ -1,5 +1,5 @@
 body{position: relative;}
-.cabecalho{position: sticky; top: 0; left: 0; width: 100%; background: var(--cinza-1); box-shadow: 0 0 100px rgba(0, 0, 0, 0.25); }
+.cabecalho{position: sticky; top: 0; left: 0; width: 100%; background: var(--cinza-1); box-shadow: 0 0 100px rgba(0, 0, 0, 0.25);    z-index: 1000; }
 .cabecalho .conteudo{display: flex; justify-content: space-between;}
 .cabecalho .perfil {display: flex; align-items: center; gap: 9px; flex: 1;}
 .cabecalho .perfil .imagem-container{width: 46px; aspect-ratio: 1/1; background: var(--cinza-2); border-radius: 100%;}
@@ -13,11 +13,14 @@ body{position: relative;}
 
 
 
-.navegacao{position: fixed; left: 0; top: 30vh; }
-.navegacao .lista-link{display:flex;flex-direction : column;align-items: flex-start;}
-.navegacao .link {    transform: translateX(calc(40px - 100%)); transition: .4s; position: relative; margin: 0 0 5px; padding: 0 0 0 20px; border-radius: 0 30px 30px 0; background: var(--verde-1); display: flex; justify-content:center; align-items: center;}
-.navegacao .link:hover{transform: translateX(0);}
+.navegacao{position: fixed;right: calc(100% - 40px);padding: 185.7px 0 0;height: calc(100vh - 185.7px);display: flex;flex-direction: column;justify-content: space-between;top: 0;}
+.navegacao .lista-link{display:flex;flex-direction : column;align-items: flex-end;}
+.navegacao .link {cursor: pointer;  transition: .4s; position: relative; margin: 0 0 5px; padding: 0 0 0 20px; border-radius: 0 30px 30px 0; background: var(--verde-1); display: flex; justify-content:center; align-items: center;}
+.navegacao .link.ativo {background: var(--rosa-1);}
+.navegacao .link:hover{transform: translateX(calc(100% - 40px));}
 .navegacao .link .texto {color: var(--branco); }
+.navegacao .link.ativo .texto {color: var(--verde-1); }
 
-.navegacao .icone{min-width: 20px; aspect-ratio: 1 / 1; margin: 10px; display: flex;align-items: center;justify-content: center;}
-.navegacao .icone svg{stroke: var(--rosa-1);}
+.navegacao .link .icone{min-width: 20px; aspect-ratio: 1 / 1; margin: 10px; display: flex;align-items: center;justify-content: center;}
+.navegacao .link .icone svg{stroke: var(--rosa-1);}
+.navegacao .link.ativo .icone svg{stroke: var(--verde-1);}
