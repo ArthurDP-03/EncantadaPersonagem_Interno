@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login } from '../services/authService'
+import { decodeToken } from '../context/AuthContext'
 
 export function useLogin() {
   const [erro, setErro] = useState('')
@@ -37,7 +38,7 @@ export function useLogin() {
       salvarToken(dados.token)
 
       // 👇 decodifica o token
-      const payload = JSON.parse(atob(dados.token.split('.')[1]))
+      const payload = decodeToken(dados.token)
 
       // 👇 redireciona baseado no role
       if (payload.role === 'ADMIN') {
