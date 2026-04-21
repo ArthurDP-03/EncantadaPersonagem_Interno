@@ -45,6 +45,9 @@ export function AuthProvider({ children }) {
     setToken(novoToken)
   }
 
+  const user = token ? jwtDecode(token) : null
+
+
   function logout() {
     localStorage.removeItem('token')
     setToken(null)
