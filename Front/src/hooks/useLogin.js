@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login } from '../services/authService'
+import { decodeToken } from '../context/AuthContext'
 
 export function useLogin() {
   const [erro, setErro] = useState('')
@@ -35,7 +36,19 @@ export function useLogin() {
       if (!dados?.token) throw new Error('Token não recebido')
 
       salvarToken(dados.token)
-      navigate('/')
+
+      // 👇 decodifica o token
+      const payload = decodeToken(dados.token)
+
+      // 👇 redireciona baseado no role
+      if (payload.role === 'ADMIN') {
+        navigate('/homeAdmin')
+      } else if (payload.role === 'ATOR') {
+        navigate('/homeAtor')
+      } else {
+        navigate('/')
+      }
+
     } catch (e) {
       const status = e?.status
 

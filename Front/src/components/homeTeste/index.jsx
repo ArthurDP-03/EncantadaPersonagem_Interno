@@ -1,9 +1,18 @@
 import { useAuth } from '../../context/AuthContext'
-import { useNavigate, useSubmit } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 
 function HomeTeste() {
-  return <>HomeTeste</>
+  const { token, logout } = useAuth()
+
+  function handleLogout() {
+    logout()
+  }
+
+  return (
+    <section>
+      <button onClick={handleLogout}>Sair</button>
+    </section>
+  )
 }
 
 export default HomeTeste
