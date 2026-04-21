@@ -35,7 +35,19 @@ export function useLogin() {
       if (!dados?.token) throw new Error('Token não recebido')
 
       salvarToken(dados.token)
-      navigate('/HomeTeste')
+
+      // 👇 decodifica o token
+      const payload = JSON.parse(atob(dados.token.split('.')[1]))
+
+      // 👇 redireciona baseado no role
+      if (payload.role === 'ADMIN') {
+        navigate('/homeAdmin')
+      } else if (payload.role === 'ATOR') {
+        navigate('/homeAtor')
+      } else {
+        navigate('/')
+      }
+
     } catch (e) {
       const status = e?.status
 

@@ -3,7 +3,8 @@ import { AuthProvider } from './context/AuthContext'
 
 import Login from './components/login'
 import Demo from './components/demo'
-import HomeTeste from './components/homeTeste'
+import HomeAtor from './components/homeAtor'
+import HomeAdmin from './components/homeAdmin'
 
 import PrivateRoute from './components/PrivateRoute'
 import PrivateLayout from './components/PrivateLayout'
@@ -20,20 +21,31 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/testes" element={<Demo />} />
 
-        {/* rotas protegidas com layout */}
-        <Route
-          element={
-            <PrivateRoute>
-              <PrivateLayout />
-            </PrivateRoute>
-          }
-        >
-          <Route path="/HomeTeste" element={<HomeTeste />} />
-          <Route path="/personagens" element={<Personagens />} />
+        {/* privadas com layout */}
+        <Route element={<PrivateLayout />}>
+
+          <Route
+            path="/homeAdmin"
+            element={
+              <PrivateRoute role="ADMIN">
+                <HomeAdmin />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/homeAtor"
+            element={
+              <PrivateRoute role="ATOR">
+                <HomeAtor />
+              </PrivateRoute>
+            }
+          />
+
         </Route>
 
       </Routes>
-    </AuthProvider>
+    </AuthProvider >
   )
 }
 
