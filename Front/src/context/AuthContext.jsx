@@ -11,7 +11,14 @@ export function decodeToken(token) {
       .replace(/_/g, '/')
       .padEnd(base64Url.length + (4 - base64Url.length % 4) % 4, '=')
 
-    const payload = JSON.parse(atob(base64))
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
+        .join('')
+    )
+
+    const payload = JSON.parse(jsonPayload)
 
     if (payload.exp * 1000 < Date.now()) {
       return null
