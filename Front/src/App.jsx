@@ -34,6 +34,8 @@ function App() {
             }
           />
 
+          <Route path="/personagens" element={<Personagens />} />
+
           <Route
             path="/homeAtor"
             element={
