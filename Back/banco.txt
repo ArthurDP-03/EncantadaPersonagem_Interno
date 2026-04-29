@@ -1,0 +1,164 @@
+DROP DATABASE IF EXISTS encantada;
+CREATE DATABASE encantada;
+USE encantada;
+
+CREATE TABLE administrador (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20),
+  tipo VARCHAR(50)
+);
+
+CREATE TABLE ator (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL,
+  telefone VARCHAR(20),
+  genero VARCHAR(20),
+  altura DECIMAL(5,2),
+  peso DECIMAL(5,2),
+  observacao VARCHAR(255),
+  ativo BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE cliente (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  telefone VARCHAR(20),
+  email VARCHAR(150)
+);
+
+CREATE TABLE personagem (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  descricao VARCHAR(255),
+  foto VARCHAR(255)
+);
+
+CREATE TABLE personagem_item (
+  id_personagem_item INT AUTO_INCREMENT PRIMARY KEY,
+  id_personagem INT NOT NULL,
+  codigo VARCHAR(50) NOT NULL UNIQUE,
+  status VARCHAR(20) NOT NULL,
+
+  CONSTRAINT chk_personagem_item_status
+    CHECK (status IN ('DISPONIVEL', 'EM_USO', 'MANUTENCAO')),
+
+  CONSTRAINT fk_pi_personagem
+    FOREIGN KEY (id_personagem) REFERENCES personagem(id)
+);
+
+CREATE TABLE evento (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(150) NOT NULL,
+  descricao VARCHAR(255),
+  data_inicio DATETIME NOT NULL,
+  data_fim DATETIME NOT NULL,
+  endereco VARCHAR(255),
+  status VARCHAR(50),
+  tipo_pagamento VARCHAR(50),
+  valor_total DECIMAL(10,2),
+
+  id_administrador_criador INT NOT NULL,
+  id_cliente INT NOT NULL,
+
+  CONSTRAINT fk_evento_admin
+    FOREIGN KEY (id_administrador_criador)
+    REFERENCES administrador(id),
+
+  CONSTRAINT fk_evento_cliente
+    FOREIGN KEY (id_cliente)
+    REFERENCES cliente(id)
+);
+
+CREATE TABLE evento_personagem (
+  id_evento_personagem INT AUTO_INCREMENT PRIMARY KEY,
+  id_evento INT NOT NULL,
+  id_personagem INT NOT NULL,
+
+  CONSTRAINT fk_ep_evento
+    FOREIGN KEY (id_evento)
+    REFERENCES evento(id),
+
+  CONSTRAINT fk_ep_personagem
+    FOREIGN KEY (id_personagem)
+    REFERENCES personagem(id),
+
+  CONSTRAINT uq_evento_personagem
+    UNIQUE (id_evento, id_personagem)
+);
+
+CREATE TABLE convite (
+  id_convite INT AUTO_INCREMENT PRIMARY KEY,
+
+  id_evento_personagem INT NOT NULL,
+  id_ator INT NOT NULL,
+  id_administrador INT NOT NULL,
+
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
+  data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  data_resposta DATETIME NULL,
+
+  CONSTRAINT chk_convite_status
+    CHECK (status IN ('PENDENTE', 'ACEITO', 'RECUSADO')),
+
+  CONSTRAINT fk_convite_ep
+    FOREIGN KEY (id_evento_personagem)
+    REFERENCES evento_personagem(id_evento_personagem),
+
+  CONSTRAINT fk_convite_ator
+    FOREIGN KEY (id_ator)
+    REFERENCES ator(id),
+
+  CONSTRAINT fk_convite_admin
+    FOREIGN KEY (id_administrador)
+    REFERENCES administrador(id),
+
+  CONSTRAINT uq_convite
+    UNIQUE (id_evento_personagem, id_ator)
+);
+
+CREATE TABLE escalacao (
+  id_escalacao INT AUTO_INCREMENT PRIMARY KEY,
+
+  id_evento_personagem INT NOT NULL,
+  id_ator INT NOT NULL,
+  id_personagem_item INT NOT NULL,
+  id_administrador INT NOT NULL,
+
+  data_escolha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT fk_escalacao_ep
+    FOREIGN KEY (id_evento_personagem)
+    REFERENCES evento_personagem(id_evento_personagem),
+
+  CONSTRAINT fk_escalacao_ator
+    FOREIGN KEY (id_ator)
+    REFERENCES ator(id),
+
+  CONSTRAINT fk_escalacao_item
+    FOREIGN KEY (id_personagem_item)
+    REFERENCES personagem_item(id_personagem_item),
+
+  CONSTRAINT fk_escalacao_admin
+    FOREIGN KEY (id_administrador)
+    REFERENCES administrador(id),
+
+  CONSTRAINT uq_escalacao_ep
+    UNIQUE (id_evento_personagem)
+);
+
+-- Usuário do banco
+DROP USER IF EXISTS 'encantada'@'localhost';
+
+CREATE USER 'encantada'@'localhost'
+IDENTIFIED BY 'encantada';
+
+GRANT ALL PRIVILEGES
+ON encantada.*
+TO 'encantada'@'localhost';
+
+FLUSH PRIVILEGES;
