@@ -1,0 +1,9 @@
+.section-clientes{}
+.section-clientes .conteudo{padding: 0 0 0 100px;}
+.section-clientes .titulo{margin: 1em 0 0;}
+.section-clientes .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
+.section-clientes .input-container{position: relative;}
+.section-clientes .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
+
+.section-clientes .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: rgba(0, 0, 0, 0.7);   appearance: none;}
+.section-clientes .filtros .input::placeholder{color: rgba(0, 0, 0, 0.7);}

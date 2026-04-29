@@ -11,6 +11,7 @@ import PrivateLayout from './components/PrivateLayout'
 
 import './App.css'
 import Personagens from './components/personagens'
+import Clientes from './components/clientes'
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
           />
 
           <Route path="/personagens" element={<Personagens />} />
+
+          <Route path="/clientes" element={<Clientes />} />
 
           <Route
             path="/homeAtor"
