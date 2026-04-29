@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Escalacao", uniqueConstraints = @UniqueConstraint(name = "UQ_Escalacao_EP", columnNames = "idEventoPersonagem"))
+@Table(name = "escalacao", uniqueConstraints = @UniqueConstraint(name = "uq_escalacao_ep", columnNames = "id_evento_personagem"))
 @Getter
 @Setter
 @Builder
@@ -29,23 +29,23 @@ public class Escalacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idEscalacao")
+    @Column(name = "id_escalacao")
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idEventoPersonagem", nullable = false)
+    @JoinColumn(name = "id_evento_personagem", nullable = false)
     private EventoPersonagem eventoPersonagem;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idAtor", nullable = false)
+    @JoinColumn(name = "id_ator", nullable = false)
     private Ator ator;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idPersonagemItem", nullable = false)
+    @JoinColumn(name = "id_personagem_item", nullable = false)
     private PersonagemItem personagemItem;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idAdministrador", nullable = false)
+    @JoinColumn(name = "id_administrador", nullable = false)
     private Administrador administrador;
 
     @Column(nullable = false)

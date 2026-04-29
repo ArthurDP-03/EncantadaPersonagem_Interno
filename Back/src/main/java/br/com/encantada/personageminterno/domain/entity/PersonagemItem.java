@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "PersonagemItem")
+@Table(name = "personagem_item")
 @Getter
 @Setter
 @Builder
@@ -29,11 +29,11 @@ public class PersonagemItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idPersonagemItem")
+    @Column(name = "id_personagem_item")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idPersonagem", nullable = false)
+    @JoinColumn(name = "id_personagem", nullable = false)
     private Personagem personagem;
 
     @Column(nullable = false, unique = true, length = 50)
