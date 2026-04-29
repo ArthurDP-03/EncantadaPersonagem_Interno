@@ -59,10 +59,10 @@ public class Evento {
     private BigDecimal valorTotal;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idAdministradorCriador", nullable = false)
+    @JoinColumn(name = "id_administrador_criador", nullable = false)
     private Administrador administradorCriador;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idCliente", nullable = false)
+    @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 }

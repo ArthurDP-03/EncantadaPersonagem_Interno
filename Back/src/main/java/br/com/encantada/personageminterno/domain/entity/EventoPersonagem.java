@@ -17,8 +17,8 @@ import lombok.Setter;
 
 @Entity
 @Table(
-        name = "EventoPersonagem",
-        uniqueConstraints = @UniqueConstraint(name = "UQ_Evento_Personagem", columnNames = {"idEvento", "idPersonagem"})
+        name = "evento_personagem",
+        uniqueConstraints = @UniqueConstraint(name = "uq_evento_personagem", columnNames = {"id_evento", "id_personagem"})
 )
 @Getter
 @Setter
@@ -29,14 +29,14 @@ public class EventoPersonagem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @jakarta.persistence.Column(name = "idEventoPersonagem")
+    @jakarta.persistence.Column(name = "id_evento_personagem")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idEvento", nullable = false)
+    @JoinColumn(name = "id_evento", nullable = false)
     private Evento evento;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idPersonagem", nullable = false)
+    @JoinColumn(name = "id_personagem", nullable = false)
     private Personagem personagem;
 }
