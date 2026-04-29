@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Convite", uniqueConstraints = @UniqueConstraint(name = "UQ_Convite", columnNames = {"idEventoPersonagem", "idAtor"}))
+@Table(name = "convite", uniqueConstraints = @UniqueConstraint(name = "uq_convite", columnNames = {"id_evento_personagem", "id_ator"}))
 @Getter
 @Setter
 @Builder
@@ -31,19 +31,19 @@ public class Convite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idConvite")
+    @Column(name = "id_convite")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idEventoPersonagem", nullable = false)
+    @JoinColumn(name = "id_evento_personagem", nullable = false)
     private EventoPersonagem eventoPersonagem;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idAtor", nullable = false)
+    @JoinColumn(name = "id_ator", nullable = false)
     private Ator ator;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idAdministrador", nullable = false)
+    @JoinColumn(name = "id_administrador", nullable = false)
     private Administrador administrador;
 
     @Enumerated(EnumType.STRING)

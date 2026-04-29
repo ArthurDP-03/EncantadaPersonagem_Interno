@@ -3,6 +3,7 @@ package br.com.encantada.personageminterno.service;
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
+import br.com.encantada.personageminterno.repository.AtorRepository;
 import br.com.encantada.personageminterno.web.dto.administrador.AdministradorRequest;
 import br.com.encantada.personageminterno.web.dto.administrador.AdministradorResponse;
 import java.util.List;
@@ -13,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AdministradorService {
 
+    private final AtorRepository atorRepository;
     private final AdministradorRepository administradorRepository;
     private final PasswordEncoder passwordEncoder;
+    
 
-    public AdministradorService(AdministradorRepository administradorRepository, PasswordEncoder passwordEncoder) {
+    public AdministradorService(AdministradorRepository administradorRepository, PasswordEncoder passwordEncoder, AtorRepository atorRepository) {
         this.administradorRepository = administradorRepository;
+        this.atorRepository = atorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -32,6 +36,9 @@ public class AdministradorService {
     public AdministradorResponse criar(AdministradorRequest request) {
         if (administradorRepository.existsByEmail(request.email())) {
             throw new BusinessException("Ja existe administrador com esse email");
+        }
+        if (atorRepository.existsByEmail(request.email())) {
+            throw new BusinessException("Ja existe ator com esse email");
         }
 
         Administrador administrador = Administrador.builder()
