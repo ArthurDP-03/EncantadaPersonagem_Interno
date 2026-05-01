@@ -28,6 +28,11 @@ public class AdministradorController {
         this.administradorService = administradorService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<AdministradorResponse>> listar() {
+        return ResponseEntity.ok(administradorService.listar());
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<AdministradorResponse> buscarPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(administradorService.buscarPorId(id));

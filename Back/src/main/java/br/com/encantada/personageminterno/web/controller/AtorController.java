@@ -31,6 +31,11 @@ public class AtorController {
         this.atorService = atorService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<AtorResponse>> listar() {
+        return ResponseEntity.ok(atorService.listar());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AtorResponse> buscarPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(atorService.buscarPorId(id));

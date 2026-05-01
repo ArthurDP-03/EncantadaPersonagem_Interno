@@ -28,29 +28,35 @@ public class EventoController {
         this.eventoService = eventoService;
     }
 
-@GetMapping("/{id}")
-public ResponseEntity<EventoResponse> buscarPorId(@PathVariable Integer id) {
-    return ResponseEntity.ok(eventoService.buscarPorId(id));
-}
+    @GetMapping
+    public ResponseEntity<List<EventoResponse>> listar() {
+        return ResponseEntity.ok(eventoService.listar());
+    }
 
-@DeleteMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-    eventoService.deletar(id);
-    return ResponseEntity.noContent().build();
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<EventoResponse> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(eventoService.buscarPorId(id));
+    }
 
-@PutMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<EventoResponse> atualizar(
-        @PathVariable Integer id,
-        @Valid @RequestBody EventoRequest request,
-        Authentication authentication) {
-    return ResponseEntity.ok(eventoService.atualizar(id, request, authentication.getName()));
-}
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        eventoService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EventoResponse> atualizar(
+            @PathVariable Integer id,
+            @Valid @RequestBody EventoRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(eventoService.atualizar(id, request, authentication.getName()));
+    }
 
     @PostMapping
-    public ResponseEntity<EventoResponse> criar(@Valid @RequestBody EventoRequest request, Authentication authentication) {
+    public ResponseEntity<EventoResponse> criar(@Valid @RequestBody EventoRequest request,
+            Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(eventoService.criar(request, authentication.getName()));
     }

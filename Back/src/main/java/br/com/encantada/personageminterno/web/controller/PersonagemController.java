@@ -31,25 +31,30 @@ public class PersonagemController {
         this.personagemService = personagemService;
     }
 
-@GetMapping("/{id}")
-public ResponseEntity<PersonagemResponse> buscarPorId(@PathVariable Integer id) {
-    return ResponseEntity.ok(personagemService.buscarPorId(id));
-}
+    @GetMapping
+    public ResponseEntity<List<PersonagemResponse>> listar() {
+        return ResponseEntity.ok(personagemService.listar());
+    }
 
-@DeleteMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-    personagemService.deletar(id);
-    return ResponseEntity.noContent().build();
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonagemResponse> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(personagemService.buscarPorId(id));
+    }
 
-@PutMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<PersonagemResponse> atualizar(
-        @PathVariable Integer id,
-        @Valid @RequestBody PersonagemRequest request) {
-    return ResponseEntity.ok(personagemService.atualizar(id, request));
-}
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        personagemService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PersonagemResponse> atualizar(
+            @PathVariable Integer id,
+            @Valid @RequestBody PersonagemRequest request) {
+        return ResponseEntity.ok(personagemService.atualizar(id, request));
+    }
 
     @PostMapping
     public ResponseEntity<PersonagemResponse> criar(@Valid @RequestBody PersonagemRequest request) {

@@ -33,25 +33,30 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
-@GetMapping("/{id}")
-public ResponseEntity<ClienteResponse> buscarPorId(@PathVariable Integer id) {
-    return ResponseEntity.ok(clienteService.buscarPorId(id));
-}
+    @GetMapping
+    public ResponseEntity<List<ClienteResponse>> listar() {
+        return ResponseEntity.ok(clienteService.listar());
+    }
 
-@DeleteMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-    clienteService.deletar(id);
-    return ResponseEntity.noContent().build();
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponse> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(clienteService.buscarPorId(id));
+    }
 
-@PutMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<ClienteResponse> atualizar(
-        @PathVariable Integer id,
-        @Valid @RequestBody ClienteRequest request) {
-    return ResponseEntity.ok(clienteService.atualizar(id, request));
-}
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        clienteService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ClienteResponse> atualizar(
+            @PathVariable Integer id,
+            @Valid @RequestBody ClienteRequest request) {
+        return ResponseEntity.ok(clienteService.atualizar(id, request));
+    }
 
     @PostMapping
     public ResponseEntity<ClienteResponse> criar(@Valid @RequestBody ClienteRequest request) {
