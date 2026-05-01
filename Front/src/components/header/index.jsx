@@ -31,8 +31,8 @@ function Header() {
   if (!user) return null
 
   return (
-    <header>
-      <section className="cabecalho">
+    <header className='cabecalho'>
+      <section className="cabecalho-section">
         <div className="conteudo-95">
           <div className="conteudo">
 

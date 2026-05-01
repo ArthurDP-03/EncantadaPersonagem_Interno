@@ -1,15 +1,15 @@
-body{position: relative;}
-.cabecalho{position: sticky; top: 0; left: 0; width: 100%; background: var(--cinza-1); box-shadow: 0 0 100px rgba(0, 0, 0, 0.25);    z-index: 1000; }
-.cabecalho .conteudo{display: flex; justify-content: space-between;}
-.cabecalho .perfil {display: flex; align-items: center; gap: 9px; flex: 1;}
-.cabecalho .perfil .imagem-container{width: 46px; aspect-ratio: 1/1; background: var(--cinza-2); border-radius: 100%;}
-.cabecalho .perfil .textos {color: var(--verde-1); }
-.cabecalho .perfil .textos .nome{font-size: 21px; font-weight: var(--semibold);}
-.cabecalho .perfil .textos .cargo{}
-.cabecalho .logo .imagem-container{width: 140px; margin: 14px 0 10px; }
-.cabecalho .funcionalidades {display: flex; gap: 14px; align-items: center;flex: 1;  justify-content: flex-end;}
-.cabecalho .funcionalidades .icone{aspect-ratio: 1 / 1;display: flex;align-items: center;justify-content: center;}
-.cabecalho .funcionalidades .icone svg{stroke: var(--verde-1);}
+.cabecalho {position: sticky; top: 0; z-index: 1000}
+.cabecalho-section{ width: 100%; background: var(--cinza-1); box-shadow: 0 0 100px rgba(0, 0, 0, 0.25);    z-index: 1000; }
+.cabecalho-section .conteudo{display: flex; justify-content: space-between;}
+.cabecalho-section .perfil {display: flex; align-items: center; gap: 9px; flex: 1;}
+.cabecalho-section .perfil .imagem-container{width: 46px; aspect-ratio: 1/1; background: var(--cinza-2); border-radius: 100%;}
+.cabecalho-section .perfil .textos {color: var(--verde-1); }
+.cabecalho-section .perfil .textos .nome{font-size: 21px; font-weight: var(--semibold);}
+.cabecalho-section .perfil .textos .cargo{}
+.cabecalho-section .logo .imagem-container{width: 140px; margin: 14px 0 10px; }
+.cabecalho-section .funcionalidades {display: flex; gap: 14px; align-items: center;flex: 1;  justify-content: flex-end;}
+.cabecalho-section .funcionalidades .icone{aspect-ratio: 1 / 1;display: flex;align-items: center;justify-content: center;}
+.cabecalho-section .funcionalidades .icone svg{stroke: var(--verde-1);}
 
 
 
