@@ -20,14 +20,6 @@ export const formatarPeriodoEvento = (dataInicio, dataFim) => {
   return `${diaSemana}, ${dia} ${mes} ${ano} às ${hora}h - duração: ${duracaoTexto}`;
 };
 
-// nova
-export function formatarDataCurta(data) {
-  const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const d = new Date(data);
-  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
-}
-
-// nova
 export function labelData(data) {
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
@@ -46,7 +38,6 @@ export function labelData(data) {
   return { prefixo: null, texto };
 }
 
-// nova
 export function agruparEventosPorData(eventos) {
   const grupos = {};
   eventos.forEach(ev => {
@@ -58,32 +49,20 @@ export function agruparEventosPorData(eventos) {
   const datas = Object.keys(grupos).sort();
   if (!datas.length) return [];
 
-  const primeiraData = new Date(datas[0] + 'T00:00:00');
-  const ultimaData   = new Date(datas[datas.length - 1] + 'T00:00:00');
+  return datas.map(chave => ({
+    tipo: 'dia',
+    data: new Date(chave + 'T00:00:00'),
+    eventos: grupos[chave],
+  }));
+}
 
-  // preenche todos os dias no intervalo, incluindo os vazios
-  const diasCompletos = [];
-  const cursor = new Date(primeiraData);
-  while (cursor <= ultimaData) {
-    const chave = cursor.toISOString().split('T')[0];
-    diasCompletos.push({ data: new Date(cursor), eventos: grupos[chave] || [] });
-    cursor.setDate(cursor.getDate() + 1);
-  }
-
-  // colapsa sequências de dias vazios em um único item
-  const resultado = [];
-  let i = 0;
-  while (i < diasCompletos.length) {
-    if (diasCompletos[i].eventos.length > 0) {
-      resultado.push({ tipo: 'dia', data: diasCompletos[i].data, eventos: diasCompletos[i].eventos });
-      i++;
-    } else {
-      let j = i;
-      while (j < diasCompletos.length && diasCompletos[j].eventos.length === 0) j++;
-      resultado.push({ tipo: 'vazio', inicio: diasCompletos[i].data, fim: diasCompletos[j - 1].data });
-      i = j;
-    }
-  }
-
-  return resultado;
+export function formatarStatus(status) {
+  const labels = {
+    RASCUNHO:    'Rascunho',
+    CONFIRMADO:  'Confirmado',
+    EM_ANDAMENTO: 'Em andamento',
+    FINALIZADO:  'Finalizado',
+    CANCELADO:   'Cancelado',
+  };
+  return labels[status] ?? status;
 }
