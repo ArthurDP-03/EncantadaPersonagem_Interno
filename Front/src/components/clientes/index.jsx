@@ -2,16 +2,7 @@
 import './index.css'
 import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
-
-const clientesIniciais = [
-  { id: 1, nome: "Ana Souza",      email: "ana.souza@email.com",      telefone: "41 9 9999-1111", eventosAtivos: 2, eventosTotais: 5, ultimoEvento: "15/03/2026" },
-  { id: 2, nome: "Bruno Lima",     email: "bruno.lima@email.com",     telefone: "41 9 9999-2222", eventosAtivos: 1, eventosTotais: 3, ultimoEvento: "01/02/2026" },
-  { id: 3, nome: "Carla Mendes",   email: "carla.mendes@email.com",   telefone: "41 9 9999-3333", eventosAtivos: 0, eventosTotais: 7, ultimoEvento: "20/01/2026" },
-  { id: 4, nome: "Diego Costa",    email: "diego.costa@email.com",    telefone: "41 9 9999-4444", eventosAtivos: 3, eventosTotais: 4, ultimoEvento: "10/04/2026" },
-  { id: 5, nome: "Elena Rocha",    email: "elena.rocha@email.com",    telefone: "41 9 9999-5555", eventosAtivos: 1, eventosTotais: 2, ultimoEvento: "28/03/2026" },
-  { id: 6, nome: "Felipe Alves",   email: "felipe.alves@email.com",   telefone: "41 9 9999-6666", eventosAtivos: 2, eventosTotais: 6, ultimoEvento: "05/04/2026" },
-  { id: 7, nome: "Gabriela Nunes", email: "gabriela.nunes@email.com", telefone: "41 9 9999-7777", eventosAtivos: 0, eventosTotais: 1, ultimoEvento: "12/12/2025" },
-];
+import { useClientes } from '../../hooks/useClientes';
 
 const clienteVazio = { nome: "", email: "", telefone: "", eventosAtivos: 0, eventosTotais: 0, ultimoEvento: "" };
 
@@ -58,17 +49,16 @@ function FormCliente({ dados, onChange }) {
 }
 
 function Clientes() {
-  // const { clientes, carregando, erro } = useClientes();
-  // if (carregando) return <p>Carregando...</p>;
-  // if (erro) return <p>Erro: {erro}</p>;
-
-  const [clientes, setClientes]         = useState(clientesIniciais);
   const [busca, setBusca]               = useState("");
   const [ordem, setOrdem]               = useState("");
   const [modalCriar, setModalCriar]     = useState(false);
   const [modalEditar, setModalEditar]   = useState(null);
   const [modalDeletar, setModalDeletar] = useState(null);
   const [form, setForm]                 = useState(clienteVazio);
+  const { clientes, carregando, erro, adicionarCliente, editarCliente, removerCliente } = useClientes();
+
+  if (carregando) return <p>Carregando...</p>;
+  if (erro) return <p>Erro: {erro}</p>;
 
   const clientesFiltrados = clientes
     .filter(c =>
@@ -84,20 +74,35 @@ function Clientes() {
 
   function handleCriar() {
     if (!form.nome.trim()) return;
-    setClientes(prev => [...prev, { ...form, id: Date.now() }]);
-    setModalCriar(false);
-    setForm(clienteVazio);
+    adicionarCliente({ nome: form.nome, telefone: form.telefone, email: form.email })
+      .then(() => {
+        setModalCriar(false);
+        setForm(clienteVazio);
+      })
+      .catch(err => {
+        console.error("Erro ao criar cliente:", err);
+      });
   }
 
   function handleEditar() {
     if (!modalEditar) return;
-    setClientes(prev => prev.map(c => c.id === modalEditar.id ? modalEditar : c));
-    setModalEditar(null);
+    editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email })
+      .then(() => {
+        setModalEditar(null);
+      })
+      .catch(err => {
+        console.error("Erro ao editar cliente:", err);
+      });
   }
 
   function handleDeletar() {
-    setClientes(prev => prev.filter(c => c.id !== modalDeletar));
-    setModalDeletar(null);
+    removerCliente(modalDeletar)
+      .then(() => {
+        setModalDeletar(null);
+      })
+      .catch(err => {
+        console.error("Erro ao deletar cliente:", err);
+      });
   }
 
   return (
@@ -142,9 +147,9 @@ function Clientes() {
                 </div>
                 <div className="clientes-item-detalhes">
                   <span>Telefone: {c.telefone}</span>
-                  <span>Eventos Ativos: {c.eventosAtivos}</span>
-                  <span>Eventos totais: {c.eventosTotais}</span>
-                  <span>Último evento: {c.ultimoEvento}</span>
+                  <span>Eventos Ativos: {c.eventosAtivos ?? 0}</span>
+                  <span>Eventos totais: {c.eventosTotais ?? 0}</span>
+                  <span>Último evento: {c.ultimoEvento || '-'}</span>
                 </div>
                 <div className="clientes-item-acoes">
                   <button className="btn-icone btn-adicionar" title="Novo cliente" onClick={() => { setForm(clienteVazio); setModalCriar(true); }}>
