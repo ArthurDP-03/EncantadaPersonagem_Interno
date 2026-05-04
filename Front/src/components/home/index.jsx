@@ -1,6 +1,6 @@
 import { useAuth } from '../../context/AuthContext'
 
-function HomeAdmin() {
+function Home() {
   const { user, logout } = useAuth()
 
   function handleLogout() {
@@ -20,4 +20,4 @@ function HomeAdmin() {
   )
 }
 
-export default HomeAdmin
+export default Home
