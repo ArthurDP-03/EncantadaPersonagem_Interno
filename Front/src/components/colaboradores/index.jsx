@@ -6,7 +6,7 @@ import { Search, ChevronDown } from "lucide-react";
 
 function Colaboradores() {
   const { administradores, carregandoAdministradores, erroAdministradores,  deletar: deletarAdmin } = useAdministradores();
-  const { atores, carregandoAtores, erroAtores } = useAtores();
+  const { atores, carregandoAtores, erroAtores, deletar: deletarAtor } = useAtores();
 
   if (carregandoAdministradores || carregandoAtores) return <p>Carregando...</p>;
   if (erroAdministradores || erroAtores) return <p>Erro: {erroAdministradores || erroAtores}</p>;
@@ -65,6 +65,7 @@ function Colaboradores() {
                     Peso: ator.peso,
                     Observação: ator.observacao,
                   }}
+                  onDeletar={() => deletarAtor(ator.id)}
                 />
               ))}
             </div>
