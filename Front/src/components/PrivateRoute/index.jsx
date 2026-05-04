@@ -9,7 +9,7 @@ export default function PrivateRoute({ children, role }) {
   }
 
   if (role && !hasRole(role)) {
-    return <Navigate to="/nao-autorizado" />
+    return <Navigate to="/" />
   }
 
   return children
