@@ -13,6 +13,7 @@ import './App.css'
 import Personagens from './components/personagens'
 import Clientes from './components/clientes'
 import Eventos from './components/eventos'
+import Colaboradores from './components/colaboradores'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/homeAtor" element={<PrivateRoute role="ATOR"> <HomeAtor /> </PrivateRoute>}/>
           <Route path="/personagens" element={<Personagens />} />
           <Route path="/clientes" element={<Clientes />} />
+          <Route path="/colaboradores" element={<Colaboradores />} />
           <Route path="/eventos" element={<Eventos />} />
         </Route>
       </Routes>

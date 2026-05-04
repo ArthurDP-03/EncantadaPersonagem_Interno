@@ -10,6 +10,7 @@
   --cinza-2: #B4b4b4;
   --cinza-3: #ECE6F0;
   --cinza-4: #6C6C6C;
+  --vermelho-1: #ff0040;
 
   --font-1: "Baloo 2", sans-serif;
 
@@ -34,5 +35,6 @@ body {background: var(--cinza-1);}
 .imagem-container img{width: 100%; height: 100%; object-fit: contain; }
 
 .titulo.t1{font-size: 32px; color: var(--verde-1)}
+.titulo.t2{font-size: 24px; color: var(--verde-1); font-weight: var(--semibold);}
 .texto.t1{font-size: 20px; color: var(--verde-1); font-weight: var(--semibold);}
 .texto.t2{font-size: 12.8px; color: var(--cinza-4); font-weight: var(--medium);}

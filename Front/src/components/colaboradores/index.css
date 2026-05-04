@@ -1,0 +1,12 @@
+.section-colaboradores{}
+.section-colaboradores .conteudo{padding: 0 0 0 100px;}
+.section-colaboradores .titulo{margin: 1em 0 0;}
+.section-colaboradores .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
+.section-colaboradores .input-container{position: relative;}
+.section-colaboradores .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
+
+.section-colaboradores .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: rgba(0, 0, 0, 0.7);   appearance: none;}
+.section-colaboradores .filtros .input::placeholder{color: rgba(0, 0, 0, 0.7);}
+
+
+.section-colaboradores .cards{margin: 12px 0 0;}
