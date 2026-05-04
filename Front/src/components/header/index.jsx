@@ -85,7 +85,7 @@ function Header() {
         </div>
 
         <div className='lista-link'>
-          <button onClick={handleLogout} className='link'>
+          <button onClick={handleLogout} className='link logout'>
             <div className="texto"><p>Sair</p></div>
             <div className="icone"><LogOut size={18} /></div>
           </button>

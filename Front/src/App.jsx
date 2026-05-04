@@ -12,6 +12,7 @@ import './App.css'
 import Personagens from './components/personagens'
 import Clientes from './components/clientes'
 import Eventos from './components/eventos'
+import Colaboradores from './components/colaboradores'
 
 function App() {
   return (
