@@ -8,7 +8,7 @@ function Header() {
 
   function handleLogout() {
     logout()
-    Navigate('/')
+    Navigate('/login')
   }
 
   // define links por perfil
