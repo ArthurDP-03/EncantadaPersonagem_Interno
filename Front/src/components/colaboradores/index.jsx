@@ -5,7 +5,7 @@ import './index.css'
 import { Search, ChevronDown } from "lucide-react";
 
 function Colaboradores() {
-  const { administradores, carregandoAdministradores, erroAdministradores } = useAdministradores();
+  const { administradores, carregandoAdministradores, erroAdministradores,  deletar: deletarAdmin } = useAdministradores();
   const { atores, carregandoAtores, erroAtores } = useAtores();
 
   if (carregandoAdministradores || carregandoAtores) return <p>Carregando...</p>;
@@ -44,6 +44,7 @@ function Colaboradores() {
                     Email: admin.email,
                     Celular: admin.telefone,
                   }}
+                  onDeletar={() => deletarAdmin(admin.id)}
                 />
               ))}
             </div>
