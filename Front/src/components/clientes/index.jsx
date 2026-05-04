@@ -1,25 +1,11 @@
 // components/Clientes/Clientes.jsx
 import './index.css'
-import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
+import { Search, ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
 import { useClientes } from '../../hooks/useClientes';
+import Card_linha from '../card_linha';
 
-const clienteVazio = { nome: "", email: "", telefone: "", eventosAtivos: 0, eventosTotais: 0, ultimoEvento: "" };
-
-function Modal({ titulo, onConfirmar, onCancelar, confirmLabel = "Confirmar", danger = false, children }) {
-  return (
-    <div className="modal-overlay" onClick={onCancelar}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <h2 className="modal-titulo">{titulo}</h2>
-        {children}
-        <div className="modal-acoes">
-          <button className="btn-secundario" onClick={onCancelar}>Cancelar</button>
-          <button className={danger ? "btn-perigo" : "btn-primario"} onClick={onConfirmar}>{confirmLabel}</button>
-        </div>
-      </div>
-    </div>
-  );
-}
+const clienteVazio = { nome: "", email: "", telefone: "" };
 
 function FormCliente({ dados, onChange }) {
   return (
@@ -33,17 +19,6 @@ function FormCliente({ dados, onChange }) {
       <label>Telefone
         <input value={dados.telefone} onChange={e => onChange({ ...dados, telefone: e.target.value })} placeholder="41 9 9999-0000" />
       </label>
-      <div className="form-row">
-        <label>Eventos Ativos
-          <input type="number" min={0} value={dados.eventosAtivos} onChange={e => onChange({ ...dados, eventosAtivos: Number(e.target.value) })} />
-        </label>
-        <label>Eventos Totais
-          <input type="number" min={0} value={dados.eventosTotais} onChange={e => onChange({ ...dados, eventosTotais: Number(e.target.value) })} />
-        </label>
-      </div>
-      <label>Último Evento
-        <input value={dados.ultimoEvento} onChange={e => onChange({ ...dados, ultimoEvento: e.target.value })} placeholder="DD/MM/AAAA" />
-      </label>
     </div>
   );
 }
@@ -53,10 +28,8 @@ function Clientes() {
   const [ordem, setOrdem]               = useState("");
   const [modalCriar, setModalCriar]     = useState(false);
   const [modalEditar, setModalEditar]   = useState(null);
-  const [modalDeletar, setModalDeletar] = useState(null);
   const [form, setForm]                 = useState(clienteVazio);
   const { clientes, carregando, erro, adicionarCliente, editarCliente, removerCliente } = useClientes();
-
   if (carregando) return <p>Carregando...</p>;
   if (erro) return <p>Erro: {erro}</p>;
 
@@ -68,12 +41,13 @@ function Clientes() {
     .sort((a, b) => {
       if (ordem === "az") return a.nome.localeCompare(b.nome);
       if (ordem === "za") return b.nome.localeCompare(a.nome);
-      if (ordem === "ativos") return b.eventosAtivos - a.eventosAtivos;
       return 0;
     });
 
-  function handleCriar() {
+  function handleCriar(event) {
+    event.preventDefault();
     if (!form.nome.trim()) return;
+
     adicionarCliente({ nome: form.nome, telefone: form.telefone, email: form.email })
       .then(() => {
         setModalCriar(false);
@@ -84,24 +58,16 @@ function Clientes() {
       });
   }
 
-  function handleEditar() {
+  function handleEditar(event) {
+    event.preventDefault();
     if (!modalEditar) return;
+
     editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email })
       .then(() => {
         setModalEditar(null);
       })
       .catch(err => {
         console.error("Erro ao editar cliente:", err);
-      });
-  }
-
-  function handleDeletar() {
-    removerCliente(modalDeletar)
-      .then(() => {
-        setModalDeletar(null);
-      })
-      .catch(err => {
-        console.error("Erro ao deletar cliente:", err);
       });
   }
 
@@ -118,7 +84,6 @@ function Clientes() {
                 <option value="">Ordenar</option>
                 <option value="az">Alfabética (A-Z)</option>
                 <option value="za">Alfabética (Z-A)</option>
-                <option value="ativos">Disponibilidade</option>
               </select>
               <ChevronDown className="icon" size={18} />
             </div>
@@ -134,37 +99,25 @@ function Clientes() {
             </div>
           </div>
 
-          {/* ── Tabela CRUD ── */}
-          <ul className="clientes-lista">
-            {clientesFiltrados.length === 0 && (
-              <li className="clientes-vazio">Nenhum cliente encontrado.</li>
+          {/*Tabela CRUD*/}
+          <div className="cards">
+            {clientesFiltrados.length === 0 ? (
+              <div className="clientes-vazio">Nenhum cliente encontrado.</div>
+            ) : (
+              clientesFiltrados.map((c) => (
+                <Card_linha
+                  key={c.id}
+                  titulo={c.nome}
+                  informacoes={{
+                    Email: c.email,
+                    Telefone: c.telefone,
+                  }}
+                  onEditar={() => setModalEditar({ ...c })}
+                  onDeletar={() => removerCliente(c.id)}
+                />
+              ))
             )}
-            {clientesFiltrados.map((c, i) => (
-              <li key={c.id} className="clientes-item" style={{ animationDelay: `${i * 0.04}s` }}>
-                <div className="clientes-item-info">
-                  <span className="clientes-item-nome">{c.nome}</span>
-                  <span className="clientes-item-email">Email: {c.email}</span>
-                </div>
-                <div className="clientes-item-detalhes">
-                  <span>Telefone: {c.telefone}</span>
-                  <span>Eventos Ativos: {c.eventosAtivos ?? 0}</span>
-                  <span>Eventos totais: {c.eventosTotais ?? 0}</span>
-                  <span>Último evento: {c.ultimoEvento || '-'}</span>
-                </div>
-                <div className="clientes-item-acoes">
-                  <button className="btn-icone btn-adicionar" title="Novo cliente" onClick={() => { setForm(clienteVazio); setModalCriar(true); }}>
-                    <Plus size={16} />
-                  </button>
-                  <button className="btn-icone btn-editar" title="Editar" onClick={() => setModalEditar({ ...c })}>
-                    <Pencil size={16} />
-                  </button>
-                  <button className="btn-icone btn-deletar" title="Excluir" onClick={() => setModalDeletar(c.id)}>
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          </div>
 
         </div>
       </div>
@@ -176,24 +129,32 @@ function Clientes() {
 
       {/* Modal: Criar */}
       {modalCriar && (
-        <Modal titulo="Novo Cliente" onConfirmar={handleCriar} onCancelar={() => { setModalCriar(false); setForm(clienteVazio); }} confirmLabel="Criar">
-          <FormCliente dados={form} onChange={setForm} />
-        </Modal>
+        <div className="modal">
+          <form onSubmit={handleCriar}>
+            <h2 className="modal-titulo">Novo Cliente</h2>
+            <FormCliente dados={form} onChange={setForm} />
+            <div className="modal-acoes">
+              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(clienteVazio); }}>Cancelar</button>
+              <button type="submit" className="btn-primario">Criar</button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Modal: Editar */}
       {modalEditar && (
-        <Modal titulo="Editar Cliente" onConfirmar={handleEditar} onCancelar={() => setModalEditar(null)} confirmLabel="Salvar">
-          <FormCliente dados={modalEditar} onChange={setModalEditar} />
-        </Modal>
+        <div className="modal">
+          <form onSubmit={handleEditar}>
+            <h2 className="modal-titulo">Editar Cliente</h2>
+            <FormCliente dados={modalEditar} onChange={setModalEditar} />
+            <div className="modal-acoes">
+              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
+              <button type="submit" className="btn-primario">Salvar</button>
+            </div>
+          </form>
+        </div>
       )}
 
-      {/* Modal: Deletar */}
-      {modalDeletar && (
-        <Modal titulo="Excluir Cliente" onConfirmar={handleDeletar} onCancelar={() => setModalDeletar(null)} confirmLabel="Excluir" danger>
-          <p className="modal-texto">Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.</p>
-        </Modal>
-      )}
     </section>
   );
 }
