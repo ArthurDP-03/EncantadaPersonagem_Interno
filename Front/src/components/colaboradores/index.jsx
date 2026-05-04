@@ -2,11 +2,13 @@ import { useAdministradores } from "../../hooks/useAdminstradores";
 import { useAtores } from "../../hooks/useAtores";
 import Card_linha from "../card_linha";
 import './index.css'
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, Plus } from "lucide-react";
+import { useState } from "react";
 
 function Colaboradores() {
-  const { administradores, carregandoAdministradores, erroAdministradores,  deletar: deletarAdmin } = useAdministradores();
-  const { atores, carregandoAtores, erroAtores, deletar: deletarAtor } = useAtores();
+  const { administradores, carregando: carregandoAdministradores, erro: erroAdministradores, deletar: deletarAdmin, criar: criarAdmin } = useAdministradores();
+  const { atores, carregando: carregandoAtores, erro: erroAtores, deletar: deletarAtor } = useAtores();
+  const [modalAberto, setModalAberto] = useState(false);
 
   if (carregandoAdministradores || carregandoAtores) return <p>Carregando...</p>;
   if (erroAdministradores || erroAtores) return <p>Erro: {erroAdministradores || erroAtores}</p>;
@@ -70,9 +72,47 @@ function Colaboradores() {
               ))}
             </div>
           </div>
-
         </div>
+        <button className="btn-create" onClick={() => setModalAberto(true)}>
+          <Plus size={24} />
+        </button>
+        {
+          modalAberto && (
+            <div className="modal">
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+
+                  const formData = new FormData(e.target);
+
+                  const novoAdmin = {
+                    nome: formData.get("nome"),
+                    email: formData.get("email"),
+                    senha: formData.get("senha"),
+                    telefone: formData.get("telefone"),
+                    tipo: formData.get("tipo"),
+                  };
+
+                  await criarAdmin(novoAdmin);
+
+                  setModalAberto(false);
+                }}
+              >
+                <input name="nome" placeholder="Nome" />
+                <input name="email" placeholder="Email" />
+                <input name="senha" type="password" placeholder="Senha" />
+                <input name="telefone" placeholder="Telefone" />
+                <input name="tipo" placeholder="Tipo" />
+
+                <button type="submit">
+                  Salvar
+                </button>
+              </form>
+            </div>
+          )
+        }
       </div>
+
     </section>
   );
 }
