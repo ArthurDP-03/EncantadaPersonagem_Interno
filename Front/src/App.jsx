@@ -26,9 +26,9 @@ function App() {
         <Route element={<PrivateLayout />}>
           <Route path="/homeAdmin" element={<PrivateRoute role="ADMIN"><HomeAdmin /></PrivateRoute>}/>
           <Route path="/homeAtor" element={<PrivateRoute role="ATOR"> <HomeAtor /> </PrivateRoute>}/>
-          <Route path="/personagens" element={<Personagens />} />
-          <Route path="/clientes" element={<Clientes />} />
-          <Route path="/eventos" element={<Eventos />} />
+          <Route path="/personagens" element={<PrivateRoute role="ADMIN"><Personagens /></PrivateRoute>} />
+          <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />
+          <Route path="/eventos" element={<PrivateRoute role="ADMIN"><Eventos /></PrivateRoute>} />
         </Route>
       </Routes>
     </AuthProvider >
