@@ -8,15 +8,7 @@ function Home() {
   }
 
   return (
-    <section>
-      <h1>Painel Admin</h1>
-
-      <p>Bem-vindo, {user?.name}</p>
-      <p>Email: {user?.sub}</p>
-      <p>Perfil: {user?.role}</p>
-
-      <button onClick={handleLogout}>Sair</button>
-    </section>
+    <></>
   )
 }
 
