@@ -12,48 +12,43 @@ export interface EventoResponse {
   id: number;
   titulo: string;
   descricao: string;
-  dataInicio: string; 
+  dataInicio: string;
   dataFim: string;
   endereco: string;
   status: EventoStatus;
   tipoPagamento: string;
-  valorTotal: number; 
+  valorTotal: number;
   clienteId: number;
   clienteNome: string;
   administradorCriadorId: number;
   administradorCriadorNome: string;
 }
 
-export const getEvento = async (): Promise<EventoResponse[]> => {
+export type EventoPayload = Omit<EventoResponse, "id" | "clienteNome" | "administradorCriadorNome">;
+
+export const getEventos = async (): Promise<EventoResponse[]> => {
   return request("/eventos");
 };
 
-export const getEventoById = async (
-  id: number
-): Promise<EventoResponse> => {
+export const getEventoById = async (id: number): Promise<EventoResponse> => {
   return request(`/eventos/${id}`);
 };
 
-export const criarEvento = async (
-  personagemItem: EventoResponse
-): Promise<EventoResponse> => {
+export const criarEvento = async (evento: EventoPayload): Promise<EventoResponse> => {
   return request("/eventos", {
     method: "POST",
-    body: JSON.stringify(personagemItem),
+    body: JSON.stringify(evento),
   });
 };
 
-export const atualizarEvento = async (
-  id: number,
-  personagemItem: EventoResponse
-): Promise<EventoResponse> => {
+export const atualizarEvento = async (id: number, evento: EventoPayload): Promise<EventoResponse> => {
   return request(`/eventos/${id}`, {
     method: "PUT",
-    body: JSON.stringify(personagemItem),
+    body: JSON.stringify(evento),
   });
 };
 
-export const deletarPersonagemItem = async (id: number): Promise<void> => {
+export const deletarEvento = async (id: number): Promise<void> => {
   return request(`/eventos/${id}`, {
     method: "DELETE",
   });
