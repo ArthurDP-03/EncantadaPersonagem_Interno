@@ -131,7 +131,7 @@ function Colaboradores() {
                 <Card_linha
                   key={admin.id}
                   titulo={admin.nome}
-                  informacoes={{ Tipo: admin.tipo, Email: admin.email, Celular: admin.telefone }}
+                  informacoes={{ Email: admin.email, Celular: admin.telefone }}
                   onEditar={() => setModalEditar({ tipo: "admin", dados: { ...admin, senha: "" } })}
                   onDeletar={() => deletarAdmin(admin.id)}
                 />
