@@ -8,7 +8,7 @@ function Header() {
 
   function handleLogout() {
     logout()
-    Navigate('/')
+    Navigate('/login')
   }
 
   // define links por perfil
@@ -31,8 +31,8 @@ function Header() {
   if (!user) return null
 
   return (
-    <header>
-      <section className="cabecalho">
+    <header className='cabecalho'>
+      <section className="cabecalho-section">
         <div className="conteudo-95">
           <div className="conteudo">
 
@@ -85,7 +85,7 @@ function Header() {
         </div>
 
         <div className='lista-link'>
-          <button onClick={handleLogout} className='link'>
+          <button onClick={handleLogout} className='link logout'>
             <div className="texto"><p>Sair</p></div>
             <div className="icone"><LogOut size={18} /></div>
           </button>

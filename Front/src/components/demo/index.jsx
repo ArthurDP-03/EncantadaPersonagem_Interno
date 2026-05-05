@@ -24,7 +24,6 @@ const endpointGroups = [
                     email: 'ator@encantada.com',
                     senha: 'Senha123!'
                 }
-
             }
         ]
     },
@@ -39,6 +38,13 @@ const endpointGroups = [
                 body: null
             },
             {
+                label: 'Buscar administrador por ID',
+                method: 'GET',
+                path: '/administradores/1',
+                description: 'Busca um administrador específico pelo ID.',
+                body: null
+            },
+            {
                 label: 'Criar administrador',
                 method: 'POST',
                 path: '/administradores',
@@ -50,6 +56,26 @@ const endpointGroups = [
                     telefone: '(11) 99999-0000',
                     tipo: 'ADMIN'
                 }
+            },
+            {
+                label: 'Atualizar administrador',
+                method: 'PUT',
+                path: '/administradores/1',
+                description: 'Atualiza os dados de um administrador.',
+                body: {
+                    nome: 'Ana Martins Silva',
+                    email: 'ana.silva@encantada.com',
+                    senha: 'NovaSenha123!',
+                    telefone: '(11) 99999-0001',
+                    tipo: 'ADMIN'
+                }
+            },
+            {
+                label: 'Deletar administrador',
+                method: 'DELETE',
+                path: '/administradores/1',
+                description: 'Remove um administrador do sistema.',
+                body: null
             }
         ]
     },
@@ -61,6 +87,13 @@ const endpointGroups = [
                 method: 'GET',
                 path: '/atores',
                 description: 'Lista atores ativos e inativos.',
+                body: null
+            },
+            {
+                label: 'Buscar ator por ID',
+                method: 'GET',
+                path: '/atores/1',
+                description: 'Busca um ator específico pelo ID.',
                 body: null
             },
             {
@@ -79,6 +112,30 @@ const endpointGroups = [
                     observacao: 'Disponivel aos fins de semana',
                     ativo: true
                 }
+            },
+            {
+                label: 'Atualizar ator',
+                method: 'PUT',
+                path: '/atores/1',
+                description: 'Atualiza os dados de um ator.',
+                body: {
+                    nome: 'Pedro Lima Santos',
+                    email: 'pedro.santos@encantada.com',
+                    senha: 'NovaSenha123!',
+                    telefone: '(11) 98888-2222',
+                    genero: 'Masculino',
+                    altura: 1.82,
+                    peso: 80,
+                    observacao: 'Disponivel todos os dias',
+                    ativo: true
+                }
+            },
+            {
+                label: 'Deletar ator',
+                method: 'DELETE',
+                path: '/atores/1',
+                description: 'Remove um ator do sistema.',
+                body: null
             }
         ]
     },
@@ -93,6 +150,13 @@ const endpointGroups = [
                 body: null
             },
             {
+                label: 'Buscar cliente por ID',
+                method: 'GET',
+                path: '/clientes/1',
+                description: 'Busca um cliente específico pelo ID.',
+                body: null
+            },
+            {
                 label: 'Criar cliente',
                 method: 'POST',
                 path: '/clientes',
@@ -102,6 +166,24 @@ const endpointGroups = [
                     telefone: '(11) 97777-2222',
                     email: 'carla@cliente.com'
                 }
+            },
+            {
+                label: 'Atualizar cliente',
+                method: 'PUT',
+                path: '/clientes/1',
+                description: 'Atualiza os dados de um cliente.',
+                body: {
+                    nome: 'Carla Souza Santos',
+                    telefone: '(11) 97777-3333',
+                    email: 'carla.santos@cliente.com'
+                }
+            },
+            {
+                label: 'Deletar cliente',
+                method: 'DELETE',
+                path: '/clientes/1',
+                description: 'Remove um cliente do sistema.',
+                body: null
             }
         ]
     },
@@ -116,6 +198,13 @@ const endpointGroups = [
                 body: null
             },
             {
+                label: 'Buscar personagem por ID',
+                method: 'GET',
+                path: '/personagens/1',
+                description: 'Busca um personagem específico pelo ID.',
+                body: null
+            },
+            {
                 label: 'Criar personagem',
                 method: 'POST',
                 path: '/personagens',
@@ -125,6 +214,24 @@ const endpointGroups = [
                     descricao: 'Personagem para festas infantis',
                     foto: 'https://exemplo.com/imagens/aurora.png'
                 }
+            },
+            {
+                label: 'Atualizar personagem',
+                method: 'PUT',
+                path: '/personagens/1',
+                description: 'Atualiza os dados de um personagem.',
+                body: {
+                    nome: 'Princesa Aurora Bela',
+                    descricao: 'Personagem premium para festas infantis',
+                    foto: 'https://exemplo.com/imagens/aurora-v2.png'
+                }
+            },
+            {
+                label: 'Deletar personagem',
+                method: 'DELETE',
+                path: '/personagens/1',
+                description: 'Remove um personagem do sistema.',
+                body: null
             }
         ]
     },
@@ -162,6 +269,13 @@ const endpointGroups = [
                 body: null
             },
             {
+                label: 'Buscar evento por ID',
+                method: 'GET',
+                path: '/eventos/1',
+                description: 'Busca um evento específico pelo ID.',
+                body: null
+            },
+            {
                 label: 'Criar evento',
                 method: 'POST',
                 path: '/eventos',
@@ -169,14 +283,38 @@ const endpointGroups = [
                 body: {
                     titulo: 'Aniversario da Maria',
                     descricao: 'Festa com personagem principal',
-                    dataInicio: '2026-04-18T14:00:00',
-                    dataFim: '2026-04-18T18:00:00',
+                    dataInicio: '2026-05-18T14:00:00',
+                    dataFim: '2026-05-18T18:00:00',
                     endereco: 'Rua das Flores, 100',
                     status: 'CONFIRMADO',
                     tipoPagamento: 'PIX',
                     valorTotal: 850,
                     clienteId: 1
                 }
+            },
+            {
+                label: 'Atualizar evento',
+                method: 'PUT',
+                path: '/eventos/1',
+                description: 'Atualiza os dados de um evento.',
+                body: {
+                    titulo: 'Aniversario da Maria - Atualizado',
+                    descricao: 'Festa com 2 personagens',
+                    dataInicio: '2026-05-18T15:00:00',
+                    dataFim: '2026-05-18T19:00:00',
+                    endereco: 'Rua das Flores, 100 - Sala 2',
+                    status: 'CONFIRMADO',
+                    tipoPagamento: 'PIX',
+                    valorTotal: 1200,
+                    clienteId: 1
+                }
+            },
+            {
+                label: 'Deletar evento',
+                method: 'DELETE',
+                path: '/eventos/1',
+                description: 'Remove um evento do sistema.',
+                body: null
             }
         ]
     },

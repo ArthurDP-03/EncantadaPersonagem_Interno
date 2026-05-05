@@ -1,6 +1,9 @@
 const BASE_URL = 'http://localhost:8080/api' //mudar de acordo com cada 1 
 
-export async function request(path, options = {}) {
+export async function request(
+  path: string,
+  options: RequestInit = {}
+): Promise<any> {
   const token = localStorage.getItem('token')
 
   const headers = {

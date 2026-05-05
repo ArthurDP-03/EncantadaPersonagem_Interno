@@ -1,0 +1,6 @@
+.card-linha{background: var(--branco); border-radius: 20px; padding: 12px 20px; margin: 12px 0 0; display: flex; justify-content: space-between;}
+.card-linha .acoes{display: flex;align-items: center;}
+.card-linha .acoes .btn-icone{display: flex;align-items: center; justify-content: center; background: none;}
+.card-linha .acoes .btn-editar svg{stroke: var(--verde-1);}
+.card-linha .acoes .btn-deletar svg{stroke: var(--vermelho-1)}
+.card-linha .informacao{display: flex; gap: 16px; margin: 4px 0 0;}
