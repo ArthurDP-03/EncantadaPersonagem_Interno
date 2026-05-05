@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo } from 'react'
+import { createContext, useContext, useState, useMemo, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 
@@ -11,15 +11,9 @@ export function decodeToken(token) {
       .replace(/_/g, '/')
       .padEnd(base64Url.length + (4 - base64Url.length % 4) % 4, '=')
 
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
-        .join('')
-    )
+    const payload = JSON.parse(atob(base64))
 
-    const payload = JSON.parse(jsonPayload)
-
+    // expiração
     if (payload.exp * 1000 < Date.now()) {
       return null
     }
@@ -31,9 +25,13 @@ export function decodeToken(token) {
 }
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(
-    localStorage.getItem('token')
-  )
+  const [token, setToken] = useState(localStorage.getItem('token'))
+
+  useEffect(() => {
+    const sync = () => setToken(localStorage.getItem('token'))
+    window.addEventListener('storage', sync)
+    return () => window.removeEventListener('storage', sync)
+  }, [])
 
   const user = useMemo(() => {
     if (!token) return null
@@ -55,7 +53,11 @@ export function AuthProvider({ children }) {
   }
 
   function hasRole(role) {
-    return user?.role === role
+    return (
+      user?.role === role ||
+      user?.roles?.includes?.(role) ||
+      user?.authorities?.includes?.(role)
+    )
   }
 
   return (
