@@ -6,7 +6,7 @@ import { Search, ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
 
 const adminVazio = { nome: "", email: "", telefone: "", senha: "", tipo: "ADMIN" };
-const atorVazio = { nome: "", email: "",  senha: "", telefone: "", genero: "", altura: "", peso: "", observacao: "", ativo: "" };
+const atorVazio  = { nome: "", email: "", senha: "", telefone: "", genero: "", altura: "", peso: "", observacao: "" };
 
 function FormAdministrador({ dados, onChange }) {
   return (
@@ -64,12 +64,14 @@ function FormAtor({ dados, onChange }) {
 }
 
 function Colaboradores() {
-  const { administradores, carregando: carregandoAdministradores, erro: erroAdministradores, deletar: deletarAdmin, criar: criarAdmin } = useAdministradores();
-  const { atores, carregando: carregandoAtores, erro: erroAtores, deletar: deletarAtor, criar: criarAtor } = useAtores();
-  const [modalCriar, setModalCriar] = useState(false);
-  const [tipoForm, setTipoForm] = useState("admin");
-  const [formAdmin, setFormAdmin] = useState(adminVazio);
-  const [formAtor, setFormAtor] = useState(atorVazio);
+  const { administradores, carregando: carregandoAdministradores, erro: erroAdministradores, deletar: deletarAdmin, criar: criarAdmin, editar: editarAdmin } = useAdministradores();
+  const { atores, carregando: carregandoAtores, erro: erroAtores, deletar: deletarAtor, criar: criarAtor, editar: editarAtor } = useAtores();
+
+  const [modalCriar, setModalCriar]   = useState(false);
+  const [modalEditar, setModalEditar] = useState(null); 
+  const [tipoForm, setTipoForm]       = useState("admin");
+  const [formAdmin, setFormAdmin]     = useState(adminVazio);
+  const [formAtor, setFormAtor]       = useState(atorVazio);
 
   if (carregandoAdministradores || carregandoAtores) return <p>Carregando...</p>;
   if (erroAdministradores || erroAtores) return <p>Erro: {erroAdministradores || erroAtores}</p>;
@@ -77,16 +79,32 @@ function Colaboradores() {
   function handleCriar(event) {
     event.preventDefault();
     if (tipoForm === "admin") {
-      criarAdmin(formAdmin).then(() => { setModalCriar(false); setFormAdmin(adminVazio); });
+      criarAdmin(formAdmin)
+        .then(() => { setModalCriar(false); setFormAdmin(adminVazio); });
     } else {
-      const atorFormatado = {
-        ...formAtor,
-        altura: parseFloat(formAtor.altura),
-        peso: parseFloat(formAtor.peso),
-        ativo: true
-      };
-      console.log(atorFormatado)
-      criarAtor(atorFormatado).then(() => { setModalCriar(false); setFormAtor(atorVazio); });
+      criarAtor({ ...formAtor, altura: parseFloat(formAtor.altura), peso: parseFloat(formAtor.peso), ativo: true })
+        .then(() => { setModalCriar(false); setFormAtor(atorVazio); });
+    }
+  }
+
+  function handleEditar(event) {
+    event.preventDefault();
+    if (!modalEditar) return;
+
+    if (modalEditar.tipo === "admin") {
+      editarAdmin(modalEditar.dados.id, modalEditar.dados)
+        .then(() => setModalEditar(null));
+    } else {
+      console.log(modalEditar.dados.id, {
+        ...modalEditar.dados,
+        altura: parseFloat(modalEditar.dados.altura),
+        peso: parseFloat(modalEditar.dados.peso),
+      })
+      editarAtor(modalEditar.dados.id, {
+        ...modalEditar.dados,
+        altura: parseFloat(modalEditar.dados.altura),
+        peso: parseFloat(modalEditar.dados.peso),
+      }).then(() => setModalEditar(null));
     }
   }
 
@@ -118,11 +136,8 @@ function Colaboradores() {
                 <Card_linha
                   key={admin.id}
                   titulo={admin.nome}
-                  informacoes={{
-                    Tipo: admin.tipo,
-                    Email: admin.email,
-                    Celular: admin.telefone,
-                  }}
+                  informacoes={{ Tipo: admin.tipo, Email: admin.email, Celular: admin.telefone }}
+                  onEditar={() => setModalEditar({ tipo: "admin", dados: { ...admin, senha: "" } })}
                   onDeletar={() => deletarAdmin(admin.id)}
                 />
               ))}
@@ -136,14 +151,8 @@ function Colaboradores() {
                 <Card_linha
                   key={ator.id}
                   titulo={ator.nome}
-                  informacoes={{
-                    Email: ator.email,
-                    Celular: ator.telefone,
-                    Gênero: ator.genero,
-                    Altura: ator.altura,
-                    Peso: ator.peso,
-                    Observação: ator.observacao,
-                  }}
+                  informacoes={{ Email: ator.email, Celular: ator.telefone, Gênero: ator.genero, Altura: ator.altura, Peso: ator.peso, Observação: ator.observacao }}
+                  onEditar={() => setModalEditar({ tipo: "ator", dados: { ...ator, senha: "" } })}
                   onDeletar={() => deletarAtor(ator.id)}
                 />
               ))}
@@ -160,20 +169,35 @@ function Colaboradores() {
         <div className="modal">
           <form onSubmit={handleCriar}>
             <h2 className="modal-titulo">Novo Colaborador</h2>
-
             <div className="modal-abas">
               <button type="button" className={tipoForm === "admin" ? "aba-ativa" : ""} onClick={() => setTipoForm("admin")}>Administrador</button>
-              <button type="button" className={tipoForm === "ator" ? "aba-ativa" : ""} onClick={() => setTipoForm("ator")}>Ator</button>
+              <button type="button" className={tipoForm === "ator"  ? "aba-ativa" : ""} onClick={() => setTipoForm("ator")}>Ator</button>
             </div>
-
             {tipoForm === "admin"
               ? <FormAdministrador dados={formAdmin} onChange={setFormAdmin} />
               : <FormAtor dados={formAtor} onChange={setFormAtor} />
             }
-
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => setModalCriar(false)}>Cancelar</button>
+              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setFormAdmin(adminVazio); setFormAtor(atorVazio); }}>Cancelar</button>
               <button type="submit" className="btn-primario">Criar</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {modalEditar && (
+        <div className="modal">
+          <form onSubmit={handleEditar}>
+            <h2 className="modal-titulo">
+              Editar {modalEditar.tipo === "admin" ? "Administrador" : "Ator"}
+            </h2>
+            {modalEditar.tipo === "admin"
+              ? <FormAdministrador dados={modalEditar.dados} onChange={dados => setModalEditar({ ...modalEditar, dados })} />
+              : <FormAtor dados={modalEditar.dados} onChange={dados => setModalEditar({ ...modalEditar, dados })} />
+            }
+            <div className="modal-acoes">
+              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
+              <button type="submit" className="btn-primario">Salvar</button>
             </div>
           </form>
         </div>
@@ -182,4 +206,4 @@ function Colaboradores() {
   );
 }
 
-export default Colaboradores; 
+export default Colaboradores;

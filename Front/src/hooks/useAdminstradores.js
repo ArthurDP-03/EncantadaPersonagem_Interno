@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAdministrador, deletarAdministrador, criarAdministrador } from "../services/administradoresService";
+import { getAdministrador, deletarAdministrador, criarAdministrador, atualizarAdministrador } from "../services/administradoresService";
 
 export function useAdministradores() {
   const [administradores, setAdministradores] = useState([]);
@@ -26,5 +26,10 @@ export function useAdministradores() {
     setAdministradores(prev => [...prev, novoAdministrador]);
   };
 
-  return { administradores, carregando, erro, deletar, criar };
+  const editar = async (id, dados) => {
+    const atualizado = await atualizarAdministrador(id, dados);
+    setAdministradores(prev => prev.map(a => a.id === id ? atualizado : a));
+  };
+
+  return { administradores, carregando, erro, deletar, criar, editar };
 }
