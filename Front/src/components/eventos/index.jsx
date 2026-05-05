@@ -2,6 +2,8 @@ import './index.css';
 import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useEventos } from '../../hooks/useEventos';
+import { useClientes } from '../../hooks/useClientes';
+import { useAdministradores } from '../../hooks/useAdministradores';
 import logo from '../../assets/logo.png';
 import { formatarPeriodoEvento, agruparEventosPorData, labelData, formatarStatus } from '../../utils/formatters';
 import { EventoStatus } from '../../services/eventosService';
@@ -19,7 +21,7 @@ const eventoVazio = {
   administradorCriadorId: "",
 };
 
-function FormEvento({ dados, onChange }) {
+function FormEvento({ dados, onChange, clientes, administradores }) {
   return (
     <div className="form-evento">
       <label>Título
@@ -51,16 +53,24 @@ function FormEvento({ dados, onChange }) {
           <input value={dados.tipoPagamento} onChange={e => onChange({ ...dados, tipoPagamento: e.target.value })} placeholder="PIX, Cartão..." />
         </label>
       </div>
-      <div className="form-evento-linha">
-        <label>Valor total (R$)
-          <input type="number" value={dados.valorTotal} onChange={e => onChange({ ...dados, valorTotal: e.target.value })} placeholder="0,00" />
-        </label>
-        <label>ID do cliente
-          <input type="number" value={dados.clienteId} onChange={e => onChange({ ...dados, clienteId: e.target.value })} placeholder="ID" />
-        </label>
-      </div>
-      <label>ID do administrador
-        <input type="number" value={dados.administradorCriadorId} onChange={e => onChange({ ...dados, administradorCriadorId: e.target.value })} placeholder="ID" />
+      <label>Valor total (R$)
+        <input type="number" value={dados.valorTotal} onChange={e => onChange({ ...dados, valorTotal: e.target.value })} placeholder="0,00" />
+      </label>
+      <label>Cliente
+        <select value={dados.clienteId} onChange={e => onChange({ ...dados, clienteId: e.target.value })}>
+          <option value="">Selecione um cliente</option>
+          {clientes.map(c => (
+            <option key={c.id} value={c.id}>{c.nome}</option>
+          ))}
+        </select>
+      </label>
+      <label>Administrador responsável
+        <select value={dados.administradorCriadorId} onChange={e => onChange({ ...dados, administradorCriadorId: e.target.value })}>
+          <option value="">Selecione um administrador</option>
+          {administradores.map(a => (
+            <option key={a.id} value={a.id}>{a.nome}</option>
+          ))}
+        </select>
       </label>
     </div>
   );
@@ -75,6 +85,8 @@ function Eventos() {
   const [imagem]                      = useState(logo);
 
   const { eventos, carregando, erro, criar, editar, deletar } = useEventos();
+  const { clientes }                                          = useClientes();
+  const { administradores }                                   = useAdministradores();
 
   if (carregando) return <p>Carregando...</p>;
   if (erro) return <p>Erro: {erro}</p>;
@@ -125,6 +137,8 @@ function Eventos() {
     }).then(() => setModalEditar(null));
   }
 
+  const formProps = { clientes, administradores };
+
   return (
     <section className="section-eventos">
       <div className="conteudo-95 layout">
@@ -169,8 +183,6 @@ function Eventos() {
                     <ul className="lista-eventos">
                       {item.eventos.map(evento => (
                         <li key={evento.id} className="card-eventos">
-
-                          {/* Imagem + botões sobrepostos */}
                           <div className="imagem-container">
                             <img src={imagem} alt="" className="imagem" />
                             <div className="card-eventos-acoes">
@@ -192,14 +204,12 @@ function Eventos() {
                               </button>
                             </div>
                           </div>
-
                           <div className="textos">
                             <div className="texto t1"><p>{evento.titulo}</p></div>
                             <div className="texto t2"><p>{formatarStatus(evento.status)}</p></div>
                             <div className="texto t2"><p>{formatarPeriodoEvento(evento.dataInicio, evento.dataFim)}</p></div>
                             <div className="texto t2"><p>{evento.endereco}</p></div>
                           </div>
-
                         </li>
                       ))}
                     </ul>
@@ -222,7 +232,7 @@ function Eventos() {
         <div className="modal">
           <form onSubmit={handleCriar}>
             <h2 className="modal-titulo">Novo Evento</h2>
-            <FormEvento dados={form} onChange={setForm} />
+            <FormEvento dados={form} onChange={setForm} {...formProps} />
             <div className="modal-acoes">
               <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(eventoVazio); }}>Cancelar</button>
               <button type="submit" className="btn-primario">Criar</button>
@@ -236,7 +246,7 @@ function Eventos() {
         <div className="modal">
           <form onSubmit={handleEditar}>
             <h2 className="modal-titulo">Editar Evento</h2>
-            <FormEvento dados={modalEditar} onChange={setModalEditar} />
+            <FormEvento dados={modalEditar} onChange={setModalEditar} {...formProps} />
             <div className="modal-acoes">
               <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
               <button type="submit" className="btn-primario">Salvar</button>

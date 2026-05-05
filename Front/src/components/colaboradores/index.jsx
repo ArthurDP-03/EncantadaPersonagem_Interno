@@ -1,4 +1,4 @@
-import { useAdministradores } from "../../hooks/useAdminstradores";
+import { useAdministradores } from "../../hooks/useAdministradores";
 import { useAtores } from "../../hooks/useAtores";
 import Card_linha from "../card_linha";
 import './index.css'
