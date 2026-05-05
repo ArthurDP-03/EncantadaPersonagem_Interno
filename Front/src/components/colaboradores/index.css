@@ -14,39 +14,186 @@
 .btn-create{position: fixed; bottom: 2.5vw; right: 2.5vw; background: var(--verde-1); border-radius: 100%; display: flex; align-items: center; justify-content: center; aspect-ratio: 1 / 1; height: 50px;}
 .btn-create svg{stroke: var(--rosa-1);}
 
-.modal {
+/* ── Modal ── */
+.section-colaboradores .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
+  justify-content: center;
+  z-index: 10000;
+  animation: modalFadeIn 0.18s ease;
 }
 
-.modal form {
-  background: white;
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.section-colaboradores .modal > form {
+  background: #ffffff;
+  border-radius: 18px;
   padding: 2rem;
-  border-radius: 12px;
+  width: min(100%, 460px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.16);
+  animation: modalPopIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  min-width: 320px;
+  max-height: 80vh;
+  overflow:hidden auto;
+  scrollbar-gutter: stable;
 }
 
-.modal input {
-  padding: 0.8rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  outline: none;
+.section-colaboradores .modal > form::-webkit-scrollbar {
+  width: 4px;
 }
 
-.modal button {
-  padding: 0.8rem 1rem;
-  border: none;
-  border-radius: 8px;
+.section-colaboradores .modal > form::-webkit-scrollbar-track {
+  background: var(--cinza-3);
+  border-radius: 10px;
+}
+
+.section-colaboradores .modal > form::-webkit-scrollbar-thumb {
+   background: var(--verde-1);
+  border-radius: 10px;
+}
+
+.section-colaboradores .modal > form::-webkit-scrollbar-thumb:hover {
+  background: var(--verde-1);
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.93); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.section-colaboradores .modal-titulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--verde-escuro, #2d6a4f);
+  margin: 0 0 0.5rem;
+}
+
+.section-colaboradores .modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+/* ── Abas ── */
+.section-colaboradores .modal-abas {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-colaboradores .modal-abas button {
+  flex: 1;
+  height: 36px;
+  border-radius: 30px;
+  border: 1.5px solid #e0e0e0;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
+  transition: all 0.16s;
+}
+
+.section-colaboradores .modal-abas button.aba-ativa {
+  background: var(--verde-escuro, #2d6a4f);
+  border-color: var(--verde-escuro, #2d6a4f);
+  color: #fff;
+}
+
+/* ── Formulário ── */
+.section-colaboradores .form-colaborador {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-colaboradores .form-colaborador label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.section-colaboradores .form-colaborador input,
+.section-colaboradores .form-colaborador select,
+.section-colaboradores .form-colaborador textarea {
+  height: 38px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  padding: 0 12px;
+  font-size: 0.875rem;
+  color: #1a1a1a;
+  background: #f5f5f5;
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.section-colaboradores .form-colaborador textarea {
+  height: 80px;
+  padding: 8px 12px;
+  resize: none;
+}
+
+.section-colaboradores .form-colaborador input:focus,
+.section-colaboradores .form-colaborador select:focus,
+.section-colaboradores .form-colaborador textarea:focus {
+  border-color: var(--verde-escuro, #2d6a4f);
+  background: #fff;
+}
+
+/* ── Botões de ação ── */
+.section-colaboradores .btn-primario,
+.section-colaboradores .btn-secundario {
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 30px;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s, transform 0.14s;
+}
+
+.section-colaboradores .btn-primario  { background: var(--verde-escuro, #2d6a4f); color: #fff; }
+.section-colaboradores .btn-primario:hover  { background: #3a7d5e; }
+
+.section-colaboradores .btn-secundario { background: #e4e4e4; color: #333; }
+.section-colaboradores .btn-secundario:hover { background: #d8d8d8; }
+
+/* ── FAB ── */
+.section-colaboradores .btn-create {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--verde-escuro, #2d6a4f);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(45, 106, 79, 0.38);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  z-index: 100;
+}
+
+.section-colaboradores .btn-create:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(45, 106, 79, 0.48);
 }

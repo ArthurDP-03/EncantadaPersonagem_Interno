@@ -3,7 +3,6 @@ import { useAuth } from '../../context/AuthContext'
 
 export default function PrivateRoute({ children, role }) {
   const { isAuthenticated, hasRole } = useAuth()
-
   if (!isAuthenticated()) {
     return <Navigate to="/login" />
   }
