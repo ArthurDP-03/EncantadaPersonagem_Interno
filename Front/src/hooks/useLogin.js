@@ -1,4 +1,3 @@
-// hooks/useLogin.js
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -33,28 +32,25 @@ export function useLogin() {
     try {
       const dados = await login(email, senha)
 
-      if (!dados?.token) throw new Error('Token não recebido')
+      if (!dados?.token) {
+        throw new Error('Token não recebido')
+      }
 
       salvarToken(dados.token)
-
-      // 👇 decodifica o token
       const payload = decodeToken(dados.token)
 
-      // 👇 redireciona baseado no role
-      if (payload.role === 'ADMIN') {
-        navigate('/homeAdmin')
-      } else if (payload.role === 'ATOR') {
-        navigate('/homeAtor')
-      } else {
-        navigate('/')
+      if (!payload) {
+        throw new Error('Token inválido ou expirado')
       }
+
+      navigate('/')
 
     } catch (e) {
       const status = e?.status
 
       if (status === 401) setErro('Email ou senha inválidos')
       else if (status === 403) setErro('Acesso negado')
-      else setErro('Erro ao fazer login')
+      else setErro(e?.message || 'Erro ao fazer login')
     } finally {
       setCarregando(false)
     }

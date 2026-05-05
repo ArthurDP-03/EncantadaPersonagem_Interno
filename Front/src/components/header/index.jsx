@@ -8,14 +8,14 @@ function Header() {
 
   function handleLogout() {
     logout()
-    Navigate('/')
+    Navigate('/login')
   }
 
   // define links por perfil
   const links = user?.role === 'ADMIN'
     ?//se for admin
      [
-        { label: 'Geral', href: '/geral', icone: <House size={18} /> },// revisar como vai ser essa navegação sem sair da tela de admin.
+        { label: 'Geral', href: '/', icone: <House size={18} /> },// revisar como vai ser essa navegação sem sair da tela de admin.
         { label: 'Eventos', href: '/eventos', icone: <CalendarDays size={18} /> },
         { label: 'Financeiro', href: '/financeiro', icone: <BarChart2 size={18} /> },
         { label: 'Clientes', href: '/clientes', icone: <Handshake size={18} /> },
@@ -24,15 +24,15 @@ function Header() {
       ]
     : //se nao for admin, no caso ator
      [
-        { label: 'Geral', href: '/geral', icone: <House size={18} /> },  //editar permissoes depois do que ator pode acessar
+        { label: 'Geral', href: '/', icone: <House size={18} /> },  //editar permissoes depois do que ator pode acessar
         { label: 'Eventos', href: '/eventos', icone: <CalendarDays size={18} /> }, //editar permissoes depois do que ator pode acessar
       ]
 
   if (!user) return null
 
   return (
-    <header>
-      <section className="cabecalho">
+    <header className='cabecalho'>
+      <section className="cabecalho-section">
         <div className="conteudo-95">
           <div className="conteudo">
 
@@ -85,7 +85,7 @@ function Header() {
         </div>
 
         <div className='lista-link'>
-          <button onClick={handleLogout} className='link'>
+          <button onClick={handleLogout} className='link logout'>
             <div className="texto"><p>Sair</p></div>
             <div className="icone"><LogOut size={18} /></div>
           </button>
