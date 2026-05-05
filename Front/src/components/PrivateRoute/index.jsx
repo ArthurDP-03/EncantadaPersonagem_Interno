@@ -11,9 +11,5 @@ export default function PrivateRoute({ children, role }) {
     return <Navigate to="/login" />
   }
 
-  if (role && !hasRole(role)) {
-    return <Navigate to="/nao-autorizado" />
-  }
-
   return children
 }

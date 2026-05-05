@@ -18,7 +18,6 @@ public class AdministradorService {
     private final AtorRepository atorRepository;
     private final AdministradorRepository administradorRepository;
     private final PasswordEncoder passwordEncoder;
-    
 
     public AdministradorService(AdministradorRepository administradorRepository, PasswordEncoder passwordEncoder,
             AtorRepository atorRepository) {
