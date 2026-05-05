@@ -2,7 +2,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import "./index.css"
 
-function Card_linha({ titulo, informacoes, onDeletar }) {
+function Card_linha({ titulo, informacoes, onDeletar, onEditar }) {
 
   const handleDeletar = async () => {
     const confirmar = await Swal.fire({
@@ -12,7 +12,7 @@ function Card_linha({ titulo, informacoes, onDeletar }) {
       showCancelButton: true,
       confirmButtonText: "Sim, deletar",
       cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
+      confirmButtonColor: "#2d6a4f",
       cancelButtonColor: "#aaa",
     });
 
@@ -49,10 +49,12 @@ function Card_linha({ titulo, informacoes, onDeletar }) {
         </div>
       </div>
       <div className="acoes">
-        <button className="btn-icone btn-editar">
-          <Pencil size={16} />
-        </button>
-        <button className="btn-icone btn-deletar" onClick={handleDeletar}>
+        {onEditar && (
+          <button className="btn-icone btn-editar" type="button" onClick={onEditar}>
+            <Pencil size={16} />
+          </button>
+        )}
+        <button className="btn-icone btn-deletar" type="button" onClick={handleDeletar}>
           <Trash2 size={16} />
         </button>
       </div>

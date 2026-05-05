@@ -9,7 +9,7 @@ export function useLogin() {
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
-  const { salvarToken } = useAuth()
+  const { salvarToken, logout } = useAuth()
   const navigate = useNavigate()
 
   const validar = (email, senha) => {
@@ -29,7 +29,7 @@ export function useLogin() {
 
     setErro('')
     setCarregando(true)
-
+    logout() 
     try {
       const dados = await login(email, senha)
 
@@ -37,17 +37,17 @@ export function useLogin() {
 
       salvarToken(dados.token)
 
-      // 👇 decodifica o token
       const payload = decodeToken(dados.token)
 
-      // 👇 redireciona baseado no role
-      if (payload.role === 'ADMIN') {
-        navigate('/homeAdmin')
-      } else if (payload.role === 'ATOR') {
-        navigate('/homeAtor')
-      } else {
-        navigate('/')
-      }
+      // if (payload.role === 'ADMIN') {
+      //   navigate('/homeAdmin')
+      // } else if (payload.role === 'ATOR') {
+      //   navigate('/homeAtor')
+      // } else {
+      //   navigate('/')
+      // }
+      navigate('/')
+
 
     } catch (e) {
       const status = e?.status

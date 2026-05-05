@@ -5,11 +5,11 @@ export default function PrivateRoute({ children, role }) {
   const { isAuthenticated, hasRole } = useAuth()
 
   if (!isAuthenticated()) {
-    return <Navigate to="/" />
+    return <Navigate to="/login" />
   }
 
   if (role && !hasRole(role)) {
-    return <Navigate to="/nao-autorizado" />
+    return <Navigate to="/login" />
   }
 
   return children
