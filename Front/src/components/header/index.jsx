@@ -15,7 +15,7 @@ function Header() {
   const links = user?.role === 'ADMIN'
     ?//se for admin
      [
-        { label: 'Geral', href: '/geral', icone: <House size={18} /> },// revisar como vai ser essa navegação sem sair da tela de admin.
+        { label: 'Geral', href: '/', icone: <House size={18} /> },// revisar como vai ser essa navegação sem sair da tela de admin.
         { label: 'Eventos', href: '/eventos', icone: <CalendarDays size={18} /> },
         { label: 'Financeiro', href: '/financeiro', icone: <BarChart2 size={18} /> },
         { label: 'Clientes', href: '/clientes', icone: <Handshake size={18} /> },
@@ -24,7 +24,7 @@ function Header() {
       ]
     : //se nao for admin, no caso ator
      [
-        { label: 'Geral', href: '/geral', icone: <House size={18} /> },  //editar permissoes depois do que ator pode acessar
+        { label: 'Geral', href: '/', icone: <House size={18} /> },  //editar permissoes depois do que ator pode acessar
         { label: 'Eventos', href: '/eventos', icone: <CalendarDays size={18} /> }, //editar permissoes depois do que ator pode acessar
       ]
 

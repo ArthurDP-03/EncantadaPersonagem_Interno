@@ -13,7 +13,6 @@ function Eventos() {
   if (erro) return <p>Erro: {erro}</p>;
 
   const grupos = agruparEventosPorData(eventos);
-  console.log(grupos)
   return (
     <section className="section-eventos">
       <div className="conteudo-95 layout">
