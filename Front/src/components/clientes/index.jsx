@@ -29,7 +29,7 @@ function Clientes() {
   const [modalCriar, setModalCriar]     = useState(false);
   const [modalEditar, setModalEditar]   = useState(null);
   const [form, setForm]                 = useState(clienteVazio);
-  const { clientes, carregando, erro, adicionarCliente, editarCliente, removerCliente } = useClientes();
+  const { clientes, carregando, erro, criar: adicionarCliente, editar: editarCliente, deletar: removerCliente } = useClientes();
   if (carregando) return <p>Carregando...</p>;
   if (erro) return <p>Erro: {erro}</p>;
 
