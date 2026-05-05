@@ -95,11 +95,6 @@ function Colaboradores() {
       editarAdmin(modalEditar.dados.id, modalEditar.dados)
         .then(() => setModalEditar(null));
     } else {
-      console.log(modalEditar.dados.id, {
-        ...modalEditar.dados,
-        altura: parseFloat(modalEditar.dados.altura),
-        peso: parseFloat(modalEditar.dados.peso),
-      })
       editarAtor(modalEditar.dados.id, {
         ...modalEditar.dados,
         altura: parseFloat(modalEditar.dados.altura),
