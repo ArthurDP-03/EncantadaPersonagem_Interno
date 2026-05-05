@@ -8,12 +8,12 @@ export function useAdministradores() {
 
   useEffect(() => {
     getAdministrador()
-        .then(setAdministradores)
-        .catch(err => {
-            console.error("Erro completo:", err);
-            setErro(err.message);
-        })
-        .finally(() => setCarregando(false));
+      .then(setAdministradores)
+      .catch(err => {
+        console.error("Erro completo:", err);
+        setErro(err.message);
+      })
+      .finally(() => setCarregando(false));
   }, []);
 
   const deletar = async (id) => {
@@ -22,9 +22,9 @@ export function useAdministradores() {
   };
 
   const criar = async (dados) => {
-  const novoAdministrador = await criarAdministrador(dados);
-  setAdministradores(prev => [ ...prev, novoAdministrador]);
-};
+    const novoAdministrador = await criarAdministrador(dados);
+    setAdministradores(prev => [...prev, novoAdministrador]);
+  };
 
   return { administradores, carregando, erro, deletar, criar };
 }

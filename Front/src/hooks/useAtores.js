@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAtores, deletarAtor } from "../services/atoresService";
+import { getAtores, deletarAtor, criarAtor } from "../services/atoresService";
 
 export function useAtores() {
   const [atores, setAtores] = useState([]);
@@ -20,6 +20,12 @@ export function useAtores() {
     await deletarAtor(id);
     setAtores(prev => prev.filter(a => a.id !== id));
   };
+  
+  const criar = async (dados) => {
+    const novoAtor = await criarAtor(dados);
+    setAtores(prev => [ ...prev, novoAtor]);
+  };
+  
 
-  return { atores, carregando, erro, deletar };
+  return { atores, carregando, erro, deletar, criar };
 }

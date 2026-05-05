@@ -4,9 +4,9 @@ export interface Administrador {
     id: number,
     nome: string,
     email: string,
+    senha: string
     telefone: string,
     tipo: string
-
 }
 // GET /atores
 export const getAdministrador = async (): Promise<Administrador[]> => {
