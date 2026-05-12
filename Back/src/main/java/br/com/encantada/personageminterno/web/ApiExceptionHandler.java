@@ -6,6 +6,7 @@ import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
@@ -45,6 +47,13 @@ public class ApiExceptionHandler {
         body.put("error", "Validation failed");
         body.put("fields", fields);
         return ResponseEntity.unprocessableEntity().body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception exception) {
+        log.error("Erro inesperado", exception);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Erro interno do servidor. Contate o suporte.");
     }
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {
