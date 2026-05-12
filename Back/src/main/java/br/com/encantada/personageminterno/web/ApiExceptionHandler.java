@@ -4,6 +4,8 @@ import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
+import br.com.encantada.personageminterno.web.dto.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,23 +23,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException exception) {
-        return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    public ResponseEntity<Map<String, Object>> handleNotFound(
+            ResourceNotFoundException exception,
+            HttpServletRequest request) {
+        return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request);
     }
 
     @ExceptionHandler({ BusinessException.class, BadCredentialsException.class })
-    public ResponseEntity<Map<String, Object>> handleBusiness(RuntimeException exception) {
-        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    public ResponseEntity<Map<String, Object>> handleBusiness(
+            RuntimeException exception,
+            HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<Map<String, Object>> handleConflict(ConflictException exception) {
-        return buildResponse(HttpStatus.CONFLICT, exception.getMessage());
+    public ResponseEntity<Map<String, Object>> handleConflict(
+            ConflictException exception,
+            HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request);
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<Map<String, Object>> handleForbidden(ForbiddenException exception) {
-        return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage());
+    public ResponseEntity<Map<String, Object>> handleForbidden(
+            ForbiddenException exception,
+            HttpServletRequest request) {
+        return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -56,17 +66,21 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception exception) {
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception exception, HttpServletRequest request) {
         log.error("Erro inesperado", exception);
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Erro interno do servidor. Contate o suporte.");
+                "Erro interno do servidor. Contate o suporte.", request);
     }
 
-    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {
+    private ResponseEntity<Map<String, Object>> buildResponse(
+            HttpStatus status,
+            String message,
+            HttpServletRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", OffsetDateTime.now());
         body.put("status", status.value());
         body.put("error", message);
+        body.put("path", request.getRequestURI());
         return ResponseEntity.status(status).body(body);
     }
 }
