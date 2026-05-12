@@ -3,6 +3,7 @@ package br.com.encantada.personageminterno.service;
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Ator;
 import br.com.encantada.personageminterno.exception.BusinessException;
+import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
@@ -38,10 +39,10 @@ public class AtorService {
     @Transactional
     public AtorResponse criar(AtorRequest request) {
         if (atorRepository.existsByEmail(request.email())) {
-            throw new BusinessException("Ja existe ator com esse email");
+            throw new ConflictException("Ja existe ator com esse email");
         }
         if (administradorRepository.existsByEmail(request.email())) {
-            throw new BusinessException("Ja existe administrador com esse email");
+            throw new ConflictException("Ja existe administrador com esse email");
             
         }
 
@@ -89,10 +90,10 @@ public class AtorService {
         // Verifica se o email já existe em outro registro
         if (!ator.getEmail().equals(request.email())) {
             if (administradorRepository.existsByEmail(request.email())) {
-                throw new BusinessException("Já existe administrador com esse email");
+                throw new ConflictException("Já existe administrador com esse email");
             }
             if (atorRepository.existsByEmail(request.email())) {
-                throw new BusinessException("Já existe ator com esse email");
+                throw new ConflictException("Já existe ator com esse email");
             }
         }
     

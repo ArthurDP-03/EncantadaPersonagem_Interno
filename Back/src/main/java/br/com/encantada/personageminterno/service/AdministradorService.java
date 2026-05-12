@@ -2,6 +2,7 @@ package br.com.encantada.personageminterno.service;
 
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.exception.BusinessException;
+import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
@@ -11,6 +12,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException.Conflict;
 
 @Service
 public class AdministradorService {
@@ -36,10 +38,10 @@ public class AdministradorService {
     @Transactional
     public AdministradorResponse criar(AdministradorRequest request) {
         if (administradorRepository.existsByEmail(request.email())) {
-            throw new BusinessException("Ja existe administrador com esse email");
+            throw new ConflictException("Ja existe administrador com esse email");
         }
         if (atorRepository.existsByEmail(request.email())) {
-            throw new BusinessException("Ja existe ator com esse email");
+            throw new ConflictException("Ja existe ator com esse email");
         }
 
         Administrador administrador = Administrador.builder()
@@ -85,10 +87,10 @@ public class AdministradorService {
         // Verifica se o email já existe em outro registro
         if (!administrador.getEmail().equals(request.email())) {
             if (administradorRepository.existsByEmail(request.email())) {
-                throw new BusinessException("Já existe administrador com esse email");
+                throw new ConflictException("Já existe administrador com esse email");
             }
             if (atorRepository.existsByEmail(request.email())) {
-                throw new BusinessException("Já existe ator com esse email");
+                throw new ConflictException("Já existe ator com esse email");
             }
         }
     
