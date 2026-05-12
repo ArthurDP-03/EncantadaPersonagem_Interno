@@ -3,6 +3,7 @@ package br.com.encantada.personageminterno.web;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
+import br.com.encantada.personageminterno.exception.ForbiddenException;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,6 +33,11 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> handleConflict(ConflictException exception) {
         return buildResponse(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleForbidden(ForbiddenException exception) {
+        return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

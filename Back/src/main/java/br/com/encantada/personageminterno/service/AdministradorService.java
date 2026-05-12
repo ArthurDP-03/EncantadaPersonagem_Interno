@@ -3,6 +3,7 @@ package br.com.encantada.personageminterno.service;
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
+import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
@@ -80,9 +81,18 @@ public class AdministradorService {
     }
 
     @Transactional
-    public AdministradorResponse atualizar(int id, AdministradorRequest request) {
+    public AdministradorResponse atualizar(int id, AdministradorRequest request, String administradorEmail) {
         Administrador administrador = administradorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador não encontrado com id: " + id));
+
+        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador logado não encontrado"));
+
+        // ADICIONE ESTA VALIDAÇÃO 👇
+        if (!administrador.getId().equals(adminLogado.getId()) &&
+                !"SUPER_ADMIN".equals(adminLogado.getTipo())) {
+            throw new ForbiddenException("Você não tem permissão para atualizar dados de outro administrador");
+        }
 
         // Verifica se o email já existe em outro registro
         if (!administrador.getEmail().equals(request.email())) {
@@ -93,7 +103,7 @@ public class AdministradorService {
                 throw new ConflictException("Já existe ator com esse email");
             }
         }
-    
+
         administrador.setNome(request.nome());
         administrador.setEmail(request.email());
         administrador.setTelefone(request.telefone());
@@ -102,15 +112,22 @@ public class AdministradorService {
         if (request.senha() != null && !request.senha().isBlank()) {
             administrador.setSenha(passwordEncoder.encode(request.senha()));
         }
-        
+
         return toResponse(administradorRepository.save(administrador));
-}
+    }
 
     @Transactional
-    public void deletar (int id){
-        if (!administradorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Administrador não encontrado");
+    public void deletar(int id, String administradorEmail) {
+        Administrador administrador = administradorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador não encontrado"));
+
+        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        if (administrador.getId().equals(adminLogado.getId())) {
+            throw new ForbiddenException("Você não pode deletar sua própria conta");
         }
+
         administradorRepository.deleteById(id);
     }
 }
