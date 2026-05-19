@@ -3,6 +3,7 @@ package br.com.encantada.personageminterno.web;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
+import br.com.encantada.personageminterno.exception.InvalidParameterException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.exception.UnauthorizedException;
 import br.com.encantada.personageminterno.web.dto.ErrorResponse;
@@ -71,6 +72,14 @@ public class ApiExceptionHandler {
             HttpServletRequest request) {
         log.warn("Não autorizado: {} - Path: {}", exception.getMessage(), request.getRequestURI());
         return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidParameter(
+            InvalidParameterException exception,
+            HttpServletRequest request) {
+        log.warn("Parâmetro inválido: {} - Path: {}", exception.getMessage(), request.getRequestURI());
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
     }
 
     // ==================== EXCEÇÕES SPRING SECURITY ====================
