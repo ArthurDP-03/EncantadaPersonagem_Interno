@@ -15,12 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -136,6 +141,58 @@ public class ApiExceptionHandler {
         );
 
         return ResponseEntity.unprocessableEntity().body(errorResponse);
+    }
+
+    // ==================== REQUISIÇÕES MALFORMADAS ====================
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException exception,
+            HttpServletRequest request) {
+        log.warn("JSON malformado - Path: {}", request.getRequestURI());
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                "Requisição inválida. Verifique o formato dos dados enviados", request);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+            HttpRequestMethodNotSupportedException exception,
+            HttpServletRequest request) {
+        log.warn("Método não suportado: {} - Path: {}",
+                exception.getMethod(), request.getRequestURI());
+        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED,
+                "Método HTTP '" + exception.getMethod() + "' não é suportado para esta rota", request);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMediaTypeNotSupported(
+            HttpMediaTypeNotSupportedException exception,
+            HttpServletRequest request) {
+        log.warn("Tipo de mídia não suportado - Path: {}", request.getRequestURI());
+        return buildResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "Tipo de mídia não suportado. Use 'application/json'", request);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParameter(
+            MissingServletRequestParameterException exception,
+            HttpServletRequest request) {
+        log.warn("Parâmetro obrigatório ausente: {} - Path: {}",
+                exception.getParameterName(), request.getRequestURI());
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                "Parâmetro obrigatório ausente: " + exception.getParameterName(), request);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(
+            MethodArgumentTypeMismatchException exception,
+            HttpServletRequest request) {
+        log.warn("Tipo de argumento inválido: {} - Path: {}",
+                exception.getName(), request.getRequestURI());
+        String message = String.format("Parâmetro '%s' deve ser do tipo %s",
+                exception.getName(),
+                exception.getRequiredType() != null ? exception.getRequiredType().getSimpleName() : "válido");
+        return buildResponse(HttpStatus.BAD_REQUEST, message, request);
     }
 
     // ==================== BANCO DE DADOS ====================
