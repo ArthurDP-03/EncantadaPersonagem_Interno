@@ -5,6 +5,7 @@ import br.com.encantada.personageminterno.domain.entity.Evento;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
+import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.EventoRepository;
@@ -40,7 +41,7 @@ public class EventoService {
     @Transactional
     public EventoResponse criar(EventoRequest request, String administradorEmail) {
         if (!request.dataInicio().isBefore(request.dataFim())) {
-            throw new BusinessException("A data de inicio deve ser anterior a data de fim");
+            throw new PreconditionFailedException("A data de início deve ser anterior à data de fim");
         }
 
         Administrador administrador = administradorRepository.findByEmail(administradorEmail)
@@ -100,7 +101,7 @@ public class EventoService {
                     "Você não tem permissão para atualizar este evento. Apenas o criador pode modificá-lo");
         }
         if (!request.dataInicio().isBefore(request.dataFim())) {
-            throw new BusinessException("A data de início deve ser anterior à data de fim");
+            throw new PreconditionFailedException("A data de início deve ser anterior à data de fim");
         }
 
         evento.setTitulo(request.titulo());

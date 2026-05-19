@@ -4,6 +4,7 @@ import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.InvalidParameterException;
+import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.exception.UnauthorizedException;
 import br.com.encantada.personageminterno.web.dto.ErrorResponse;
@@ -81,6 +82,14 @@ public class ApiExceptionHandler {
             HttpServletRequest request) {
         log.warn("Parâmetro inválido: {} - Path: {}", exception.getMessage(), request.getRequestURI());
         return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(PreconditionFailedException.class)
+    public ResponseEntity<ErrorResponse> handlePreconditionFailed(
+            PreconditionFailedException exception,
+            HttpServletRequest request) {
+        log.warn("Pré-condição falhou: {} - Path: {}", exception.getMessage(), request.getRequestURI());
+        return buildResponse(HttpStatus.PRECONDITION_FAILED, exception.getMessage(), request);
     }
 
     // ==================== EXCEÇÕES SPRING SECURITY ====================
