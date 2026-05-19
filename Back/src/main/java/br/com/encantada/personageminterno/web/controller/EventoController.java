@@ -40,8 +40,8 @@ public class EventoController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-        eventoService.deletar(id);
+    public ResponseEntity<Void> deletar(@PathVariable Integer id, Authentication authentication) {
+        eventoService.deletar(id, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 

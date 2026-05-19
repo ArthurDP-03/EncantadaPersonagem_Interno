@@ -5,7 +5,7 @@ import br.com.encantada.personageminterno.web.dto.administrador.AdministradorReq
 import br.com.encantada.personageminterno.web.dto.administrador.AdministradorResponse;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,14 +41,17 @@ public class AdministradorController {
     @PutMapping("/{id}")
     public ResponseEntity<AdministradorResponse> atualizar(
             @PathVariable Integer id,
-            @Valid @RequestBody AdministradorRequest request) {
-        return ResponseEntity.ok(administradorService.atualizar(id, request));
+            @Valid @RequestBody AdministradorRequest request,
+            Authentication authentication) {
+        String administradorEmail = authentication.getName();
+        return ResponseEntity.ok(administradorService.atualizar(id, request, administradorEmail));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('ATOR') and @securityService.isOwner(#id, authentication))")
     public ResponseEntity<Void> deletar(@PathVariable Integer id, Authentication authentication) {
-        administradorService.deletar(id);
+        String administradorEmail = authentication.getName();
+        administradorService.deletar(id, administradorEmail);
         return ResponseEntity.noContent().build();
     }
 
