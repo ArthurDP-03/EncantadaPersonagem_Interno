@@ -4,6 +4,7 @@ import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Evento;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
+import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
@@ -116,6 +117,7 @@ public class EventoService {
 
         return toResponse(eventoRepository.save(evento));
     }
+    
 
     @Transactional
     public void deletar(int id, String administradorEmail) {
@@ -131,5 +133,32 @@ public class EventoService {
         }
 
         eventoRepository.deleteById(id);
+    }
+
+    /**
+     * Saída 3: cancelar o evento inteiro quando não há como suprir os personagens.
+     * Não exclui o registro: apenas muda o status para CANCELADO.
+     */
+    @Transactional
+    public EventoResponse cancelar(int id, String administradorEmail) {
+        Evento evento = eventoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + id));
+
+        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId()) &&
+                !"SUPER_ADMIN".equals(adminLogado.getTipo())) {
+            throw new ForbiddenException("Você não tem permissão para cancelar este evento");
+        }
+        if (evento.getStatus() == EventoStatus.CANCELADO) {
+            throw new ConflictException("Evento já está cancelado");
+        }
+        if (evento.getStatus() == EventoStatus.FINALIZADO) {
+            throw new BusinessException("Evento finalizado não pode ser cancelado");
+        }
+
+        evento.setStatus(EventoStatus.CANCELADO);
+        return toResponse(eventoRepository.save(evento));
     }
 }
