@@ -11,9 +11,14 @@ public record ErrorResponse(
         String error,
         String message,
         String path,
-        Map<String, String> fields 
+        Map<String, String> fields,
+        String correlationId
 ) {
     public ErrorResponse(OffsetDateTime timestamp, int status, String error, String message, String path) {
-        this(timestamp, status, error, message, path, null);
+        this(timestamp, status, error, message, path, null, null);
+    }
+    
+    public ErrorResponse(OffsetDateTime timestamp, int status, String error, String message, String path, String correlationId) {
+        this(timestamp, status, error, message, path, null, correlationId);
     }
 }

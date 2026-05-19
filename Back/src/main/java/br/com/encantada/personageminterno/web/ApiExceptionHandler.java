@@ -12,6 +12,7 @@ import jakarta.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -114,16 +115,21 @@ public class ApiExceptionHandler {
 
         log.warn("Erro de validação - Path: {} - Campos: {}", request.getRequestURI(), fields.keySet());
 
+        String correlationId = UUID.randomUUID().toString();
+        
         ErrorResponse errorResponse = new ErrorResponse(
             OffsetDateTime.now(),
             HttpStatus.UNPROCESSABLE_ENTITY.value(),
             "Erro de validação",
             "Um ou mais campos estão inválidos",
             request.getRequestURI(),
-            fields
+            fields,
+            correlationId
         );
 
-        return ResponseEntity.unprocessableEntity().body(errorResponse);
+        return ResponseEntity.unprocessableEntity()
+                .header("X-Correlation-ID", correlationId)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -140,16 +146,21 @@ public class ApiExceptionHandler {
 
         log.warn("Violação de constraint - Path: {} - Campos: {}", request.getRequestURI(), fields.keySet());
 
+        String correlationId = UUID.randomUUID().toString();
+        
         ErrorResponse errorResponse = new ErrorResponse(
             OffsetDateTime.now(),
             HttpStatus.UNPROCESSABLE_ENTITY.value(),
             "Violação de restrições",
             "Dados fornecidos não atendem às restrições",
             request.getRequestURI(),
-            fields
+            fields,
+            correlationId
         );
 
-        return ResponseEntity.unprocessableEntity().body(errorResponse);
+        return ResponseEntity.unprocessableEntity()
+                .header("X-Correlation-ID", correlationId)
+                .body(errorResponse);
     }
 
     // ==================== REQUISIÇÕES MALFORMADAS ====================
@@ -256,14 +267,19 @@ public class ApiExceptionHandler {
             String message,
             HttpServletRequest request) {
         
+        String correlationId = UUID.randomUUID().toString();
+        
         ErrorResponse errorResponse = new ErrorResponse(
             OffsetDateTime.now(),
             status.value(),
             status.getReasonPhrase(),
             message,
-            request.getRequestURI()
+            request.getRequestURI(),
+            correlationId
         );
 
-        return ResponseEntity.status(status).body(errorResponse);
+        return ResponseEntity.status(status)
+                .header("X-Correlation-ID", correlationId)
+                .body(errorResponse);
     }
 }
