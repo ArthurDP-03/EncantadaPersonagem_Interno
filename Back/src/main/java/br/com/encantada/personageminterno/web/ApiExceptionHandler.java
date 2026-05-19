@@ -2,6 +2,7 @@ package br.com.encantada.personageminterno.web;
 
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
+import br.com.encantada.personageminterno.exception.ExpiredResourceException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.InvalidParameterException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
@@ -73,6 +74,14 @@ public class ApiExceptionHandler {
             UnauthorizedException exception,
             HttpServletRequest request) {
         log.warn("Não autorizado: {} - Path: {}", exception.getMessage(), request.getRequestURI());
+        return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage(), request);
+    }
+
+    @ExceptionHandler(ExpiredResourceException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredResource(
+            ExpiredResourceException exception,
+            HttpServletRequest request) {
+        log.warn("Recurso expirado: {} - Path: {}", exception.getMessage(), request.getRequestURI());
         return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage(), request);
     }
 
