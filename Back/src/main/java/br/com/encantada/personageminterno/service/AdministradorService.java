@@ -75,7 +75,7 @@ public class AdministradorService {
     @Transactional(readOnly = true)
     public AdministradorResponse buscarPorId(int id) {
         Administrador administrador = administradorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Administrador nao encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador não encontrado com o id: " + id));
         return toResponse(administrador);
 
     }
