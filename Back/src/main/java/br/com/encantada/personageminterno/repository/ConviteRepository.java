@@ -14,6 +14,8 @@ public interface ConviteRepository extends JpaRepository<Convite, Integer> {
 
     List<Convite> findByAtorIdAndStatus(Integer atorId, ConviteStatus status);
 
+    List<Convite> findByAdministradorId(Integer administradorId);
+
     long countByEventoPersonagemIdAndStatus(Integer epId, ConviteStatus status);
 
     Optional<Convite> findByEventoPersonagemIdAndAtorId(Integer eventoPersonagemId, Integer atorId);

@@ -25,7 +25,6 @@ import br.com.encantada.personageminterno.web.dto.convite.ConviteCreateRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteResponse;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteRespostaRequest;
 
-
 @Service
 public class ConviteService {
 
@@ -48,10 +47,10 @@ public class ConviteService {
     @Transactional
     public List<ConviteResponse> enviarConvites(ConviteCreateRequest req, String adminEmail) {
         Administrador admin = administradorRepository.findByEmail(adminEmail)
-            .orElseThrow(() -> new ResourceNotFoundException("Admin não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Admin não encontrado"));
 
         EventoPersonagem ep = epRepository.findById(req.eventoPersonagemId())
-            .orElseThrow(() -> new ResourceNotFoundException("EventoPersonagem não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("EventoPersonagem não encontrado"));
 
         // não permitir convites em evento cancelado/finalizado
         EventoStatus st = ep.getEvento().getStatus();
@@ -66,24 +65,33 @@ public class ConviteService {
                 continue; // ou throw ConflictException
             }
             Ator ator = atorRepository.findById(atorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Ator " + atorId + " não encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Ator " + atorId + " não encontrado"));
 
             Convite c = Convite.builder()
-                .eventoPersonagem(ep)
-                .ator(ator)
-                .administrador(admin)
-                .status(ConviteStatus.PENDENTE)
-                .dataEnvio(LocalDateTime.now())
-                .build();
+                    .eventoPersonagem(ep)
+                    .ator(ator)
+                    .administrador(admin)
+                    .status(ConviteStatus.PENDENTE)
+                    .dataEnvio(LocalDateTime.now())
+                    .build();
             criados.add(conviteRepository.save(c));
         }
         return criados.stream().map(this::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ConviteResponse> listarMeusConvites(String adminEmail) {
+        Administrador admin = administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+        return conviteRepository.findByAdministradorId(admin.getId()).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     @Transactional
     public ConviteResponse responder(int conviteId, ConviteRespostaRequest req, String atorEmail) {
         Convite c = conviteRepository.findById(conviteId)
-            .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
 
         // autorização: só o ator dono pode responder
         if (!c.getAtor().getEmail().equalsIgnoreCase(atorEmail)) {

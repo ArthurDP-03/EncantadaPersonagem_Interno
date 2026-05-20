@@ -46,6 +46,12 @@ public class ConviteController {
         return ResponseEntity.ok(conviteService.listarPorEventoPersonagem(epId));
     }
 
+    @GetMapping("/enviados")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ConviteResponse>> listarEnviados(Authentication authentication) {
+        return ResponseEntity.ok(conviteService.listarMeusConvites(authentication.getName()));
+    }
+
     @GetMapping("/meus")
     @PreAuthorize("hasRole('ATOR')")
     public ResponseEntity<List<ConviteResponse>> listarMeus(Authentication authentication) {
