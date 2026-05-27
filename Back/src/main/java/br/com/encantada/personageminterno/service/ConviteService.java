@@ -73,7 +73,7 @@ public class ConviteService {
                     .administrador(admin)
                     .status(ConviteStatus.PENDENTE)
                     .dataEnvio(LocalDateTime.now())
-                    .dataExpiracao(LocalDateTime.now().plusDays(7))
+                    .dataExpiracao(calcularExpiracao(ep.getEvento().getDataInicio()))
                     .build();
             criados.add(conviteRepository.save(c));
         }
@@ -175,5 +175,11 @@ public class ConviteService {
                 c.getDataEnvio(),
                 c.getDataExpiracao(),
                 c.getDataResposta());
+    }
+
+    private LocalDateTime calcularExpiracao(LocalDateTime dataInicio) {
+        LocalDateTime porPrazo = LocalDateTime.now().plusDays(7);
+        LocalDateTime porEvento = dataInicio.minusDays(1);
+        return porEvento.isBefore(porPrazo) ? porEvento : porPrazo;
     }
 }
