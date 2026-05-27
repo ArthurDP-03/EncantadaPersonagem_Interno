@@ -16,5 +16,6 @@ public record ConviteResponse(
     Integer administradorId,
     ConviteStatus status,
     LocalDateTime dataEnvio,
+    LocalDateTime dataExpiracao,
     LocalDateTime dataResposta
 ) {}

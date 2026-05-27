@@ -73,10 +73,11 @@ public class ConviteService {
                     .administrador(admin)
                     .status(ConviteStatus.PENDENTE)
                     .dataEnvio(LocalDateTime.now())
+                    .dataExpiracao(LocalDateTime.now().plusDays(7))
                     .build();
             criados.add(conviteRepository.save(c));
         }
-        return criados.stream().map(this::toResponse).toList();
+        return criados.stream().map(c -> toResponse(c)).toList();
     }
 
     @Transactional(readOnly = true)
@@ -84,7 +85,7 @@ public class ConviteService {
         Administrador admin = administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
         return conviteRepository.findByAdministradorId(admin.getId()).stream()
-                .map(this::toResponse)
+                .map(c -> toResponse(c))
                 .toList();
     }
 
@@ -96,6 +97,9 @@ public class ConviteService {
         // autorização: só o ator dono pode responder
         if (!c.getAtor().getEmail().equalsIgnoreCase(atorEmail)) {
             throw new ForbiddenException("Você não pode responder este convite");
+        }
+        if (c.getStatus() == ConviteStatus.EXPIRADO) {
+            throw new BusinessException("Convite expirado, não pode ser respondido");
         }
         if (c.getStatus() != ConviteStatus.PENDENTE) {
             throw new BusinessException("Convite já foi respondido");
@@ -115,7 +119,7 @@ public class ConviteService {
             throw new ResourceNotFoundException("EventoPersonagem não encontrado");
         }
         return conviteRepository.findByEventoPersonagemId(epId).stream()
-                .map(this::toResponse)
+                .map(c -> toResponse(c))
                 .toList();
     }
 
@@ -124,7 +128,7 @@ public class ConviteService {
         Ator ator = atorRepository.findByEmail(atorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Ator autenticado não encontrado"));
         return conviteRepository.findByAtorIdAndStatus(ator.getId(), ConviteStatus.PENDENTE).stream()
-                .map(this::toResponse)
+                .map(c -> toResponse(c))
                 .toList();
     }
 
@@ -143,7 +147,8 @@ public class ConviteService {
         if (c.getStatus() != ConviteStatus.PENDENTE) {
             throw new BusinessException("Apenas convites pendentes podem ser cancelados");
         }
-        conviteRepository.delete(c);
+        c.setStatus(ConviteStatus.CANCELADO);
+        conviteRepository.save(c);
     }
 
     /** True quando todos convites do EP estão RECUSADO (e existe pelo menos 1). */
@@ -168,6 +173,7 @@ public class ConviteService {
                 c.getAdministrador().getId(),
                 c.getStatus(),
                 c.getDataEnvio(),
+                c.getDataExpiracao(),
                 c.getDataResposta());
     }
 }
