@@ -96,8 +96,7 @@ public class EventoService {
         Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId()) &&
-                !"SUPER_ADMIN".equals(adminLogado.getTipo())) {
+        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
             throw new ForbiddenException(
                     "Você não tem permissão para atualizar este evento. Apenas o criador pode modificá-lo");
         }
@@ -127,8 +126,7 @@ public class EventoService {
         Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId()) &&
-                !"SUPER_ADMIN".equals(adminLogado.getTipo())) {
+        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
             throw new ForbiddenException("Você não tem permissão para deletar este evento");
         }
 
@@ -147,8 +145,7 @@ public class EventoService {
         Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId()) &&
-                !"SUPER_ADMIN".equals(adminLogado.getTipo())) {
+        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
             throw new ForbiddenException("Você não tem permissão para cancelar este evento");
         }
         if (evento.getStatus() == EventoStatus.CANCELADO) {

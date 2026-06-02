@@ -4,7 +4,6 @@ public record AdministradorResponse(
         Integer id,
         String nome,
         String email,
-        String telefone,
-        String tipo
+        String telefone
 ) {
 }

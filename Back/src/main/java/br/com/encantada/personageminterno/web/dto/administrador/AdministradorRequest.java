@@ -8,7 +8,7 @@ public record AdministradorRequest(
         @NotBlank @Size(max = 150) String nome,
         @NotBlank @Email @Size(max = 150) String email,
         @NotBlank @Size(min = 8, max = 255) String senha,
-        @Size(max = 20) String telefone,
-        @Size(max = 50) String tipo
+        @Size(max = 20) String telefone
+
 ) {
 }

@@ -117,8 +117,7 @@ public class EscalacaoService {
         Administrador admin = administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!e.getAdministrador().getId().equals(admin.getId())
-                && !"SUPER_ADMIN".equals(admin.getTipo())) {
+        if (!e.getAdministrador().getId().equals(admin.getId())) {
             throw new ForbiddenException("Você não tem permissão para cancelar esta escalação");
         }
         if (e.getStatus() == EscalacaoStatus.CANCELADA) {

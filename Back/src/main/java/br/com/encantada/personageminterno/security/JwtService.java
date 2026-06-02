@@ -28,7 +28,7 @@ public class JwtService {
     }
 
     public String generateToken(Administrador administrador) {
-        return generateToken(administrador.getEmail(), administrador.getNome(), administrador.getTipo());
+        return generateToken(administrador.getEmail(), administrador.getNome(), "ADMIN");
     }
 
     public String generateToken(Ator ator) {
