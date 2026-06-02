@@ -8,7 +8,6 @@ CREATE TABLE administrador (
   email VARCHAR(150) NOT NULL UNIQUE,
   senha VARCHAR(255) NOT NULL,
   telefone VARCHAR(20),
-  tipo VARCHAR(50)
 );
 
 CREATE TABLE ator (
