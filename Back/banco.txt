@@ -157,6 +157,8 @@ CONSTRAINT chk_escalacao_status
     UNIQUE (id_evento_personagem)
 );
 
+INSERT INTO administrador (nome,email,senha,telefone,tipo) values ("administrador","admin@encantada.com.br","P@SSW0RD","41999999999","ADMIN");
+
 -- Usuário do banco
 DROP USER IF EXISTS 'encantada'@'localhost';
 
@@ -168,3 +170,4 @@ ON encantada.*
 TO 'encantada'@'localhost';
 
 FLUSH PRIVILEGES;
+
