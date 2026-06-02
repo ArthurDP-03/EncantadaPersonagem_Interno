@@ -101,6 +101,7 @@ CREATE TABLE convite (
   status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
   data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   data_resposta DATETIME NULL,
+  data_expiracao DATETIME,
 
   CONSTRAINT chk_convite_status
     CHECK (status IN ('PENDENTE', 'ACEITO', 'RECUSADO')),
