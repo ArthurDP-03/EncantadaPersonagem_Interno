@@ -1,11 +1,21 @@
 // components/Clientes/Clientes.jsx
 import './index.css'
-import { Search, ChevronDown, Plus } from "lucide-react";
+import { Search, ChevronDown, Plus, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useClientes } from '../../hooks/useClientes';
 import Card_linha from '../card_linha';
 
 const clienteVazio = { nome: "", email: "", telefone: "" };
+
+function ErroInline({ mensagem }) {
+  if (!mensagem) return null;
+  return (
+    <div className="erro-inline" role="alert">
+      <AlertCircle size={16} />
+      <span>{mensagem}</span>
+    </div>
+  );
+}
 
 function FormCliente({ dados, onChange }) {
   return (
@@ -24,11 +34,15 @@ function FormCliente({ dados, onChange }) {
 }
 
 function Clientes() {
-  const [busca, setBusca]               = useState("");
-  const [ordem, setOrdem]               = useState("");
-  const [modalCriar, setModalCriar]     = useState(false);
-  const [modalEditar, setModalEditar]   = useState(null);
-  const [form, setForm]                 = useState(clienteVazio);
+  const [busca, setBusca]             = useState("");
+  const [ordem, setOrdem]             = useState("");
+  const [modalCriar, setModalCriar]   = useState(false);
+  const [modalEditar, setModalEditar] = useState(null);
+  const [form, setForm]               = useState(clienteVazio);
+  const [erroCriar, setErroCriar]     = useState("");  
+  const [erroEditar, setErroEditar]   = useState("");   
+  const [salvando, setSalvando]       = useState(false);
+
   const { clientes, carregando, erro, criar: adicionarCliente, editar: editarCliente, deletar: removerCliente } = useClientes();
   if (carregando) return <p>Carregando...</p>;
   if (erro) return <p>Erro: {erro}</p>;
@@ -44,31 +58,38 @@ function Clientes() {
       return 0;
     });
 
-  function handleCriar(event) {
+  async function handleCriar(event) {
     event.preventDefault();
     if (!form.nome.trim()) return;
+    setErroCriar("");
+    setSalvando(true);
 
-    adicionarCliente({ nome: form.nome, telefone: form.telefone, email: form.email })
-      .then(() => {
-        setModalCriar(false);
-        setForm(clienteVazio);
-      })
-      .catch(err => {
-        console.error("Erro ao criar cliente:", err);
-      });
+    try {
+      await adicionarCliente({ nome: form.nome, telefone: form.telefone, email: form.email });
+      setModalCriar(false);
+      setForm(clienteVazio);
+    } catch (mensagem) {
+      // mensagem é a string extraída pelo hook (400/422) ou um Error (500)
+      setErroCriar(typeof mensagem === "string" ? mensagem : "Erro inesperado. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
   }
 
-  function handleEditar(event) {
+  async function handleEditar(event) {
     event.preventDefault();
     if (!modalEditar) return;
+    setErroEditar("");
+    setSalvando(true);
 
-    editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email })
-      .then(() => {
-        setModalEditar(null);
-      })
-      .catch(err => {
-        console.error("Erro ao editar cliente:", err);
-      });
+    try {
+      await editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email });
+      setModalEditar(null);
+    } catch (mensagem) {
+      setErroEditar(typeof mensagem === "string" ? mensagem : "Erro inesperado. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
   }
 
   return (
@@ -99,7 +120,6 @@ function Clientes() {
             </div>
           </div>
 
-          {/*Tabela CRUD*/}
           <div className="cards">
             {clientesFiltrados.length === 0 ? (
               <div className="clientes-vazio">Nenhum cliente encontrado.</div>
@@ -108,11 +128,8 @@ function Clientes() {
                 <Card_linha
                   key={c.id}
                   titulo={c.nome}
-                  informacoes={{
-                    Email: c.email,
-                    Telefone: c.telefone,
-                  }}
-                  onEditar={() => setModalEditar({ ...c })}
+                  informacoes={{ Email: c.email, Telefone: c.telefone }}
+                  onEditar={() => { setErroEditar(""); setModalEditar({ ...c }); }}
                   onDeletar={() => removerCliente(c.id)}
                 />
               ))
@@ -122,8 +139,8 @@ function Clientes() {
         </div>
       </div>
 
-      {/* FAB – Novo cliente */}
-      <button className="clientes-fab" title="Novo cliente" onClick={() => { setForm(clienteVazio); setModalCriar(true); }}>
+      {/* FAB */}
+      <button className="clientes-fab" title="Novo cliente" onClick={() => { setErroCriar(""); setForm(clienteVazio); setModalCriar(true); }}>
         <Plus size={24} />
       </button>
 
@@ -133,9 +150,10 @@ function Clientes() {
           <form onSubmit={handleCriar}>
             <h2 className="modal-titulo">Novo Cliente</h2>
             <FormCliente dados={form} onChange={setForm} />
+            <ErroInline mensagem={erroCriar} />
             <div className="modal-acoes">
               <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(clienteVazio); }}>Cancelar</button>
-              <button type="submit" className="btn-primario">Criar</button>
+              <button type="submit" className="btn-primario" disabled={salvando}>{salvando ? "Salvando…" : "Criar"}</button>
             </div>
           </form>
         </div>
@@ -147,9 +165,10 @@ function Clientes() {
           <form onSubmit={handleEditar}>
             <h2 className="modal-titulo">Editar Cliente</h2>
             <FormCliente dados={modalEditar} onChange={setModalEditar} />
+            <ErroInline mensagem={erroEditar} />
             <div className="modal-acoes">
               <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
-              <button type="submit" className="btn-primario">Salvar</button>
+              <button type="submit" className="btn-primario" disabled={salvando}>{salvando ? "Salvando…" : "Salvar"}</button>
             </div>
           </form>
         </div>
