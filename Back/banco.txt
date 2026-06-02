@@ -171,3 +171,5 @@ TO 'encantada'@'localhost';
 
 FLUSH PRIVILEGES;
 
+-- e-mail: admin@encantada.com.br
+-- senha: P@ssw0rd
