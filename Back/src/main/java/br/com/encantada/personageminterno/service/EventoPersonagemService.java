@@ -124,7 +124,7 @@ public class EventoPersonagemService {
 
     private void validarPermissaoAdmin(EventoPersonagem ep, Administrador admin) {
         Integer criadorId = ep.getEvento().getAdministradorCriador().getId();
-        if (!criadorId.equals(admin.getId()) && !"SUPER_ADMIN".equals(admin.getTipo())) {
+        if (!criadorId.equals(admin.getId())) {
             throw new ForbiddenException("Você não tem permissão para gerenciar este evento");
         }
     }
