@@ -7,7 +7,7 @@ CREATE TABLE administrador (
   nome VARCHAR(150) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   senha VARCHAR(255) NOT NULL,
-  telefone VARCHAR(20),
+  telefone VARCHAR(20)
 );
 
 CREATE TABLE ator (
