@@ -47,11 +47,14 @@ public class Convite {
     private Administrador administrador;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 30)
     private ConviteStatus status;
 
     @Column(nullable = false)
     private LocalDateTime dataEnvio;
+
+    @Column(nullable = false)
+    private LocalDateTime dataExpiracao;
 
     private LocalDateTime dataResposta;
 }
