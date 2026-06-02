@@ -140,8 +140,7 @@ public class ConviteService {
         Administrador admin = administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!c.getAdministrador().getId().equals(admin.getId())
-                && !"SUPER_ADMIN".equals(admin.getTipo())) {
+        if (!c.getAdministrador().getId().equals(admin.getId())) {
             throw new ForbiddenException("Você não tem permissão para cancelar este convite");
         }
         if (c.getStatus() != ConviteStatus.PENDENTE) {

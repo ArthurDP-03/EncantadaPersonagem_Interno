@@ -50,7 +50,6 @@ public class AdministradorService {
                 .email(request.email())
                 .senha(passwordEncoder.encode(request.senha()))
                 .telefone(request.telefone())
-                .tipo(defaultTipo(request.tipo()))
                 .build();
 
         return toResponse(administradorRepository.save(administrador));
@@ -61,8 +60,7 @@ public class AdministradorService {
                 administrador.getId(),
                 administrador.getNome(),
                 administrador.getEmail(),
-                administrador.getTelefone(),
-                administrador.getTipo());
+                administrador.getTelefone());
     }
 
     private String defaultTipo(String tipo) {
@@ -89,8 +87,8 @@ public class AdministradorService {
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador logado não encontrado"));
 
         // ADICIONE ESTA VALIDAÇÃO 👇
-        if (!administrador.getId().equals(adminLogado.getId()) &&
-                !"SUPER_ADMIN".equals(adminLogado.getTipo())) {
+        if (!administrador.getId().equals(adminLogado.getId()))
+            {
             throw new ForbiddenException("Você não tem permissão para atualizar dados de outro administrador");
         }
 
@@ -107,7 +105,6 @@ public class AdministradorService {
         administrador.setNome(request.nome());
         administrador.setEmail(request.email());
         administrador.setTelefone(request.telefone());
-        administrador.setTipo(defaultTipo(request.tipo()));
 
         if (request.senha() != null && !request.senha().isBlank()) {
             administrador.setSenha(passwordEncoder.encode(request.senha()));

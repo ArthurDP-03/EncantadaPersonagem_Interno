@@ -38,8 +38,8 @@ public class AuthService {
                 .map(administrador -> new LoginResponse(
                         jwtService.generateToken(administrador),
                         administrador.getNome(),
-                        administrador.getEmail(),
-                        normalizeRole(administrador.getTipo())
+                        administrador.getEmail(),                        
+                        "ADMIN"        
                 ))
                 .orElseGet(() -> atorRepository.findByEmail(request.email())
                         .map(ator -> new LoginResponse(

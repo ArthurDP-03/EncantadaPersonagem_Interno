@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserDetails buildAdministrador(Administrador administrador) {
         return User.withUsername(administrador.getEmail())
                 .password(administrador.getSenha())
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + normalizeRole(administrador.getTipo()))))
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
                 .build();
     }
 
