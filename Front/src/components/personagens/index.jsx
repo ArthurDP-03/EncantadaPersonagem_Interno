@@ -2,6 +2,7 @@
 import { usePersonagens } from "../../hooks/usePersonagem";
 import './index.css'
 import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 import logo from '../../assets/logo.png'
 import { useState } from "react";
 
@@ -53,23 +54,51 @@ function Personagens() {
 
   function handleCriar(event) {
     event.preventDefault();
-    if (!form.nome.trim()) return;
+    if (!form.nome.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Validação",
+        text: "O campo Nome é obrigatório para preenchimento"
+      });
+      return;
+    }
 
-    criar(form).then(() => {
-      setModalCriar(false);
-      setForm(personagemVazio);
-    });
+    criar(form)
+      .then(() => {
+        setModalCriar(false);
+        setForm(personagemVazio);
+      })
+      .catch(err => {
+        console.error("Erro ao criar personagem:", err);
+        // O erro é tratado no hook com Swal
+      });
   }
 
   function handleEditar(event) {
     event.preventDefault();
     if (!modalEditar) return;
 
+    if (!modalEditar.nome.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Validação",
+        text: "O campo Nome é obrigatório para preenchimento"
+      });
+      return;
+    }
+
     editar(modalEditar.id, {
       nome: modalEditar.nome,
       descricao: modalEditar.descricao,
       foto: modalEditar.foto,
-    }).then(() => setModalEditar(null));
+    })
+      .then(() => {
+        setModalEditar(null);
+      })
+      .catch(err => {
+        console.error("Erro ao editar personagem:", err);
+        // O erro é tratado no hook com Swal
+      });
   }
 
   return (

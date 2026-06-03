@@ -2,6 +2,7 @@
 import './index.css'
 import { Search, ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 import { useClientes } from '../../hooks/useClientes';
 import Card_linha from '../card_linha';
 
@@ -46,7 +47,19 @@ function Clientes() {
 
   function handleCriar(event) {
     event.preventDefault();
-    if (!form.nome.trim()) return;
+    // Validações obrigatórias
+    if (!form.nome.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Nome é obrigatório para preenchimento" });
+      return;
+    }
+    if (!form.email.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Email é obrigatório para preenchimento" });
+      return;
+    }
+    if (!form.telefone.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Telefone é obrigatório para preenchimento" });
+      return;
+    }
 
     adicionarCliente({ nome: form.nome, telefone: form.telefone, email: form.email })
       .then(() => {
@@ -55,6 +68,7 @@ function Clientes() {
       })
       .catch(err => {
         console.error("Erro ao criar cliente:", err);
+        // O erro é tratado no hook com Swal
       });
   }
 
@@ -62,12 +76,27 @@ function Clientes() {
     event.preventDefault();
     if (!modalEditar) return;
 
+    // Validações obrigatórias para edição
+    if (!modalEditar.nome.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Nome é obrigatório para preenchimento" });
+      return;
+    }
+    if (!modalEditar.email.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Email é obrigatório para preenchimento" });
+      return;
+    }
+    if (!modalEditar.telefone.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Telefone é obrigatório para preenchimento" });
+      return;
+    }
+
     editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email })
       .then(() => {
         setModalEditar(null);
       })
       .catch(err => {
         console.error("Erro ao editar cliente:", err);
+        // O erro é tratado no hook com Swal
       });
   }
 

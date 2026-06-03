@@ -3,6 +3,7 @@ import { useAtores } from "../../hooks/useAtores";
 import Card_linha from "../card_linha";
 import './index.css'
 import { Search, ChevronDown, Plus } from "lucide-react";
+import Swal from "sweetalert2";
 import { useState } from "react";
 
 const adminVazio = { nome: "", email: "", telefone: "", senha: "", tipo: "ADMIN" };
@@ -79,11 +80,81 @@ function Colaboradores() {
   function handleCriar(event) {
     event.preventDefault();
     if (tipoForm === "admin") {
+      if (!formAdmin.nome.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Nome é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAdmin.email.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Email é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAdmin.telefone.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Telefone é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAdmin.senha.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Senha é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAdmin.tipo?.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Tipo é obrigatório para preenchimento" });
+        return;
+      }
+
       criarAdmin(formAdmin)
-        .then(() => { setModalCriar(false); setFormAdmin(adminVazio); });
+        .then(() => {
+          setModalCriar(false);
+          setFormAdmin(adminVazio);
+        })
+        .catch(err => {
+          console.error("Erro ao criar administrador:", err);
+          // O erro é tratado no hook com Swal
+        });
     } else {
-      criarAtor({ ...formAtor, altura: parseFloat(formAtor.altura), peso: parseFloat(formAtor.peso), ativo: true })
-        .then(() => { setModalCriar(false); setFormAtor(atorVazio); });
+      // Ator
+      if (!formAtor.nome.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Nome é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAtor.email.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Email é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAtor.telefone.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Telefone é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAtor.senha.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Senha é obrigatório para preenchimento" });
+        return;
+      }
+      if (!formAtor.genero.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Gênero é obrigatório para preenchimento" });
+        return;
+      }
+      if (formAtor.altura === "" || formAtor.altura === null || formAtor.altura === undefined || isNaN(Number(formAtor.altura))) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Altura é obrigatório para preenchimento e deve ser um número" });
+        return;
+      }
+      if (formAtor.peso === "" || formAtor.peso === null || formAtor.peso === undefined || isNaN(Number(formAtor.peso))) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Peso é obrigatório para preenchimento e deve ser um número" });
+        return;
+      }
+
+      criarAtor({
+        ...formAtor,
+        altura: parseFloat(formAtor.altura),
+        peso: parseFloat(formAtor.peso),
+        ativo: true
+      })
+        .then(() => {
+          setModalCriar(false);
+          setFormAtor(atorVazio);
+        })
+        .catch(err => {
+          console.error("Erro ao criar ator:", err);
+          // O erro é tratado no hook com Swal
+        });
     }
   }
 
@@ -91,15 +162,70 @@ function Colaboradores() {
     event.preventDefault();
     if (!modalEditar) return;
 
+    // validações para edição (admin ou ator)
+    const dados = modalEditar.dados || {};
+    if (!dados.nome?.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Nome é obrigatório para preenchimento" });
+      return;
+    }
+    if (!dados.email?.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Email é obrigatório para preenchimento" });
+      return;
+    }
+    if (!dados.telefone?.trim()) {
+      Swal.fire({ icon: "warning", title: "Validação", text: "O campo Telefone é obrigatório para preenchimento" });
+      return;
+    }
+
     if (modalEditar.tipo === "admin") {
+      if (!dados.senha?.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Senha é obrigatório para preenchimento" });
+        return;
+      }
+      if (!dados.tipo?.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Tipo é obrigatório para preenchimento" });
+        return;
+      }
+
       editarAdmin(modalEditar.dados.id, modalEditar.dados)
-        .then(() => setModalEditar(null));
+        .then(() => {
+          setModalEditar(null);
+        })
+        .catch(err => {
+          console.error("Erro ao editar administrador:", err);
+          // O erro é tratado no hook com Swal
+        });
     } else {
+      // ator
+      if (!dados.senha?.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Senha é obrigatório para preenchimento" });
+        return;
+      }
+      if (!dados.genero?.trim()) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Gênero é obrigatório para preenchimento" });
+        return;
+      }
+      if (dados.altura === "" || dados.altura === null || dados.altura === undefined || isNaN(Number(dados.altura))) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Altura é obrigatório para preenchimento e deve ser um número" });
+        return;
+      }
+      if (dados.peso === "" || dados.peso === null || dados.peso === undefined || isNaN(Number(dados.peso))) {
+        Swal.fire({ icon: "warning", title: "Validação", text: "O campo Peso é obrigatório para preenchimento e deve ser um número" });
+        return;
+      }
+
       editarAtor(modalEditar.dados.id, {
         ...modalEditar.dados,
         altura: parseFloat(modalEditar.dados.altura),
         peso: parseFloat(modalEditar.dados.peso),
-      }).then(() => setModalEditar(null));
+      })
+        .then(() => {
+          setModalEditar(null);
+        })
+        .catch(err => {
+          console.error("Erro ao editar ator:", err);
+          // O erro é tratado no hook com Swal
+        });
     }
   }
 
