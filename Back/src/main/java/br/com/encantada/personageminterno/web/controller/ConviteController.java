@@ -15,12 +15,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import br.com.encantada.personageminterno.service.ConviteService;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteCreateRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteResponse;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteRespostaRequest;
 import jakarta.validation.Valid;
 
+@Tag(name = "Convites", description = "Gerenciamento de convites para atores participarem de eventos")
 @RestController
 @RequestMapping("/convites")
 public class ConviteController {
@@ -31,6 +37,15 @@ public class ConviteController {
         this.conviteService = conviteService;
     }
 
+    @Operation(summary = "Enviar convites", description = "Envia convites para atores participarem de um evento-personagem. Restrito a administradores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Convites enviados com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos na requisição"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN"),
+            @ApiResponse(responseCode = "404", description = "Evento-personagem ou atores não encontrados")
+    })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ConviteResponse>> enviarConvites(
@@ -40,24 +55,55 @@ public class ConviteController {
                 .body(conviteService.enviarConvites(request, authentication.getName()));
     }
 
+    @Operation(summary = "Listar convites por evento-personagem", description = "Retorna todos os convites relacionados a um evento-personagem. Restrito a administradores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN"),
+            @ApiResponse(responseCode = "404", description = "Evento-personagem não encontrado")
+    })
     @GetMapping("/evento-personagem/{epId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ConviteResponse>> listarPorEventoPersonagem(@PathVariable Integer epId) {
         return ResponseEntity.ok(conviteService.listarPorEventoPersonagem(epId));
     }
 
+    @Operation(summary = "Listar convites enviados pelo admin", description = "Retorna todos os convites enviados pelo administrador autenticado. Restrito a administradores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN")
+    })
     @GetMapping("/enviadosADM")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ConviteResponse>> listarEnviados(Authentication authentication) {
         return ResponseEntity.ok(conviteService.listarMeusConvites(authentication.getName()));
     }
 
+    @Operation(summary = "Listar convites do ator", description = "Retorna todos os convites recebidos pelo ator autenticado. Restrito a atores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ATOR")
+    })
     @GetMapping("/conviteAtor")
     @PreAuthorize("hasRole('ATOR')")
     public ResponseEntity<List<ConviteResponse>> listarMeus(Authentication authentication) {
         return ResponseEntity.ok(conviteService.listarMeus(authentication.getName()));
     }
 
+    @Operation(summary = "Responder convite", description = "Ator aceita ou recusa um convite. Restrito a atores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Resposta registrada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Status de resposta inválido"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ATOR"),
+            @ApiResponse(responseCode = "404", description = "Convite não encontrado")
+    })
     @PatchMapping("/{id}/responder")
     @PreAuthorize("hasRole('ATOR')")
     public ResponseEntity<ConviteResponse> responder(
@@ -67,6 +113,14 @@ public class ConviteController {
         return ResponseEntity.ok(conviteService.responder(id, request, authentication.getName()));
     }
 
+    @Operation(summary = "Cancelar convite", description = "Cancela um convite enviado a um ator. Restrito a administradores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Convite cancelado com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN"),
+            @ApiResponse(responseCode = "404", description = "Convite não encontrado")
+    })
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> cancelar(@PathVariable Integer id, Authentication authentication) {
