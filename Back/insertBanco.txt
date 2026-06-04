@@ -62,7 +62,7 @@ INSERT INTO personagem_item (id_personagem, codigo, status) VALUES
 (1, 'PAL-001', 'DISPONIVEL');
 
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(1, 'PAL-002', 'DISPONIVEL');
+(1, 'PAL-002', 'MANUTENCAO'); 
 
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
 (2, 'PRI-001', 'DISPONIVEL');
