@@ -35,7 +35,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN")
     })
     @GetMapping
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DashboardResponse> getDashboard() {
         return ResponseEntity.ok(dashboardService.getDashboard());
     }

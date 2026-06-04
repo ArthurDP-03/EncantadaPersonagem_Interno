@@ -60,7 +60,6 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/administradores", "/atores").permitAll()
-                        .requestMatchers("/dashboard").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)) // ADICIONAR
                 .authenticationProvider(authenticationProvider())
