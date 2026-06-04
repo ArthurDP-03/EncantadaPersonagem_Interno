@@ -13,8 +13,10 @@ import Personagens from './components/personagens'
 import Clientes from './components/clientes'
 import Eventos from './components/eventos'
 import Colaboradores from './components/colaboradores'
+import { useDarkMode } from './hooks/useDarkMode'
 
 function App() {
+  const [dark, setDark] = useDarkMode();
   return (
     <AuthProvider>
       <Routes>
@@ -22,7 +24,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/testes" element={<Demo />} />
         {/* privadas com layout */}
-        <Route element={<PrivateLayout />}>          
+        <Route element={<PrivateLayout dark={dark} setDark={setDark}/>}>          
           <Route path="/" element={<Home/>}/>
           <Route path="/personagens" element={<PrivateRoute role="ADMIN"><Personagens /></PrivateRoute>} />
           <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />

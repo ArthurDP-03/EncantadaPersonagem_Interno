@@ -13,11 +13,9 @@ import {
   Sun,
   LogOut,
 } from "lucide-react";
-import { useDarkMode } from "../../hooks/useDarkMode";
 
-function Header() {
+function Header({ dark, setDark }) {
   const { user, logout } = useAuth();
-  const [ dark, setDark ] = useDarkMode();
 
   function handleLogout() {
     logout();
