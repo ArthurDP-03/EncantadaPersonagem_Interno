@@ -2,7 +2,7 @@ import Header from '../header'
 import { Outlet, Navigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
-function PrivateLayout() {
+function PrivateLayout({ dark, setDark }) {
   const { isAuthenticated } = useAuth()
 
   if (!isAuthenticated()) {
@@ -11,7 +11,7 @@ function PrivateLayout() {
 
   return (
     <>
-      <Header />
+      <Header dark={dark} setDark={setDark}/>
       <Outlet />
     </>
   )
