@@ -158,4 +158,40 @@ public class EventoService {
         evento.setStatus(EventoStatus.CANCELADO);
         return toResponse(eventoRepository.save(evento));
     }
+    @Transactional(readOnly = true)
+public EventoResponse buscarPorId(int id) {
+    Evento evento = eventoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + id));
+    return toResponse(evento);
+}
+
+@Transactional
+public EventoResponse atualizar(int id, EventoRequest request, String administradorEmail) {
+    Evento evento = eventoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + id));
+    
+    if (!request.dataInicio().isBefore(request.dataFim())) {
+        throw new BusinessException("A data de início deve ser anterior à data de fim");
+    }
+    
+    evento.setTitulo(request.titulo());
+    evento.setDescricao(request.descricao());
+    evento.setDataInicio(request.dataInicio());
+    evento.setDataFim(request.dataFim());
+    evento.setEndereco(request.endereco());
+    evento.setStatus(request.status() == null ? EventoStatus.RASCUNHO : request.status());
+    evento.setTipoPagamento(request.tipoPagamento());
+    evento.setValorTotal(request.valorTotal());
+    evento.setCliente(clienteService.buscarEntidade(request.clienteId()));
+    
+    return toResponse(eventoRepository.save(evento));
+}
+
+@Transactional
+public void deletar(int id) {
+    if (!eventoRepository.existsById(id)) {
+        throw new ResourceNotFoundException("Evento não encontrado com id: " + id);
+    }
+    eventoRepository.deleteById(id);
+}
 }
