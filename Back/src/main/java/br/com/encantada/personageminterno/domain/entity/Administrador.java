@@ -37,6 +37,4 @@ public class Administrador {
     @Column(length = 20)
     private String telefone;
 
-    @Column(length = 50)
-    private String tipo;
 }

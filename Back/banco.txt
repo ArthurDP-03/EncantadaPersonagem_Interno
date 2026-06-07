@@ -7,8 +7,7 @@ CREATE TABLE administrador (
   nome VARCHAR(150) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   senha VARCHAR(255) NOT NULL,
-  telefone VARCHAR(20),
-  tipo VARCHAR(50)
+  telefone VARCHAR(20)
 );
 
 CREATE TABLE ator (
@@ -101,6 +100,7 @@ CREATE TABLE convite (
   status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
   data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   data_resposta DATETIME NULL,
+  data_expiracao DATETIME,
 
   CONSTRAINT chk_convite_status
     CHECK (status IN ('PENDENTE', 'ACEITO', 'RECUSADO')),
@@ -131,6 +131,11 @@ CREATE TABLE escalacao (
 
   data_escolha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+  status VARCHAR(30) NOT NULL DEFAULT 'PENDENTE_CONFIRMACAO_ATOR',
+data_confirmacao_ator DATETIME NULL,
+CONSTRAINT chk_escalacao_status
+  CHECK (status IN ('PENDENTE_CONFIRMACAO_ATOR','CONFIRMADA','CANCELADA')),
+
   CONSTRAINT fk_escalacao_ep
     FOREIGN KEY (id_evento_personagem)
     REFERENCES evento_personagem(id_evento_personagem),
@@ -151,6 +156,8 @@ CREATE TABLE escalacao (
     UNIQUE (id_evento_personagem)
 );
 
+INSERT INTO administrador (nome,email,senha,telefone,tipo) values ("administrador","admin@encantada.com.br","$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne","41999999999","ADMIN");
+
 -- Usuário do banco
 DROP USER IF EXISTS 'encantada'@'localhost';
 
@@ -162,3 +169,6 @@ ON encantada.*
 TO 'encantada'@'localhost';
 
 FLUSH PRIVILEGES;
+
+-- e-mail: admin@encantada.com.br
+-- senha: P@ssw0rd

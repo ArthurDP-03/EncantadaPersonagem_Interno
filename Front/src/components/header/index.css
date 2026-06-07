@@ -19,7 +19,7 @@
 .navegacao .link.logout {margin: 0 0 2.5vw; }
 .navegacao .link.ativo {background: var(--rosa-1);}
 .navegacao .link:hover{transform: translateX(calc(100% - 40px));}
-.navegacao .link .texto {color: var(--branco); }
+.navegacao .link .texto {color: var(--branco) }
 .navegacao .link.ativo .texto {color: var(--verde-1); }
 
 .navegacao .link .icone{min-width: 20px; aspect-ratio: 1 / 1; margin: 10px; display: flex;align-items: center;justify-content: center;}
