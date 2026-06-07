@@ -19,9 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,11 +41,37 @@ class EventoServiceTest {
     @InjectMocks
     private EventoService service;
 
+    // ── helpers ───────────────────────────────────────────────────────────────
+
+    private Administrador admin(Integer id, String email) {
+        return Administrador.builder().id(id).nome("Admin").email(email).build();
+    }
+
+    private Cliente cliente(Integer id) {
+        return Cliente.builder().id(id).nome("Cliente " + id).build();
+    }
+
+    /** Evento completo com cliente e administrador para que toResponse() não quebre. */
+    private Evento eventoCompleto(Integer id, EventoStatus status, Administrador adm) {
+        return Evento.builder()
+                .id(id)
+                .titulo("Festa")
+                .descricao("Descrição")
+                .dataInicio(LocalDateTime.now().plusDays(1))
+                .dataFim(LocalDateTime.now().plusDays(2))
+                .endereco("Rua A")
+                .status(status)
+                .tipoPagamento("PIX")
+                .cliente(cliente(1))
+                .administradorCriador(adm)
+                .build();
+    }
+
+    // ── criar ─────────────────────────────────────────────────────────────────
+
     @Test
     void deveLancarExcecaoQuandoDataInicioMaiorQueFim() {
-
         EventoRequest request = mock(EventoRequest.class);
-
         LocalDateTime agora = LocalDateTime.now();
 
         when(request.dataInicio()).thenReturn(agora);
@@ -59,24 +83,21 @@ class EventoServiceTest {
         );
     }
 
+    // ── buscarPorId ───────────────────────────────────────────────────────────
+
     @Test
     void deveBuscarPorId() {
+        Administrador adm = admin(1, "admin@email.com");
+        Evento evento = eventoCompleto(1, EventoStatus.CONFIRMADO, adm);
 
-        Evento evento = mock(Evento.class);
+        when(eventoRepository.findById(1)).thenReturn(Optional.of(evento));
 
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.of(evento));
-
-        assertDoesNotThrow(() ->
-                service.buscarPorId(1)
-        );
+        assertDoesNotThrow(() -> service.buscarPorId(1));
     }
 
     @Test
     void deveLancarExcecaoQuandoEventoNaoExiste() {
-
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.empty());
+        when(eventoRepository.findById(1)).thenReturn(Optional.empty());
 
         assertThrows(
                 ResourceNotFoundException.class,
@@ -84,24 +105,15 @@ class EventoServiceTest {
         );
     }
 
+    // ── deletar ───────────────────────────────────────────────────────────────
+
     @Test
     void deveDeletarEvento() {
+        Administrador admin = admin(1, "admin@email.com");
+        Evento evento = eventoCompleto(1, EventoStatus.CONFIRMADO, admin);
 
-        Administrador admin = Administrador.builder()
-                .id(1)
-                .email("admin@email.com")
-                .build();
-
-        Evento evento = Evento.builder()
-                .id(1)
-                .administradorCriador(admin)
-                .build();
-
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.of(evento));
-
-        when(administradorRepository.findByEmail("admin@email.com"))
-                .thenReturn(Optional.of(admin));
+        when(eventoRepository.findById(1)).thenReturn(Optional.of(evento));
+        when(administradorRepository.findByEmail("admin@email.com")).thenReturn(Optional.of(admin));
 
         service.deletar(1, "admin@email.com");
 
@@ -110,26 +122,12 @@ class EventoServiceTest {
 
     @Test
     void naoDevePermitirDeletarEventoDeOutroAdministrador() {
+        Administrador dono = admin(1, "admin@email.com");
+        Administrador outro = admin(2, "outro@email.com");
+        Evento evento = eventoCompleto(1, EventoStatus.CONFIRMADO, dono);
 
-        Administrador dono = Administrador.builder()
-                .id(1)
-                .build();
-
-        Administrador outro = Administrador.builder()
-                .id(2)
-                .email("outro@email.com")
-                .build();
-
-        Evento evento = Evento.builder()
-                .id(1)
-                .administradorCriador(dono)
-                .build();
-
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.of(evento));
-
-        when(administradorRepository.findByEmail("outro@email.com"))
-                .thenReturn(Optional.of(outro));
+        when(eventoRepository.findById(1)).thenReturn(Optional.of(evento));
+        when(administradorRepository.findByEmail("outro@email.com")).thenReturn(Optional.of(outro));
 
         assertThrows(
                 ForbiddenException.class,
@@ -137,56 +135,29 @@ class EventoServiceTest {
         );
     }
 
+    // ── cancelar ──────────────────────────────────────────────────────────────
+
     @Test
     void deveCancelarEvento() {
+        Administrador admin = admin(1, "admin@email.com");
+        Evento evento = eventoCompleto(1, EventoStatus.RASCUNHO, admin);
 
-        Administrador admin = Administrador.builder()
-                .id(1)
-                .email("admin@email.com")
-                .build();
+        when(eventoRepository.findById(1)).thenReturn(Optional.of(evento));
+        when(administradorRepository.findByEmail("admin@email.com")).thenReturn(Optional.of(admin));
+        when(eventoRepository.save(any(Evento.class))).thenAnswer(i -> i.getArgument(0));
 
-        Evento evento = Evento.builder()
-                .id(1)
-                .status(EventoStatus.RASCUNHO)
-                .administradorCriador(admin)
-                .build();
+        EventoResponse response = service.cancelar(1, "admin@email.com");
 
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.of(evento));
-
-        when(administradorRepository.findByEmail("admin@email.com"))
-                .thenReturn(Optional.of(admin));
-
-        when(eventoRepository.save(any(Evento.class)))
-                .thenAnswer(i -> i.getArgument(0));
-
-        EventoResponse response =
-                service.cancelar(1, "admin@email.com");
-
-        assertEquals(
-                EventoStatus.CANCELADO,
-                response.status()
-        );
+        assertEquals(EventoStatus.CANCELADO, response.status());
     }
 
     @Test
     void naoDeveCancelarEventoJaCancelado() {
+        Administrador admin = admin(1, "admin@email.com");
+        Evento evento = eventoCompleto(1, EventoStatus.CANCELADO, admin);
 
-        Administrador admin = Administrador.builder()
-                .id(1)
-                .email("admin@email.com")
-                .build();
-
-        Evento evento = Evento.builder()
-                .status(EventoStatus.CANCELADO)
-                .administradorCriador(admin)
-                .build();
-
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.of(evento));
-
-        when(administradorRepository.findByEmail("admin@email.com"))
-                .thenReturn(Optional.of(admin));
+        when(eventoRepository.findById(1)).thenReturn(Optional.of(evento));
+        when(administradorRepository.findByEmail("admin@email.com")).thenReturn(Optional.of(admin));
 
         assertThrows(
                 ConflictException.class,
@@ -196,22 +167,11 @@ class EventoServiceTest {
 
     @Test
     void naoDeveCancelarEventoFinalizado() {
+        Administrador admin = admin(1, "admin@email.com");
+        Evento evento = eventoCompleto(1, EventoStatus.FINALIZADO, admin);
 
-        Administrador admin = Administrador.builder()
-                .id(1)
-                .email("admin@email.com")
-                .build();
-
-        Evento evento = Evento.builder()
-                .status(EventoStatus.FINALIZADO)
-                .administradorCriador(admin)
-                .build();
-
-        when(eventoRepository.findById(1))
-                .thenReturn(Optional.of(evento));
-
-        when(administradorRepository.findByEmail("admin@email.com"))
-                .thenReturn(Optional.of(admin));
+        when(eventoRepository.findById(1)).thenReturn(Optional.of(evento));
+        when(administradorRepository.findByEmail("admin@email.com")).thenReturn(Optional.of(admin));
 
         assertThrows(
                 BusinessException.class,
