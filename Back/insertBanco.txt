@@ -1,0 +1,133 @@
+-- INSERÇÕES PARA A BASE DE DADOS ENCANTADA
+
+-- ===================================
+-- TABELA: ADMINISTRADOR
+-- ===================================
+
+-- Senha: P@ssw0rd
+INSERT INTO administrador (nome, email, senha, telefone) VALUES 
+('Admin Master', 'admin@encantada.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11987654321');
+
+-- Senha: P@ssw0rd
+INSERT INTO administrador (nome, email, senha, telefone) VALUES 
+('Gerente Eventos', 'gerente@encantada.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11987654322');
+
+-- ===================================
+-- TABELA: ATOR
+-- ===================================
+
+-- Senha: P@ssw0rd
+INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES 
+('João Silva', 'joao.silva@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234567', 'M', 1.75, 72.50, 'Ator experiente em teatro infantil', TRUE);
+
+-- Senha: P@ssw0rd
+INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES 
+('Maria Santos', 'maria.santos@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234568', 'F', 1.65, 60.00, 'Especializada em personagens femininos', TRUE);
+
+-- Senha: P@ssw0rd
+INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES 
+('Carlos Oliveira', 'carlos.oliveira@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234569', 'M', 1.80, 80.00, 'Malabarista e acrobata', TRUE);
+
+-- ===================================
+-- TABELA: CLIENTE
+-- ===================================
+
+INSERT INTO cliente (nome, telefone, email) VALUES 
+('Escola Marista Centro', '11998765432', 'eventos@marista.com');
+
+INSERT INTO cliente (nome, telefone, email) VALUES 
+('Buffet Premium Eventos', '11998765433', 'contato@buffetpremium.com');
+
+INSERT INTO cliente (nome, telefone, email) VALUES 
+('Hotel Grand Plaza', '11998765434', 'eventos@grandplaza.com');
+
+-- ===================================
+-- TABELA: PERSONAGEM
+-- ===================================
+
+INSERT INTO personagem (nome, descricao, foto) VALUES 
+('Palhaço Alegre', 'Personagem divertido com nariz vermelho', '/images/palhaço.jpg');
+
+INSERT INTO personagem (nome, descricao, foto) VALUES 
+('Princesa Encantada', 'Personagem mágico com vestido de gala', '/images/princesa.jpg');
+
+INSERT INTO personagem (nome, descricao, foto) VALUES 
+('Homem Aranha', 'Super-herói com poderes aracnídeos', '/images/homem-aranha.jpg');
+
+-- ===================================
+-- TABELA: PERSONAGEM_ITEM
+-- ===================================
+
+INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
+(1, 'PAL-001', 'DISPONIVEL');
+
+INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
+(1, 'PAL-002', 'MANUTENCAO'); 
+
+INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
+(2, 'PRI-001', 'DISPONIVEL');
+
+INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
+(3, 'HOM-001', 'EM_USO');
+
+-- ===================================
+-- TABELA: EVENTO
+-- ===================================
+
+INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
+('Aniversário Infantil - Tema Encantado', 'Festa com personagens para 50 crianças', '2026-07-15 14:00:00', '2026-07-15 17:00:00', 'Rua das Flores 123, São Paulo', 'CONFIRMADO', 'CARTAO_CREDITO', 2500.00, 1, 1);
+
+INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
+('Evento Corporativo - Confraternização', 'Show com personagens para funcionários', '2026-08-20 18:00:00', '2026-08-20 22:00:00', 'Av. Paulista 1000, São Paulo', 'RASCUNHO', 'TRANSFERENCIA', 5000.00, 1, 2);
+
+INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
+('Casamento - Recepção', 'Animação com personagens temáticos', '2026-09-10 19:00:00', '2026-09-10 23:59:00', 'Grand Plaza Hotel, Avenida Imigrantes 500', 'CONFIRMADO', 'CARTAO_CREDITO', 8000.00, 1, 3);
+
+
+-- ===================================
+-- TABELA: EVENTO_PERSONAGEM
+-- ===================================
+
+INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
+(1, 1);
+
+INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
+(1, 2);
+
+INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
+(2, 3);
+
+INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
+(3, 1);
+
+-- ===================================
+-- TABELA: CONVITE
+-- ===================================
+
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
+(1, 1, 1, 'ACEITO', '2026-06-01 10:00:00', '2026-06-01 15:30:00');
+
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
+(2, 2, 1, 'ACEITO', '2026-06-01 10:15:00', '2026-06-01 14:00:00');
+
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
+(3, 3, 1, 'PENDENTE', '2026-06-02 09:00:00', NULL);
+
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
+(4, 1, 1, 'ACEITO', '2026-06-01 11:00:00', '2026-06-01 16:45:00');
+
+-- ===================================
+-- TABELA: ESCALACAO
+-- ===================================
+
+INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
+(1, 1, 1, 1, '2026-06-01 16:00:00', 'CONFIRMADA', '2026-06-01 17:30:00');
+
+INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
+(2, 2, 3, 1, '2026-06-01 16:15:00', 'CONFIRMADA', '2026-06-01 17:45:00');
+
+INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
+(3, 3, 4, 1, '2026-06-02 10:00:00', 'PENDENTE_CONFIRMACAO_ATOR', NULL);
+
+INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
+(4, 1, 2, 1, '2026-06-01 16:30:00', 'CONFIRMADA', '2026-06-01 18:00:00');

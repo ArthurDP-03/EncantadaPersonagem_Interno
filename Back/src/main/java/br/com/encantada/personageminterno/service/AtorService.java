@@ -3,6 +3,8 @@ package br.com.encantada.personageminterno.service;
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Ator;
 import br.com.encantada.personageminterno.exception.BusinessException;
+import br.com.encantada.personageminterno.exception.ConflictException;
+import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
@@ -22,7 +24,8 @@ public class AtorService {
     private final AtorRepository atorRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AtorService(AdministradorRepository administradorRepository, AtorRepository atorRepository, PasswordEncoder passwordEncoder) {
+    public AtorService(AdministradorRepository administradorRepository, AtorRepository atorRepository,
+            PasswordEncoder passwordEncoder) {
         this.administradorRepository = administradorRepository;
         this.atorRepository = atorRepository;
         this.passwordEncoder = passwordEncoder;
@@ -38,11 +41,11 @@ public class AtorService {
     @Transactional
     public AtorResponse criar(AtorRequest request) {
         if (atorRepository.existsByEmail(request.email())) {
-            throw new BusinessException("Ja existe ator com esse email");
+            throw new ConflictException("Ja existe ator com esse email");
         }
         if (administradorRepository.existsByEmail(request.email())) {
-            throw new BusinessException("Ja existe administrador com esse email");
-            
+            throw new ConflictException("Ja existe administrador com esse email");
+
         }
 
         Ator ator = Ator.builder()
@@ -70,8 +73,57 @@ public class AtorService {
                 ator.getAltura(),
                 ator.getPeso(),
                 ator.getObservacao(),
-                ator.getAtivo()
-        );
+                ator.getAtivo());
+    }
+
+    @Transactional(readOnly = true)
+    public AtorResponse buscarPorId(int id) {
+        Ator ator = atorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ator nao encontrado com o id: " + id));
+        return toResponse(ator);
+
+    }
+
+    @Transactional
+    public AtorResponse atualizar(int id, AtorRequest request) {
+        Ator ator = atorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ator não encontrado com id: " + id));
+
+        if (!ator.getEmail().equals(request.email())) {
+            throw new ForbiddenException("Você não tem permissão para atualizar dados de outro ator");
+        }
+        // Verifica se o email já existe em outro registro
+        if (!ator.getEmail().equals(request.email())) {
+            if (administradorRepository.existsByEmail(request.email())) {
+                throw new ConflictException("Já existe administrador com esse email");
+            }
+            if (atorRepository.existsByEmail(request.email())) {
+                throw new ConflictException("Já existe ator com esse email");
+            }
+        }
+
+        ator.setNome(request.nome());
+        ator.setEmail(request.email());
+        ator.setTelefone(request.telefone());
+        ator.setGenero(request.genero());
+        ator.setAltura(request.altura());
+        ator.setPeso(request.peso());
+        ator.setObservacao(request.observacao());
+        ator.setAtivo(request.ativo() == null ? Boolean.TRUE : request.ativo());
+
+        if (request.senha() != null && !request.senha().isBlank()) {
+            ator.setSenha(passwordEncoder.encode(request.senha()));
+        }
+
+        return toResponse(atorRepository.save(ator));
+    }
+
+    @Transactional
+    public void deletar(int id) {
+        if (!atorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Ator não encontrado");
+        }
+        atorRepository.deleteById(id);
     }
     @Transactional(readOnly = true)
     public AtorResponse buscarPorId(int id) {

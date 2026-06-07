@@ -315,6 +315,13 @@ const endpointGroups = [
                 path: '/eventos/1',
                 description: 'Remove um evento do sistema.',
                 body: null
+            },
+            {
+                label: 'Cancelar evento (Saida 3)',
+                method: 'PATCH',
+                path: '/eventos/1/cancelar',
+                description: 'Marca o evento como CANCELADO quando nenhum ator aceita.',
+                body: null
             }
         ]
     },
@@ -337,6 +344,24 @@ const endpointGroups = [
                     eventoId: 1,
                     personagemId: 1
                 }
+            },
+            {
+                label: 'Trocar personagem (Saida 1)',
+                method: 'PATCH',
+                path: '/evento-personagens/1/trocar-personagem',
+                description: 'Troca o personagem do vinculo quando todos os atores recusaram.',
+                body: {
+                    novoPersonagemId: 2
+                }
+            },
+            {
+                label: 'Reabrir convites (Saida 2)',
+                method: 'POST',
+                path: '/evento-personagens/1/reabrir-convites',
+                description: 'Mantem o personagem e envia novos convites para outros atores.',
+                body: {
+                    atoresIds: [2, 3]
+                }
             }
         ]
     },
@@ -344,30 +369,44 @@ const endpointGroups = [
         entity: 'Convite',
         actions: [
             {
-                label: 'Listar convites',
-                method: 'GET',
+                label: 'Enviar convites (ADMIN)',
+                method: 'POST',
                 path: '/convites',
-                description: 'Lista os convites enviados aos atores.',
+                description: 'Envia convites em lote para varios atores em um vinculo evento-personagem.',
+                body: {
+                    eventoPersonagemId: 1,
+                    atoresIds: [1, 2, 3]
+                }
+            },
+            {
+                label: 'Listar convites do vinculo (ADMIN)',
+                method: 'GET',
+                path: '/convites/evento-personagem/1',
+                description: 'Lista todos os convites enviados para um vinculo evento-personagem.',
                 body: null
             },
             {
-                label: 'Criar convite',
-                method: 'POST',
-                path: '/convites',
-                description: 'Envia um convite para um ator.',
-                body: {
-                    eventoPersonagemId: 1,
-                    atorId: 1
-                }
+                label: 'Meus convites (ATOR)',
+                method: 'GET',
+                path: '/convites/meus',
+                description: 'Lista os convites recebidos pelo ator autenticado.',
+                body: null
             },
             {
-                label: 'Responder convite',
+                label: 'Responder convite (ATOR)',
                 method: 'PATCH',
-                path: '/convites/1/resposta',
-                description: 'Atualiza o status do convite.',
+                path: '/convites/1/responder',
+                description: 'Ator aceita ou recusa o convite.',
                 body: {
                     status: 'ACEITO'
                 }
+            },
+            {
+                label: 'Cancelar convite (ADMIN)',
+                method: 'DELETE',
+                path: '/convites/1',
+                description: 'Remove um convite pendente.',
+                body: null
             }
         ]
     },
@@ -375,22 +414,36 @@ const endpointGroups = [
         entity: 'Escalacao',
         actions: [
             {
-                label: 'Listar escalacoes',
+                label: 'Buscar escalacao por ID',
                 method: 'GET',
-                path: '/escalacoes',
-                description: 'Consulta as definicoes finais de ator e item.',
+                path: '/escalacoes/1',
+                description: 'Consulta a definicao final de ator e item.',
                 body: null
             },
             {
-                label: 'Criar escalacao',
+                label: 'Escolher ator final (ADMIN)',
                 method: 'POST',
                 path: '/escalacoes',
-                description: 'Define ator e item final para o evento.',
+                description: 'Cria escalacao a partir de um convite ACEITO e reserva o item fisico.',
                 body: {
                     eventoPersonagemId: 1,
                     atorId: 1,
                     personagemItemId: 1
                 }
+            },
+            {
+                label: 'Confirmar presenca (ATOR)',
+                method: 'PATCH',
+                path: '/escalacoes/1/confirmar',
+                description: 'Ator confirma presenca final no evento.',
+                body: null
+            },
+            {
+                label: 'Cancelar escalacao (ADMIN)',
+                method: 'DELETE',
+                path: '/escalacoes/1',
+                description: 'Libera o item de volta e cancela a escalacao.',
+                body: null
             }
         ]
     }

@@ -2,6 +2,8 @@ package br.com.encantada.personageminterno.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
+import br.com.encantada.personageminterno.domain.enums.EscalacaoStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +29,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Escalacao {
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private EscalacaoStatus status;
+
+    private LocalDateTime dataConfirmacaoAtor;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
