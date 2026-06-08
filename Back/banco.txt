@@ -156,7 +156,7 @@ CONSTRAINT chk_escalacao_status
     UNIQUE (id_evento_personagem)
 );
 
-INSERT INTO administrador (nome,email,senha,telefone,tipo) values ("administrador","admin@encantada.com.br","$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne","41999999999","ADMIN");
+INSERT INTO administrador (nome, email, senha, telefone) VALUES ('administrador', 'admin@encantada.com.br', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '41999999999');
 
 -- Usuário do banco
 DROP USER IF EXISTS 'encantada'@'localhost';

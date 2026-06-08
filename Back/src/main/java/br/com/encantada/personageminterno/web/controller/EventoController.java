@@ -3,6 +3,8 @@ package br.com.encantada.personageminterno.web.controller;
 import br.com.encantada.personageminterno.service.EventoService;
 import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.AdicionarPersonagemRequest;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -81,6 +83,29 @@ public class EventoController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(eventoService.criar(request, authentication.getName()));
+    }
+
+    @Operation(
+            summary = "Adicionar personagem ao evento",
+            description = "Vincula um personagem a um evento existente. Verifica disponibilidade de figurino antes de inserir."
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Personagem vinculado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Sem figurinos disponíveis ou dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN e ser criador do evento"),
+            @ApiResponse(responseCode = "404", description = "Evento ou personagem não encontrado"),
+            @ApiResponse(responseCode = "409", description = "Personagem já vinculado ao evento")
+    })
+    @PostMapping("/{id}/personagens")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EventoPersonagemResponse> adicionarPersonagem(
+            @PathVariable Integer id,
+            @Valid @RequestBody AdicionarPersonagemRequest request,
+            Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(eventoService.adicionarPersonagem(id, request, authentication.getName()));
     }
 
     @Operation(

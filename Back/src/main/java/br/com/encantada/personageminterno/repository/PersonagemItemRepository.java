@@ -9,4 +9,6 @@ public interface PersonagemItemRepository extends JpaRepository<PersonagemItem, 
     boolean existsByCodigo(String codigo);
 
     boolean existsByPersonagemIdAndStatus(Integer personagemId, PersonagemItemStatus status);
+
+    long countByPersonagemIdAndStatus(Integer personagemId, PersonagemItemStatus status);
 }

@@ -18,8 +18,8 @@ import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.repository.PersonagemRepository;
 import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.AdicionarPersonagemRequest;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,23 +65,6 @@ public class EventoService {
         Administrador administrador = administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
 
-        // Validar personagens e verificar estoque antes de criar o evento
-        List<Personagem> personagens = new ArrayList<>();
-        List<String> indisponiveis = new ArrayList<>();
-        for (Integer personagemId : request.personagemIds()) {
-            Personagem personagem = personagemRepository.findById(personagemId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com id: " + personagemId));
-            if (!personagemItemRepository.existsByPersonagemIdAndStatus(personagemId, PersonagemItemStatus.DISPONIVEL)) {
-                indisponiveis.add(personagem.getNome());
-            } else {
-                personagens.add(personagem);
-            }
-        }
-        if (!indisponiveis.isEmpty()) {
-            throw new BusinessException(
-                    "Personagens indisponíveis (sem figurino disponível): " + String.join(", ", indisponiveis));
-        }
-
         Evento evento = Evento.builder()
                 .titulo(request.titulo())
                 .descricao(request.descricao())
@@ -95,17 +78,50 @@ public class EventoService {
                 .administradorCriador(administrador)
                 .build();
 
-        Evento eventoSalvo = eventoRepository.save(evento);
+        return toResponse(eventoRepository.save(evento));
+    }
 
-        for (Personagem personagem : personagens) {
-            EventoPersonagem ep = EventoPersonagem.builder()
-                    .evento(eventoSalvo)
-                    .personagem(personagem)
-                    .build();
-            eventoPersonagemRepository.save(ep);
+    @Transactional
+    public EventoPersonagemResponse adicionarPersonagem(int eventoId, AdicionarPersonagemRequest req, String adminEmail) {
+        Evento evento = eventoRepository.findById(eventoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + eventoId));
+
+        Administrador admin = administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        if (!evento.getAdministradorCriador().getId().equals(admin.getId())) {
+            throw new ForbiddenException("Você não tem permissão para modificar este evento");
+        }
+        if (evento.getStatus() == EventoStatus.CANCELADO || evento.getStatus() == EventoStatus.FINALIZADO) {
+            throw new BusinessException("Não é possível adicionar personagens em evento " + evento.getStatus());
         }
 
-        return toResponse(eventoSalvo);
+        Personagem personagem = personagemRepository.findById(req.personagemId())
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com id: " + req.personagemId()));
+
+        if (eventoPersonagemRepository.existsByEventoIdAndPersonagemId(eventoId, req.personagemId())) {
+            throw new ConflictException("Personagem já está vinculado a este evento");
+        }
+
+        long disponiveis = personagemItemRepository.countByPersonagemIdAndStatus(
+                req.personagemId(), PersonagemItemStatus.DISPONIVEL);
+        long vagasFuturas = eventoPersonagemRepository.countVagasFuturas(req.personagemId());
+        if (disponiveis - vagasFuturas <= 0) {
+            throw new BusinessException("Sem fantasias disponíveis para o personagem: " + personagem.getNome());
+        }
+
+        EventoPersonagem ep = EventoPersonagem.builder()
+                .evento(evento)
+                .personagem(personagem)
+                .build();
+        EventoPersonagem salvo = eventoPersonagemRepository.save(ep);
+
+        return new EventoPersonagemResponse(
+                salvo.getId(),
+                evento.getId(),
+                evento.getTitulo(),
+                personagem.getId(),
+                personagem.getNome());
     }
 
     private EventoResponse toResponse(Evento evento) {
