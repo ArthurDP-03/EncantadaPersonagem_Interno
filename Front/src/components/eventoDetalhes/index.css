@@ -1,0 +1,361 @@
+.section-evento-detalhes {
+  padding: 2rem 0;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.section-evento-detalhes .conteudo-95 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Header */
+.header-detalhes {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.btn-voltar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.btn-voltar:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+.header-detalhes .titulo {
+  flex: 1;
+  margin: 0;
+}
+
+/* Conteúdo com 2 colunas */
+.conteudo-detalhes {
+  display: grid;
+  grid-template-columns: 60% 1fr;
+  gap: 2rem;
+}
+
+.coluna {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Coluna Esquerda */
+.coluna-esquerda {
+  position: relative;
+}
+
+.form-container {
+  transition: all 0.3s ease;
+}
+
+.form-container.desabilitado {
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  opacity: 0.85;
+}
+
+.form-container.desabilitado input,
+.form-container.desabilitado textarea,
+.form-container.desabilitado select {
+  background-color: #e8e8e8 !important;
+  color: #666 !important;
+  cursor: not-allowed;
+}
+
+/* Form Header */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.form-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.btn-editar-form {
+  padding: 0.5rem 1rem;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-editar-form:hover {
+  background-color: #357abd;
+}
+
+/* Formulário */
+.form-evento {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-evento-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-evento label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-evento input,
+.form-evento textarea,
+.form-evento select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.3rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.form-evento input:focus,
+.form-evento textarea:focus,
+.form-evento select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #f9fafb;
+}
+
+.form-evento textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Botões do Formulário */
+.form-acoes {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.btn-primario,
+.btn-secundario {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primario {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btn-primario:hover {
+  background-color: #229954;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primario:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.btn-secundario {
+  background-color: #ecf0f1;
+  color: #333;
+  border: 1px solid #bdc3c7;
+}
+
+.btn-secundario:hover {
+  background-color: #d5dbdb;
+}
+
+/* Coluna Direita */
+.convites-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.convites-container h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: #333;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.convites-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.convites-list .loading,
+.convites-list .vazio {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+}
+
+/* Convite Card */
+.convite-card {
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.4rem;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.convite-card:hover {
+  border-color: #4a90e2;
+  background-color: #f0f8ff;
+  box-shadow: 0 2px 4px rgba(74, 144, 226, 0.1);
+}
+
+.convite-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.convite-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.2rem;
+  white-space: nowrap;
+}
+
+.status-pendente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-aceito {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-recusado {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-expirado {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.status-cancelado {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.convite-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.convite-details p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.convite-details strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Loading indicator */
+.loading {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* Responsivo */
+@media (max-width: 1024px) {
+  .conteudo-detalhes {
+    grid-template-columns: 1fr;
+  }
+
+  .header-detalhes {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-evento-linha {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-evento-detalhes {
+    padding: 1rem 0;
+  }
+
+  .section-evento-detalhes .conteudo-95 {
+    padding: 0 1rem;
+  }
+
+  .header-detalhes {
+    gap: 1rem;
+  }
+
+  .coluna {
+    padding: 1rem;
+  }
+
+  .form-header {
+    margin-bottom: 1rem;
+  }
+
+  .convites-list {
+    max-height: 400px;
+  }
+}
