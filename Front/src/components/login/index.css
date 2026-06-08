@@ -7,5 +7,7 @@
 .section-login .input-container.checkbox{display: flex; align-items: center; gap: 5px;}
 .section-login .input-container .label{font: var(--normal) 0.75rem var(--font-1);}
 .section-login .input-container.text .label{padding: 0 0 0 10px; color: var(--verde-1);}
-.section-login .input-container.text .input{background-color: var(--rosa-1); padding: 8px 15px; border-radius: 20px; }
-.section-login .button{background: var(--verde-1); border-radius: 20px; padding: 8px 15px; color: var(--branco); margin: 20px 0 0; cursor: pointer;}
+.section-login .input-container.text .input{background-color: var(--rosa-1); padding: 8px 15px; border-radius: 20px; border: none; }
+.section-login .input-container.text .input::placeholder{color: var(--texto-opacity-7);}
+.section-login .button{background: var(--verde-1); border-radius: 20px; padding: 8px 15px; color: var(--branco); margin: 20px 0 0; cursor: pointer; border: none; transition: background 0.16s;}
+.section-login .button:hover{background: var(--verde-escuro);}
