@@ -2,16 +2,24 @@ package br.com.encantada.personageminterno.service;
 
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Evento;
+import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
+import br.com.encantada.personageminterno.domain.entity.Personagem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
+import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
+import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.EventoRepository;
+import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
+import br.com.encantada.personageminterno.repository.PersonagemRepository;
 import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +30,23 @@ public class EventoService {
     private final EventoRepository eventoRepository;
     private final ClienteService clienteService;
     private final AdministradorRepository administradorRepository;
+    private final PersonagemRepository personagemRepository;
+    private final PersonagemItemRepository personagemItemRepository;
+    private final EventoPersonagemRepository eventoPersonagemRepository;
 
     public EventoService(
             EventoRepository eventoRepository,
             ClienteService clienteService,
-            AdministradorRepository administradorRepository) {
+            AdministradorRepository administradorRepository,
+            PersonagemRepository personagemRepository,
+            PersonagemItemRepository personagemItemRepository,
+            EventoPersonagemRepository eventoPersonagemRepository) {
         this.eventoRepository = eventoRepository;
         this.clienteService = clienteService;
         this.administradorRepository = administradorRepository;
+        this.personagemRepository = personagemRepository;
+        this.personagemItemRepository = personagemItemRepository;
+        this.eventoPersonagemRepository = eventoPersonagemRepository;
     }
 
     @Transactional(readOnly = true)
@@ -48,6 +65,23 @@ public class EventoService {
         Administrador administrador = administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
 
+        // Validar personagens e verificar estoque antes de criar o evento
+        List<Personagem> personagens = new ArrayList<>();
+        List<String> indisponiveis = new ArrayList<>();
+        for (Integer personagemId : request.personagemIds()) {
+            Personagem personagem = personagemRepository.findById(personagemId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com id: " + personagemId));
+            if (!personagemItemRepository.existsByPersonagemIdAndStatus(personagemId, PersonagemItemStatus.DISPONIVEL)) {
+                indisponiveis.add(personagem.getNome());
+            } else {
+                personagens.add(personagem);
+            }
+        }
+        if (!indisponiveis.isEmpty()) {
+            throw new BusinessException(
+                    "Personagens indisponíveis (sem figurino disponível): " + String.join(", ", indisponiveis));
+        }
+
         Evento evento = Evento.builder()
                 .titulo(request.titulo())
                 .descricao(request.descricao())
@@ -61,10 +95,31 @@ public class EventoService {
                 .administradorCriador(administrador)
                 .build();
 
-        return toResponse(eventoRepository.save(evento));
+        Evento eventoSalvo = eventoRepository.save(evento);
+
+        for (Personagem personagem : personagens) {
+            EventoPersonagem ep = EventoPersonagem.builder()
+                    .evento(eventoSalvo)
+                    .personagem(personagem)
+                    .build();
+            eventoPersonagemRepository.save(ep);
+        }
+
+        return toResponse(eventoSalvo);
     }
 
     private EventoResponse toResponse(Evento evento) {
+        List<EventoPersonagemResponse> personagens = eventoPersonagemRepository
+                .findByEventoId(evento.getId())
+                .stream()
+                .map(ep -> new EventoPersonagemResponse(
+                        ep.getId(),
+                        ep.getEvento().getId(),
+                        ep.getEvento().getTitulo(),
+                        ep.getPersonagem().getId(),
+                        ep.getPersonagem().getNome()))
+                .toList();
+
         return new EventoResponse(
                 evento.getId(),
                 evento.getTitulo(),
@@ -78,7 +133,8 @@ public class EventoService {
                 evento.getCliente().getId(),
                 evento.getCliente().getNome(),
                 evento.getAdministradorCriador().getId(),
-                evento.getAdministradorCriador().getNome());
+                evento.getAdministradorCriador().getNome(),
+                personagens);
     }
 
     @Transactional(readOnly = true)

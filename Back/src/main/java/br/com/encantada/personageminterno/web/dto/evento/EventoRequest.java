@@ -3,11 +3,13 @@ package br.com.encantada.personageminterno.web.dto.evento;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "Dados necessários para cadastro ou atualização de um evento")
 public record EventoRequest(
@@ -71,7 +73,14 @@ public record EventoRequest(
                 example = "5"
         )
         @NotNull
-        Integer clienteId
+        Integer clienteId,
+
+        @Schema(
+                description = "Lista de IDs dos personagens que participarão do evento",
+                example = "[1, 3]"
+        )
+        @NotEmpty
+        List<Integer> personagemIds
 
 ) {
 }
