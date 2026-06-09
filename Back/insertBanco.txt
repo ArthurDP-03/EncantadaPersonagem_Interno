@@ -58,15 +58,19 @@ INSERT INTO personagem (nome, descricao, foto) VALUES
 -- TABELA: PERSONAGEM_ITEM
 -- ===================================
 
+-- id_personagem_item = 1 | Palhaço Alegre
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
 (1, 'PAL-001', 'DISPONIVEL');
 
+-- id_personagem_item = 2 | Palhaço Alegre (em manutenção)
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(1, 'PAL-002', 'MANUTENCAO'); 
+(1, 'PAL-002', 'MANUTENCAO');
 
+-- id_personagem_item = 3 | Princesa Encantada
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
 (2, 'PRI-001', 'DISPONIVEL');
 
+-- id_personagem_item = 4 | Homem Aranha
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
 (3, 'HOM-001', 'EM_USO');
 
@@ -74,60 +78,76 @@ INSERT INTO personagem_item (id_personagem, codigo, status) VALUES
 -- TABELA: EVENTO
 -- ===================================
 
+-- id_evento = 1
 INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
 ('Aniversário Infantil - Tema Encantado', 'Festa com personagens para 50 crianças', '2026-07-15 14:00:00', '2026-07-15 17:00:00', 'Rua das Flores 123, São Paulo', 'CONFIRMADO', 'CARTAO_CREDITO', 2500.00, 1, 1);
 
+-- id_evento = 2
 INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
 ('Evento Corporativo - Confraternização', 'Show com personagens para funcionários', '2026-08-20 18:00:00', '2026-08-20 22:00:00', 'Av. Paulista 1000, São Paulo', 'RASCUNHO', 'TRANSFERENCIA', 5000.00, 1, 2);
 
+-- id_evento = 3
 INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
 ('Casamento - Recepção', 'Animação com personagens temáticos', '2026-09-10 19:00:00', '2026-09-10 23:59:00', 'Grand Plaza Hotel, Avenida Imigrantes 500', 'CONFIRMADO', 'CARTAO_CREDITO', 8000.00, 1, 3);
 
-
 -- ===================================
 -- TABELA: EVENTO_PERSONAGEM
+-- id_evento_personagem gerado automaticamente (AUTO_INCREMENT)
+-- Relaciona evento + personagem_item (fantasias específicas)
 -- ===================================
 
-INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
+-- id_evento_personagem = 1 | Evento 1 + PAL-001 (Palhaço Alegre)
+INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
 (1, 1);
 
-INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
-(1, 2);
+-- id_evento_personagem = 2 | Evento 1 + PRI-001 (Princesa Encantada)
+INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
+(1, 3);
 
-INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
-(2, 3);
+-- id_evento_personagem = 3 | Evento 2 + HOM-001 (Homem Aranha)
+INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
+(2, 4);
 
-INSERT INTO evento_personagem (id_evento, id_personagem) VALUES 
-(3, 1);
+-- id_evento_personagem = 4 | Evento 3 + PAL-002 (Palhaço Alegre)
+INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
+(3, 2);
 
 -- ===================================
 -- TABELA: CONVITE
 -- ===================================
 
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
-(1, 1, 1, 'ACEITO', '2026-06-01 10:00:00', '2026-06-01 15:30:00');
+-- Convite aceito: João Silva para ep 1 (Evento 1 / PAL-001)
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
+(1, 1, 1, 1, 'ACEITO', '2026-06-01 10:00:00', '2026-06-01 15:30:00');
 
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
-(2, 2, 1, 'ACEITO', '2026-06-01 10:15:00', '2026-06-01 14:00:00');
+-- Convite aceito: Maria Santos para ep 2 (Evento 1 / PRI-001)
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
+(2, 2, 1, 3, 'ACEITO', '2026-06-01 10:15:00', '2026-06-01 14:00:00');
 
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
-(3, 3, 1, 'PENDENTE', '2026-06-02 09:00:00', NULL);
+-- Convite pendente: Carlos Oliveira para ep 3 (Evento 2 / HOM-001)
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
+(3, 3, 1, 4, 'PENDENTE', '2026-06-02 09:00:00', NULL);
 
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, status, data_envio, data_resposta) VALUES 
-(4, 1, 1, 'ACEITO', '2026-06-01 11:00:00', '2026-06-01 16:45:00');
+-- Convite aceito: João Silva para ep 4 (Evento 3 / PAL-002)
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
+(4, 1, 1, 2, 'ACEITO', '2026-06-01 11:00:00', '2026-06-01 16:45:00');
 
 -- ===================================
 -- TABELA: ESCALACAO
 -- ===================================
 
+-- Escalação confirmada: João Silva / PAL-001 / ep 1
 INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
 (1, 1, 1, 1, '2026-06-01 16:00:00', 'CONFIRMADA', '2026-06-01 17:30:00');
 
+-- Escalação confirmada: Maria Santos / PRI-001 / ep 2
 INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
 (2, 2, 3, 1, '2026-06-01 16:15:00', 'CONFIRMADA', '2026-06-01 17:45:00');
 
+-- Escalação pendente: Carlos Oliveira / HOM-001 / ep 3
 INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
 (3, 3, 4, 1, '2026-06-02 10:00:00', 'PENDENTE_CONFIRMACAO_ATOR', NULL);
 
+-- Escalação confirmada: João Silva / PAL-002 / ep 4
 INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
 (4, 1, 2, 1, '2026-06-01 16:30:00', 'CONFIRMADA', '2026-06-01 18:00:00');
