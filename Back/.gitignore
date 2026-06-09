@@ -43,3 +43,5 @@ logs/
 # Maven wrapper
 # ======================
 .mvn/wrapper/maven-wrapper.jar
+
+.metals
