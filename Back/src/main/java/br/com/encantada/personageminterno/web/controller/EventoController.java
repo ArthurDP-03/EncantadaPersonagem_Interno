@@ -1,5 +1,6 @@
 package br.com.encantada.personageminterno.web.controller;
 
+import br.com.encantada.personageminterno.service.EventoPersonagemService;
 import br.com.encantada.personageminterno.service.EventoService;
 import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
@@ -32,9 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventoController {
 
     private final EventoService eventoService;
+    private final EventoPersonagemService eventoPersonagemService;
 
-    public EventoController(EventoService eventoService) {
+    public EventoController(EventoService eventoService, EventoPersonagemService eventoPersonagemService) {
         this.eventoService = eventoService;
+        this.eventoPersonagemService = eventoPersonagemService;
     }
 
     @Operation(
@@ -85,6 +88,18 @@ public class EventoController {
                 .body(eventoService.criar(request, authentication.getName()));
     }
 
+    @Operation(summary = "Listar personagens do evento", description = "Retorna todos os personagens vinculados a um evento.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "404", description = "Evento não encontrado")
+    })
+    @GetMapping("/{id}/personagens")
+    public ResponseEntity<List<EventoPersonagemResponse>> listarPersonagens(@PathVariable Integer id) {
+        return ResponseEntity.ok(eventoService.listarPersonagens(id));
+    }
+
     @Operation(
             summary = "Adicionar personagem ao evento",
             description = "Vincula um personagem a um evento existente. Verifica disponibilidade de figurino antes de inserir."
@@ -106,6 +121,28 @@ public class EventoController {
             Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(eventoService.adicionarPersonagem(id, request, authentication.getName()));
+    }
+
+    @Operation(
+            summary = "Remover personagem do evento",
+            description = "Remove o vínculo entre um personagem e um evento. Restrito a administradores."
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Personagem removido com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN e ser criador do evento"),
+            @ApiResponse(responseCode = "404", description = "Evento ou evento-personagem não encontrado"),
+            @ApiResponse(responseCode = "409", description = "Já existe escalação para este evento-personagem")
+    })
+    @DeleteMapping("/{id}/personagens/{epId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removerPersonagem(
+            @PathVariable Integer id,
+            @PathVariable Integer epId,
+            Authentication authentication) {
+        eventoPersonagemService.removerPersonagem(id, epId, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(

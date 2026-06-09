@@ -160,6 +160,22 @@ public class EventoService {
         return toResponse(evento);
     }
 
+    @Transactional(readOnly = true)
+    public List<EventoPersonagemResponse> listarPersonagens(int eventoId) {
+        if (!eventoRepository.existsById(eventoId)) {
+            throw new ResourceNotFoundException("Evento não encontrado com id: " + eventoId);
+        }
+        return eventoPersonagemRepository.findByEventoId(eventoId)
+                .stream()
+                .map(ep -> new EventoPersonagemResponse(
+                        ep.getId(),
+                        ep.getEvento().getId(),
+                        ep.getEvento().getTitulo(),
+                        ep.getPersonagem().getId(),
+                        ep.getPersonagem().getNome()))
+                .toList();
+    }
+
     @Transactional
     public EventoResponse atualizar(int id, EventoRequest request, String administradorEmail) {
         Evento evento = eventoRepository.findById(id)

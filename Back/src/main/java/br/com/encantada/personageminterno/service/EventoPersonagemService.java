@@ -91,6 +91,36 @@ public class EventoPersonagemService {
     }
 
     /**
+     * Remove o personagem de um evento, apagando os convites associados.
+     * Só é permitido quando não há escalação e o evento ainda é editável.
+     */
+    @Transactional
+    public void removerPersonagem(int eventoId, int epId, String adminEmail) {
+        Administrador admin = administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        EventoPersonagem ep = epRepository.findById(epId)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento-personagem não encontrado"));
+
+        if (!ep.getEvento().getId().equals(eventoId)) {
+            throw new ResourceNotFoundException("Evento-personagem não pertence ao evento informado");
+        }
+
+        validarPermissaoAdmin(ep, admin);
+        validarEventoEditavel(ep);
+
+        if (escalacaoRepository.existsByEventoPersonagemId(ep.getId())) {
+            throw new ConflictException("Não é possível remover: já existe escalação para este evento-personagem");
+        }
+
+        List<Convite> convites = conviteRepository.findByEventoPersonagemId(ep.getId());
+        if (!convites.isEmpty()) {
+            conviteRepository.deleteAll(convites);
+        }
+        epRepository.delete(ep);
+    }
+
+    /**
      * Saída 2: manter o personagem, mas enviar convites para um novo conjunto de atores.
      * Antes de reabrir, remove os convites recusados antigos.
      */
