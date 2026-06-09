@@ -33,7 +33,13 @@ public record EventoPersonagemResponse(
                 description = "Nome do personagem associado ao evento",
                 example = "Alice"
         )
-        String personagemNome
+        String personagemNome,
+
+        @Schema(
+                description = "Quantidade de itens com status DISPONIVEL para este personagem",
+                example = "3"
+        )
+        long estoqueDisponivel
 
 ) {
 }

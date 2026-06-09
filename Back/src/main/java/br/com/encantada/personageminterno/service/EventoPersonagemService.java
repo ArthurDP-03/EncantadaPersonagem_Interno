@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Convite;
+import br.com.encantada.personageminterno.domain.entity.Evento;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.entity.Personagem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
+import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
@@ -18,9 +20,12 @@ import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.ConviteRepository;
 import br.com.encantada.personageminterno.repository.EscalacaoRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
+import br.com.encantada.personageminterno.repository.EventoRepository;
+import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.repository.PersonagemRepository;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteCreateRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteResponse;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.AdicionarPersonagemRequest;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.ReabrirConvitesRequest;
 import br.com.encantada.personageminterno.web.dto.escalacao.TrocarPersonagemRequest;
@@ -34,6 +39,8 @@ public class EventoPersonagemService {
     private final EscalacaoRepository escalacaoRepository;
     private final AdministradorRepository administradorRepository;
     private final ConviteService conviteService;
+    private final EventoRepository eventoRepository;
+    private final PersonagemItemRepository personagemItemRepository;
 
     public EventoPersonagemService(
             EventoPersonagemRepository epRepository,
@@ -41,13 +48,17 @@ public class EventoPersonagemService {
             ConviteRepository conviteRepository,
             EscalacaoRepository escalacaoRepository,
             AdministradorRepository administradorRepository,
-            ConviteService conviteService) {
+            ConviteService conviteService,
+            EventoRepository eventoRepository,
+            PersonagemItemRepository personagemItemRepository) {
         this.epRepository = epRepository;
         this.personagemRepository = personagemRepository;
         this.conviteRepository = conviteRepository;
         this.escalacaoRepository = escalacaoRepository;
         this.administradorRepository = administradorRepository;
         this.conviteService = conviteService;
+        this.eventoRepository = eventoRepository;
+        this.personagemItemRepository = personagemItemRepository;
     }
 
     /**
@@ -91,6 +102,80 @@ public class EventoPersonagemService {
     }
 
     /**
+     * Remove o personagem de um evento, apagando os convites associados.
+     * Só é permitido quando não há escalação e o evento ainda é editável.
+     */
+    @Transactional
+    public void removerPersonagem(int epId, String adminEmail) {
+        Administrador admin = administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        EventoPersonagem ep = epRepository.findById(epId)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento-personagem não encontrado"));
+
+        validarPermissaoAdmin(ep, admin);
+        validarEventoEditavel(ep);
+
+        if (escalacaoRepository.existsByEventoPersonagemId(ep.getId())) {
+            throw new ConflictException("Não é possível remover: já existe escalação para este evento-personagem");
+        }
+
+        List<Convite> convites = conviteRepository.findByEventoPersonagemId(ep.getId());
+        if (!convites.isEmpty()) {
+            conviteRepository.deleteAll(convites);
+        }
+        epRepository.delete(ep);
+    }
+
+    @Transactional
+    public EventoPersonagemResponse adicionarPersonagem(AdicionarPersonagemRequest req, String adminEmail) {
+        Evento evento = eventoRepository.findById(req.eventoId())
+                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + req.eventoId()));
+
+        Administrador admin = administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        if (!evento.getAdministradorCriador().getId().equals(admin.getId())) {
+            throw new ForbiddenException("Você não tem permissão para modificar este evento");
+        }
+        if (evento.getStatus() == EventoStatus.CANCELADO || evento.getStatus() == EventoStatus.FINALIZADO) {
+            throw new BusinessException("Não é possível adicionar personagens em evento " + evento.getStatus());
+        }
+
+        Personagem personagem = personagemRepository.findById(req.personagemId())
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com id: " + req.personagemId()));
+
+        if (epRepository.existsByEventoIdAndPersonagemId(req.eventoId(), req.personagemId())) {
+            throw new ConflictException("Personagem já está vinculado a este evento");
+        }
+
+        long disponiveis = personagemItemRepository.countByPersonagemIdAndStatus(
+                req.personagemId(), PersonagemItemStatus.DISPONIVEL);
+        long vagasFuturas = epRepository.countVagasFuturas(req.personagemId());
+        if (disponiveis - vagasFuturas <= 0) {
+            throw new BusinessException("Sem fantasias disponíveis para o personagem: " + personagem.getNome());
+        }
+
+        EventoPersonagem ep = EventoPersonagem.builder()
+                .evento(evento)
+                .personagem(personagem)
+                .build();
+        EventoPersonagem salvo = epRepository.save(ep);
+        return toResponse(salvo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventoPersonagemResponse> listarPersonagens(int eventoId) {
+        if (!eventoRepository.existsById(eventoId)) {
+            throw new ResourceNotFoundException("Evento não encontrado com id: " + eventoId);
+        }
+        return epRepository.findByEventoId(eventoId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    /**
      * Saída 2: manter o personagem, mas enviar convites para um novo conjunto de atores.
      * Antes de reabrir, remove os convites recusados antigos.
      */
@@ -118,7 +203,7 @@ public class EventoPersonagemService {
         }
 
         return conviteService.enviarConvites(
-                new ConviteCreateRequest(ep.getId(), req.atoresIds()),
+                new ConviteCreateRequest(ep.getId(), req.convites()),
                 adminEmail);
     }
 
@@ -137,11 +222,14 @@ public class EventoPersonagemService {
     }
 
     private EventoPersonagemResponse toResponse(EventoPersonagem ep) {
+        long estoque = personagemItemRepository.countByPersonagemIdAndStatus(
+                ep.getPersonagem().getId(), PersonagemItemStatus.DISPONIVEL);
         return new EventoPersonagemResponse(
                 ep.getId(),
                 ep.getEvento().getId(),
                 ep.getEvento().getTitulo(),
                 ep.getPersonagem().getId(),
-                ep.getPersonagem().getNome());
+                ep.getPersonagem().getNome(),
+                estoque);
     }
 }

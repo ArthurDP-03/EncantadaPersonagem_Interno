@@ -1,6 +1,7 @@
 package br.com.encantada.personageminterno.web.dto.convite;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,11 +18,10 @@ public record ConviteCreateRequest(
         Integer eventoPersonagemId,
 
         @Schema(
-                description = "Lista de identificadores dos atores que receberão o convite",
-                example = "[3, 7, 12]"
+                description = "Lista de pares ator + item de personagem que receberão o convite"
         )
-        @NotEmpty
-        List<Integer> atoresIds
+        @NotEmpty @Valid
+        List<ConviteAtorItemRequest> convites
 
 ) {
 }

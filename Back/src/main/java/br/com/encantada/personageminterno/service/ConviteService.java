@@ -11,6 +11,7 @@ import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Ator;
 import br.com.encantada.personageminterno.domain.entity.Convite;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
+import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import br.com.encantada.personageminterno.domain.enums.ConviteStatus;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
@@ -21,6 +22,8 @@ import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
 import br.com.encantada.personageminterno.repository.ConviteRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
+import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
+import br.com.encantada.personageminterno.web.dto.convite.ConviteAtorItemRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteCreateRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteResponse;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteRespostaRequest;
@@ -32,16 +35,19 @@ public class ConviteService {
     private final EventoPersonagemRepository epRepository;
     private final AtorRepository atorRepository;
     private final AdministradorRepository administradorRepository;
+    private final PersonagemItemRepository personagemItemRepository;
 
     public ConviteService(
             ConviteRepository conviteRepository,
             EventoPersonagemRepository epRepository,
             AtorRepository atorRepository,
-            AdministradorRepository administradorRepository) {
+            AdministradorRepository administradorRepository,
+            PersonagemItemRepository personagemItemRepository) {
         this.conviteRepository = conviteRepository;
         this.epRepository = epRepository;
         this.atorRepository = atorRepository;
         this.administradorRepository = administradorRepository;
+        this.personagemItemRepository = personagemItemRepository;
     }
 
     @Transactional
@@ -59,18 +65,25 @@ public class ConviteService {
         }
 
         List<Convite> criados = new ArrayList<>();
-        for (Integer atorId : req.atoresIds()) {
-            // unique (ep, ator) já garante no banco; checagem antecipada:
-            if (conviteRepository.findByEventoPersonagemIdAndAtorId(ep.getId(), atorId).isPresent()) {
-                continue; // ou throw ConflictException
+        for (ConviteAtorItemRequest par : req.convites()) {
+            if (conviteRepository.findByEventoPersonagemIdAndAtorId(ep.getId(), par.atorId()).isPresent()) {
+                continue;
             }
-            Ator ator = atorRepository.findById(atorId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Ator " + atorId + " não encontrado"));
+            Ator ator = atorRepository.findById(par.atorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ator " + par.atorId() + " não encontrado"));
+
+            PersonagemItem item = personagemItemRepository.findById(par.personagemItemId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Item de personagem " + par.personagemItemId() + " não encontrado"));
+
+            if (!item.getPersonagem().getId().equals(ep.getPersonagem().getId())) {
+                throw new BusinessException("Item " + item.getCodigo() + " não pertence ao personagem do evento");
+            }
 
             Convite c = Convite.builder()
                     .eventoPersonagem(ep)
                     .ator(ator)
                     .administrador(admin)
+                    .personagemItem(item)
                     .status(ConviteStatus.PENDENTE)
                     .dataEnvio(LocalDateTime.now())
                     .dataExpiracao(calcularExpiracao(ep.getEvento().getDataInicio()))
@@ -167,6 +180,8 @@ public class ConviteService {
                 ep.getEvento().getTitulo(),
                 ep.getPersonagem().getId(),
                 ep.getPersonagem().getNome(),
+                c.getPersonagemItem().getId(),
+                c.getPersonagemItem().getCodigo(),
                 c.getAtor().getId(),
                 c.getAtor().getNome(),
                 c.getAdministrador().getId(),
