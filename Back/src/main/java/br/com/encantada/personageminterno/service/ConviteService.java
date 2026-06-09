@@ -75,7 +75,7 @@ public class ConviteService {
             PersonagemItem item = personagemItemRepository.findById(par.personagemItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item de personagem " + par.personagemItemId() + " não encontrado"));
 
-            if (!item.getPersonagem().getId().equals(ep.getPersonagem().getId())) {
+            if (!item.getPersonagem().getId().equals(ep.getPersonagemItem().getPersonagem().getId())) {
                 throw new BusinessException("Item " + item.getCodigo() + " não pertence ao personagem do evento");
             }
 
@@ -178,8 +178,8 @@ public class ConviteService {
                 ep.getId(),
                 ep.getEvento().getId(),
                 ep.getEvento().getTitulo(),
-                ep.getPersonagem().getId(),
-                ep.getPersonagem().getNome(),
+                ep.getPersonagemItem().getPersonagem().getId(),
+                ep.getPersonagemItem().getPersonagem().getNome(),
                 c.getPersonagemItem().getId(),
                 c.getPersonagemItem().getCodigo(),
                 c.getAtor().getId(),

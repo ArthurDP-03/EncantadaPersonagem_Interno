@@ -24,22 +24,22 @@ public record EventoPersonagemResponse(
         String eventoTitulo,
 
         @Schema(
-                description = "Identificador do personagem",
+                description = "Identificador do item de personagem (figurino)",
                 example = "3"
         )
-        Integer personagemId,
+        Integer personagemItemId,
+
+        @Schema(
+                description = "Código do item de personagem",
+                example = "ALICE-001"
+        )
+        String personagemItemCodigo,
 
         @Schema(
                 description = "Nome do personagem associado ao evento",
                 example = "Alice"
         )
-        String personagemNome,
-
-        @Schema(
-                description = "Quantidade de itens com status DISPONIVEL para este personagem",
-                example = "3"
-        )
-        long estoqueDisponivel
+        String personagemNome
 
 ) {
 }
