@@ -27,6 +27,7 @@ function App() {
           {/* privadas com layout */}
           <Route element={<PrivateLayout />}>
             <Route path="/" element={<Home/>}/>
+            <Route path="/financeiro" element={<PrivateRoute role="ADMIN"><Dashboard /></PrivateRoute>} />
             <Route path="/personagens" element={<PrivateRoute role="ADMIN"><Personagens /></PrivateRoute>} />
             <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />
             <Route path="/colaboradores" element={<PrivateRoute role="ADMIN"><Colaboradores /></PrivateRoute>} />
