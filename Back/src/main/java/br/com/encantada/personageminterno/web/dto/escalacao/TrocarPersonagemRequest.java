@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "Dados para troca de personagem em uma escalação")
 public record TrocarPersonagemRequest(
-        @Schema(description = "ID do novo personagem a ser atribuído", example = "4")
-        @NotNull Integer novoPersonagemId
+        @Schema(description = "ID do novo item de personagem (figurino) a ser atribuído", example = "4")
+        @NotNull Integer novoPersonagemItemId
 ) {}

@@ -78,8 +78,9 @@ public class EventoService {
                         ep.getId(),
                         ep.getEvento().getId(),
                         ep.getEvento().getTitulo(),
-                        ep.getPersonagem().getId(),
-                        ep.getPersonagem().getNome(), 0))
+                        ep.getPersonagemItem().getId(),
+                        ep.getPersonagemItem().getCodigo(),
+                        ep.getPersonagemItem().getPersonagem().getNome()))
                 .toList();
 
         return new EventoResponse(

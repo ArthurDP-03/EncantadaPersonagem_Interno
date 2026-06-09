@@ -14,11 +14,11 @@ public record AdicionarPersonagemRequest(
         Integer eventoId,
 
         @Schema(
-                description = "Identificador do personagem a ser vinculado ao evento",
+                description = "Identificador do item de personagem (figurino) a ser vinculado ao evento",
                 example = "5"
         )
         @NotNull
-        Integer personagemId
+        Integer personagemItemId
 
 ) {
 }

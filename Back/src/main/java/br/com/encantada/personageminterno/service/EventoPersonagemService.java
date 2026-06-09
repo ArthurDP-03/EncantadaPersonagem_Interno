@@ -9,7 +9,7 @@ import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Convite;
 import br.com.encantada.personageminterno.domain.entity.Evento;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
-import br.com.encantada.personageminterno.domain.entity.Personagem;
+import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
@@ -22,7 +22,6 @@ import br.com.encantada.personageminterno.repository.EscalacaoRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.EventoRepository;
 import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
-import br.com.encantada.personageminterno.repository.PersonagemRepository;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteCreateRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteResponse;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.AdicionarPersonagemRequest;
@@ -34,31 +33,28 @@ import br.com.encantada.personageminterno.web.dto.escalacao.TrocarPersonagemRequ
 public class EventoPersonagemService {
 
     private final EventoPersonagemRepository epRepository;
-    private final PersonagemRepository personagemRepository;
+    private final PersonagemItemRepository personagemItemRepository;
     private final ConviteRepository conviteRepository;
     private final EscalacaoRepository escalacaoRepository;
     private final AdministradorRepository administradorRepository;
     private final ConviteService conviteService;
     private final EventoRepository eventoRepository;
-    private final PersonagemItemRepository personagemItemRepository;
 
     public EventoPersonagemService(
             EventoPersonagemRepository epRepository,
-            PersonagemRepository personagemRepository,
+            PersonagemItemRepository personagemItemRepository,
             ConviteRepository conviteRepository,
             EscalacaoRepository escalacaoRepository,
             AdministradorRepository administradorRepository,
             ConviteService conviteService,
-            EventoRepository eventoRepository,
-            PersonagemItemRepository personagemItemRepository) {
+            EventoRepository eventoRepository) {
         this.epRepository = epRepository;
-        this.personagemRepository = personagemRepository;
+        this.personagemItemRepository = personagemItemRepository;
         this.conviteRepository = conviteRepository;
         this.escalacaoRepository = escalacaoRepository;
         this.administradorRepository = administradorRepository;
         this.conviteService = conviteService;
         this.eventoRepository = eventoRepository;
-        this.personagemItemRepository = personagemItemRepository;
     }
 
     /**
@@ -82,22 +78,25 @@ public class EventoPersonagemService {
         if (!conviteService.personagemIndisponivel(ep.getId())) {
             throw new BusinessException("Ainda há convites pendentes ou aceitos para este personagem");
         }
-        if (req.novoPersonagemId().equals(ep.getPersonagem().getId())) {
-            throw new BusinessException("O novo personagem deve ser diferente do atual");
+        if (req.novoPersonagemItemId().equals(ep.getPersonagemItem().getId())) {
+            throw new BusinessException("O novo item de personagem deve ser diferente do atual");
         }
-        if (epRepository.existsByEventoIdAndPersonagemId(ep.getEvento().getId(), req.novoPersonagemId())) {
-            throw new ConflictException("Este personagem já está vinculado ao evento");
+        if (epRepository.existsByEventoIdAndPersonagemItemId(ep.getEvento().getId(), req.novoPersonagemItemId())) {
+            throw new ConflictException("Este item de personagem já está vinculado ao evento");
         }
 
-        Personagem novo = personagemRepository.findById(req.novoPersonagemId())
-                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado"));
+        PersonagemItem novoItem = personagemItemRepository.findById(req.novoPersonagemItemId())
+                .orElseThrow(() -> new ResourceNotFoundException("Item de personagem não encontrado"));
+        if (novoItem.getStatus() != PersonagemItemStatus.DISPONIVEL) {
+            throw new BusinessException("O item de personagem não está disponível: " + novoItem.getCodigo());
+        }
 
         List<Convite> antigos = conviteRepository.findByEventoPersonagemId(ep.getId());
         if (!antigos.isEmpty()) {
             conviteRepository.deleteAll(antigos);
         }
 
-        ep.setPersonagem(novo);
+        ep.setPersonagemItem(novoItem);
         return toResponse(epRepository.save(ep));
     }
 
@@ -142,23 +141,25 @@ public class EventoPersonagemService {
             throw new BusinessException("Não é possível adicionar personagens em evento " + evento.getStatus());
         }
 
-        Personagem personagem = personagemRepository.findById(req.personagemId())
-                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com id: " + req.personagemId()));
+        PersonagemItem personagemItem = personagemItemRepository.findById(req.personagemItemId())
+                .orElseThrow(() -> new ResourceNotFoundException("Item de personagem não encontrado com id: " + req.personagemItemId()));
 
-        if (epRepository.existsByEventoIdAndPersonagemId(req.eventoId(), req.personagemId())) {
-            throw new ConflictException("Personagem já está vinculado a este evento");
+        if (personagemItem.getStatus() != PersonagemItemStatus.DISPONIVEL) {
+            throw new BusinessException("O item de personagem não está disponível: " + personagemItem.getCodigo());
         }
 
-        long disponiveis = personagemItemRepository.countByPersonagemIdAndStatus(
-                req.personagemId(), PersonagemItemStatus.DISPONIVEL);
-        long vagasFuturas = epRepository.countVagasFuturas(req.personagemId());
-        if (disponiveis - vagasFuturas <= 0) {
-            throw new BusinessException("Sem fantasias disponíveis para o personagem: " + personagem.getNome());
+        if (epRepository.existsByEventoIdAndPersonagemItemId(req.eventoId(), req.personagemItemId())) {
+            throw new ConflictException("Este item de personagem já está vinculado a este evento");
+        }
+
+        long vagasFuturas = epRepository.countVagasFuturas(req.personagemItemId());
+        if (vagasFuturas > 0) {
+            throw new BusinessException("Este item de personagem já está reservado para outro evento futuro");
         }
 
         EventoPersonagem ep = EventoPersonagem.builder()
                 .evento(evento)
-                .personagem(personagem)
+                .personagemItem(personagemItem)
                 .build();
         EventoPersonagem salvo = epRepository.save(ep);
         return toResponse(salvo);
@@ -222,14 +223,13 @@ public class EventoPersonagemService {
     }
 
     private EventoPersonagemResponse toResponse(EventoPersonagem ep) {
-        long estoque = personagemItemRepository.countByPersonagemIdAndStatus(
-                ep.getPersonagem().getId(), PersonagemItemStatus.DISPONIVEL);
+        PersonagemItem item = ep.getPersonagemItem();
         return new EventoPersonagemResponse(
                 ep.getId(),
                 ep.getEvento().getId(),
                 ep.getEvento().getTitulo(),
-                ep.getPersonagem().getId(),
-                ep.getPersonagem().getNome(),
-                estoque);
+                item.getId(),
+                item.getCodigo(),
+                item.getPersonagem().getNome());
     }
 }

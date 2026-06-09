@@ -70,7 +70,7 @@ public class EscalacaoService {
         PersonagemItem item = personagemItemRepository.findById(req.personagemItemId())
                 .orElseThrow(() -> new ResourceNotFoundException("PersonagemItem não encontrado"));
 
-        if (!item.getPersonagem().getId().equals(ep.getPersonagem().getId())) {
+        if (!item.getPersonagem().getId().equals(ep.getPersonagemItem().getPersonagem().getId())) {
             throw new BusinessException("O item escolhido não pertence ao personagem do evento");
         }
         if (item.getStatus() != PersonagemItemStatus.DISPONIVEL) {
@@ -149,8 +149,8 @@ public class EscalacaoService {
                 ep.getId(),
                 ep.getEvento().getId(),
                 ep.getEvento().getTitulo(),
-                ep.getPersonagem().getId(),
-                ep.getPersonagem().getNome(),
+                ep.getPersonagemItem().getPersonagem().getId(),
+                ep.getPersonagemItem().getPersonagem().getNome(),
                 e.getAtor().getId(),
                 e.getAtor().getNome(),
                 item.getId(),
