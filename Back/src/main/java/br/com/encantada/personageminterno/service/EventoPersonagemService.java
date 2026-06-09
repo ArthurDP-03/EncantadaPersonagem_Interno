@@ -161,13 +161,7 @@ public class EventoPersonagemService {
                 .personagem(personagem)
                 .build();
         EventoPersonagem salvo = epRepository.save(ep);
-
-        return new EventoPersonagemResponse(
-                salvo.getId(),
-                evento.getId(),
-                evento.getTitulo(),
-                personagem.getId(),
-                personagem.getNome());
+        return toResponse(salvo);
     }
 
     @Transactional(readOnly = true)
@@ -209,7 +203,7 @@ public class EventoPersonagemService {
         }
 
         return conviteService.enviarConvites(
-                new ConviteCreateRequest(ep.getId(), req.atoresIds()),
+                new ConviteCreateRequest(ep.getId(), req.convites()),
                 adminEmail);
     }
 
@@ -228,11 +222,14 @@ public class EventoPersonagemService {
     }
 
     private EventoPersonagemResponse toResponse(EventoPersonagem ep) {
+        long estoque = personagemItemRepository.countByPersonagemIdAndStatus(
+                ep.getPersonagem().getId(), PersonagemItemStatus.DISPONIVEL);
         return new EventoPersonagemResponse(
                 ep.getId(),
                 ep.getEvento().getId(),
                 ep.getEvento().getTitulo(),
                 ep.getPersonagem().getId(),
-                ep.getPersonagem().getNome());
+                ep.getPersonagem().getNome(),
+                estoque);
     }
 }

@@ -34,7 +34,7 @@ CREATE TABLE personagem (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
   descricao VARCHAR(255),
-  foto VARCHAR(255)
+  foto VARCHAR(255)x
 );
 
 CREATE TABLE personagem_item (
@@ -96,6 +96,7 @@ CREATE TABLE convite (
   id_evento_personagem INT NOT NULL,
   id_ator INT NOT NULL,
   id_administrador INT NOT NULL,
+  id_personagem_item INT NOT NULL,
 
   status VARCHAR(20) NOT NULL DEFAULT 'PENDENTE',
   data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -116,6 +117,10 @@ CREATE TABLE convite (
   CONSTRAINT fk_convite_admin
     FOREIGN KEY (id_administrador)
     REFERENCES administrador(id),
+
+  CONSTRAINT fk_convite_item
+    FOREIGN KEY (id_personagem_item)
+    REFERENCES personagem_item(id_personagem_item),
 
   CONSTRAINT uq_convite
     UNIQUE (id_evento_personagem, id_ator)

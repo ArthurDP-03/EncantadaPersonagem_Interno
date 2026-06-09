@@ -45,6 +45,18 @@ public record ConviteResponse(
         String personagemNome,
 
         @Schema(
+                description = "Identificador do item de personagem utilizado no convite",
+                example = "1"
+        )
+        Integer personagemItemId,
+
+        @Schema(
+                description = "Código do item de personagem (ex: ALICE-001)",
+                example = "ALICE-001"
+        )
+        String personagemItemCodigo,
+
+        @Schema(
                 description = "Identificador do ator convidado",
                 example = "12"
         )
