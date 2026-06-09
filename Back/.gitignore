@@ -44,4 +44,4 @@ logs/
 # ======================
 .mvn/wrapper/maven-wrapper.jar
 
-.metals
+.metals/
