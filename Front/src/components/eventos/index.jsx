@@ -146,27 +146,6 @@ function Eventos() {
 
           <h1 className="titulo t1">Eventos</h1>
 
-          <div className="filtros">
-            <div className="input-container">
-              <select className="input" value={ordem} onChange={e => setOrdem(e.target.value)}>
-                <option value="">Ordenar</option>
-                <option value="az">Alfabética (A-Z)</option>
-                <option value="za">Alfabética (Z-A)</option>
-              </select>
-              <ChevronDown className="icon" size={18} />
-            </div>
-            <div className="input-container">
-              <input
-                type="text"
-                placeholder="Buscar"
-                className="input"
-                value={busca}
-                onChange={e => setBusca(e.target.value)}
-              />
-              <Search className="icon" size={18} />
-            </div>
-          </div>
-
           <div className="timeline">
             {grupos.length === 0 ? (
               <div className="eventos-vazio">Nenhum evento encontrado.</div>
