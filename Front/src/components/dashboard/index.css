@@ -1,0 +1,128 @@
+.section-dashboard .conteudo {
+  padding: 0 0 100px 100px;
+}
+
+.section-dashboard .titulo {
+  margin: 1em 0;
+}
+
+/* CARDS */
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.dashboard-card {
+  background: var(--branco);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dashboard-card span {
+  color: var(--texto-opacity-5);
+  font-size: 0.875rem;
+}
+
+.dashboard-card strong {
+  font-size: 1.8rem;
+  color: var(--verde-escuro);
+}
+
+/* GRID DOS GRÁFICOS */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* WIDGETS */
+
+.dashboard-widget {
+  background: var(--branco);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-widget h2 {
+  margin-bottom: 20px;
+  color: var(--verde-escuro);
+  font-size: 1rem;
+}
+
+/* CONTAINER DOS GRÁFICOS */
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+/* ALERTAS */
+
+.dashboard-alertas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* TABELA */
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table thead tr {
+  border-bottom: 2px solid var(--cinza-claro);
+}
+
+.dashboard-table th {
+  text-align: left;
+  padding: 12px;
+  color: var(--texto-opacity-5);
+  font-weight: 600;
+}
+
+.dashboard-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--cinza-claro);
+}
+
+.dashboard-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1000px) {
+  .section-dashboard .conteudo {
+    padding-left: 0;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-cards,
+  .dashboard-alertas {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+}

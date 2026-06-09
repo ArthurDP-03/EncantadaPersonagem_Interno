@@ -1,17 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
 
 
-:root{
-  --branco: #fff;
-  --rosa-1: #F2C1C4;
-  --rosa-2: #E7BDB1;
-  --verde-1: #3B6456;
-  --cinza-1: #dadada;
-  --cinza-2: #B4b4b4;
-  --cinza-3: #ECE6F0;
-  --cinza-4: #6C6C6C;
-  --vermelho-1: #ff0040;
-
+:root {
   --font-1: "Baloo 2", sans-serif;
 
   --thin: 100;
@@ -25,6 +15,121 @@
   --black: 900;
 }
 
+[data-theme="light"] {
+  /* Cores Primárias Base */
+  --branco: #ffffff;
+  --preto: #000000;
+  --verde: #3B6456;
+  --verde-claro: #3a7d5e;
+  --rosa: #F2C1C4;
+  --vermelho: #c97b7b;
+  --cinza-1: #dadada;
+  --cinza-2: #B4B4B4;
+  --cinza-3: #ECE6F0;
+  --cinza-4: #6C6C6C;
+
+  /* Opacidades */
+  --op-05: rgba(0, 0, 0, 0.05);
+  --op-07: rgba(0, 0, 0, 0.07);
+  --op-1: rgba(0, 0, 0, 0.1);
+  --op-15: rgba(0, 0, 0, 0.15);
+  --op-25: rgba(0, 0, 0, 0.25);
+  --op-5: rgba(0, 0, 0, 0.5);
+  --op-7: rgba(0, 0, 0, 0.7);
+
+  /* Variações Cinzas */
+  --cinza-label: #55776a;
+  --cinza-subtitle: #36564a;
+  --texto-cinza: #333;
+  --texto-cinza-medio: #888;
+
+  /* Legados para compatibilidade */
+  --rosa-1: #F2C1C4;
+  --rosa-2: #E7BDB1;
+  --verde-1: #3B6456;
+  --vermelho-1: #ff0040;
+
+  /* Variáveis Derivadas para Formulários */
+  --verde-escuro: #2d6a4f;
+  --cinza-claro: #f0f0f0;
+  --cinza-medio: #cccccc;
+  --vermelho-claro: #c97b7b;
+  --vermelho-escuro: #a56666;
+  --texto: #333333;
+  --texto-opacity-5: rgba(0, 0, 0, 0.5);
+  --texto-opacity-7: rgba(0, 0, 0, 0.7);
+  --texto-cinza-escuro: #1a1a1a;
+  --fundo: #ffffff;
+  --sombra-escura: rgba(0, 0, 0, 0.5);
+  --sombra-grande: rgba(0, 0, 0, 0.15);
+  --sombra-pequena: rgba(0, 0, 0, 0.08);
+
+}
+
+
+[data-theme="dark"] {
+  /* Cores Primárias Base - Menos Saturadas */
+  --branco: #0f0f0f;
+  --preto: #ffffff;
+  --verde: #759b7e;
+  --verde-claro: #8fad8f;
+  --rosa: #d4a5a5;
+  --vermelho: #d98b8b;
+  --cinza-1: #1a1a1a;
+  --cinza-2: #2a2a2a;
+  --cinza-3: #3d3d3d;
+  --cinza-4: #d0d0d0;
+
+  /* Opacidades */
+  --op-05: rgba(255, 255, 255, 0.05);
+  --op-07: rgba(255, 255, 255, 0.08);
+  --op-1: rgba(255, 255, 255, 0.12);
+  --op-15: rgba(255, 255, 255, 0.18);
+  --op-25: rgba(255, 255, 255, 0.3);
+  --op-5: rgba(255, 255, 255, 0.5);
+  --op-7: rgba(255, 255, 255, 0.7);
+
+  /* Textos com Contraste WCAG AAA */
+  --texto-cinza: #f5f5f5;
+  --texto-cinza-medio: #d0d0d0;
+  --cinza-label: #a8b5a0;
+  --cinza-subtitle: #afc5d4;
+
+  /* Legados para compatibilidade */
+  --rosa-1: #d4a5a5;
+  --rosa-2: #bf9191;
+  --verde-1: #759b7e;
+  --vermelho-1: #e09a9a;
+
+  /* Variáveis Derivadas para Formulários */
+  --verde-escuro: #5a7e68;
+  --cinza-claro: #2a2a2a;
+  --cinza-medio: #3a3a3a;
+  --vermelho-claro: #d98b8b;
+  --vermelho-escuro: #c07676;
+  --texto: #f5f5f5;
+  --texto-opacity-5: rgba(255, 255, 255, 0.5);
+  --texto-opacity-7: rgba(255, 255, 255, 0.7);
+  --texto-cinza-escuro: #e0e0e0;
+  --fundo: #1a1a1a;
+  --sombra-escura: rgba(0, 0, 0, 0.7);
+  --sombra-grande: rgba(0, 0, 0, 0.3);
+  --sombra-pequena: rgba(0, 0, 0, 0.15);
+  
+  /* Variáveis para Demo Page */
+  --rosa-opacity-55: rgba(212, 165, 165, 0.55);
+  --verde-opacity-12: rgba(117, 155, 126, 0.12);
+  --verde-opacity-8: rgba(117, 155, 126, 0.08);
+  --verde-opacity-15: rgba(117, 155, 126, 0.15);
+  --verde-opacity-25: rgba(117, 155, 126, 0.25);
+  --fundo-light: #1a1a1a;
+  --fundo-lighter: #242424;
+  --overlay: rgba(255, 255, 255, 0.08);
+  --overlay-medio: rgba(255, 255, 255, 0.06);
+  --overlay-claro: rgba(255, 255, 255, 0.04);
+  --rosa-rgba-acao: rgba(212, 165, 165, 0.15);
+  --rosa-opacity-35: rgba(212, 165, 165, 0.35);
+}
 *{
   font-family: var(--font-1);
 }

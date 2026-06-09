@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 
 import Login from './components/login'
-import Demo from './components/demo'
 import Home from './components/home'
 
 import PrivateRoute from './components/PrivateRoute'
@@ -14,8 +13,11 @@ import Personagens from './components/personagens'
 import Clientes from './components/clientes'
 import Eventos from './components/eventos'
 import Colaboradores from './components/colaboradores'
+import { useDarkMode } from './hooks/useDarkMode'
+import Dashboard from './components/dashboard'
 
 function App() {
+  const [dark, setDark] = useDarkMode();
   return (
     <ErrorBoundary>
       <AuthProvider>

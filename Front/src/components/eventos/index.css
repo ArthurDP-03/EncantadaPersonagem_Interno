@@ -1,18 +1,18 @@
 .section-eventos{}
-.section-eventos .conteudo{padding: 0 0 0 100px;}
+.section-eventos .conteudo{padding: 0 0 100px 100px;}
 .section-eventos .titulo{margin: 1em 0 0;}
 .section-eventos .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
 .section-eventos .input-container{position: relative;}
 .section-eventos .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
 
-.section-eventos .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: rgba(0, 0, 0, 0.7);   appearance: none;}
-.section-eventos .filtros .input::placeholder{color: rgba(0, 0, 0, 0.7);}
+.section-eventos .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none;}
+.section-eventos .filtros .input::placeholder{color: var(--texto-opacity-7);}
 
 .section-eventos .lista-eventos{display: flex; gap: 24px; margin: 0 0 24px ; flex-wrap: wrap;}
-.section-eventos .lista-eventos .card-eventos{box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25); border-radius: 20px; overflow: hidden; }
-.section-eventos .lista-eventos .card-eventos .imagem-container{aspect-ratio: 330/ 256; width: 252px; display: flex; justify-content: center; align-items: center;}
+.section-eventos .lista-eventos .card-eventos{box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25); border-radius: 20px; overflow: hidden; width: 252px;}
+.section-eventos .lista-eventos .card-eventos .imagem-container{aspect-ratio: 330/ 256; width:100%; display: flex; justify-content: center; align-items: center;}
 .section-eventos .lista-eventos .card-eventos .imagem-container .imagem{width: 70%; }
-.section-eventos .lista-eventos .card-eventos .textos{background: var(--branco); padding: 10px 16px 8px;}
+.section-eventos .lista-eventos .card-eventos .textos{background: var(--fundo); padding: 10px 16px 8px;}
 
 .section-eventos .timeline .grupo-vazio{margin:0 0 10px;}
 .section-eventos .timeline .label-data{margin: 0 0 10px;}
@@ -49,48 +49,48 @@
 
 .section-eventos .btn-icone:hover { transform: scale(1.15); }
 
-.section-eventos .btn-editar { background: rgba(255,255,255,0.85); color: #888; }
-.section-eventos .btn-editar:hover { background: rgba(255,255,255,1); color: #333; }
+.section-eventos .btn-editar { background: rgba(255,255,255,0.85); color: var(--texto-cinza-medio); }
+.section-eventos .btn-editar:hover { background: rgba(255,255,255,1); color: var(--texto-cinza-escuro); }
 
-.section-eventos .btn-deletar { background: rgba(255,255,255,0.85); color: #c97b7b; }
-.section-eventos .btn-deletar:hover { background: rgba(255,255,255,1); color: #b56666; }
+.section-eventos .btn-deletar { background: rgba(255,255,255,0.85); color: var(--vermelho); }
+.section-eventos .btn-deletar:hover { background: rgba(255,255,255,1); color: var(--vermelho-escuro); }
 
 /* ── Vazio ── */
-.section-eventos .eventos-vazio { text-align: center; color: rgba(0,0,0,0.45); padding: 3rem 0; font-size: 0.9rem; }
+.section-eventos .eventos-vazio { text-align: center; color: var(--texto-opacity-45); padding: 3rem 0; font-size: 0.9rem; }
 
 /* ── FAB ── */
-.section-eventos .eventos-fab { position: fixed; bottom: 32px; right: 32px; width: 54px; height: 54px; border-radius: 50%; background: var(--verde-escuro, #2d6a4f); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(45,106,79,0.38); transition: background 0.2s, transform 0.2s, box-shadow 0.2s; z-index: 100; }
-.section-eventos .eventos-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(45,106,79,0.48); }
+.section-eventos .eventos-fab { position: fixed; bottom: 32px; right: 32px; width: 54px; height: 54px; border-radius: 50%; background: var(--verde-escuro); color: var(--branco); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px var(--op-25); transition: background 0.2s, transform 0.2s, box-shadow 0.2s; z-index: 100; }
+.section-eventos .eventos-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px var(--op-5); }
 
 /* ── Modal ── */
-.section-eventos .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; animation: modalFadeIn 0.18s ease; }
+.section-eventos .modal { position: fixed; inset: 0; background: var(--sombra-escura); display: flex; align-items: center; justify-content: center; z-index: 1000; animation: modalFadeIn 0.18s ease; }
 @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.section-eventos .modal > form {background: #fff; border-radius: 18px; padding: 2rem; width: min(100%, 520px); max-height: 80vh; overflow-y: auto; box-shadow: 0 12px 48px rgba(0,0,0,0.16); animation: modalPopIn 0.22s cubic-bezier(0.34,1.56,0.64,1); display: flex; flex-direction: column; gap: 1rem; }
+.section-eventos .modal > form {background: var(--fundo); border-radius: 18px; padding: 2rem; width: min(100%, 520px); max-height: 80vh; overflow-y: auto; box-shadow: 0 12px 48px var(--sombra-grande); animation: modalPopIn 0.22s cubic-bezier(0.34,1.56,0.64,1); display: flex; flex-direction: column; gap: 1rem; }
 @keyframes modalPopIn { from { opacity: 0; transform: scale(0.93); } to { opacity: 1; transform: scale(1); } }
-.section-eventos .modal-titulo { font-size: 1.15rem; font-weight: 700; color: var(--verde-escuro, #2d6a4f); margin: 0 0 0.5rem; }
+.section-eventos .modal-titulo { font-size: 1.15rem; font-weight: 700; color: var(--verde-escuro); margin: 0 0 0.5rem; }
 .section-eventos .modal-acoes { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.5rem; }
 
 /* ── Formulário ── */
 .section-eventos .form-evento { display: flex; flex-direction: column; gap: 0.75rem; }
 .section-eventos .form-evento-linha { display: flex; gap: 0.75rem; }
 .section-eventos .form-evento-linha label { flex: 1; }
-.section-eventos .form-evento label { display: flex; flex-direction: column; gap: 4px; font-size: 0.76rem; font-weight: 600; color: rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.04em; }
+.section-eventos .form-evento label { display: flex; flex-direction: column; gap: 4px; font-size: 0.76rem; font-weight: 600; color: var(--texto-opacity-5); text-transform: uppercase; letter-spacing: 0.04em; }
 .section-eventos .form-evento input,
 .section-eventos .form-evento select,
-.section-eventos .form-evento textarea { border-radius: 8px; border: 1.5px solid #e0e0e0; padding: 0 12px; font-size: 0.875rem; color: #1a1a1a; background: #f5f5f5; outline: none; transition: border-color 0.18s, background 0.18s; width: 100%; box-sizing: border-box; }
+.section-eventos .form-evento textarea { border-radius: 8px; border: 1.5px solid var(--cinza-claro); padding: 0 12px; font-size: 0.875rem; color: var(--texto); background: var(--fundo); outline: none; transition: border-color 0.18s, background 0.18s; width: 100%; box-sizing: border-box; }
 .section-eventos .form-evento input,
 .section-eventos .form-evento select { height: 38px; }
 .section-eventos .form-evento textarea { padding: 8px 12px; resize: vertical; }
 .section-eventos .form-evento input:focus,
 .section-eventos .form-evento select:focus,
-.section-eventos .form-evento textarea:focus { border-color: var(--verde-escuro, #2d6a4f); background: #fff; }
+.section-eventos .form-evento textarea:focus { border-color: var(--verde-escuro); background: var(--fundo); }
 
 /* ── Botões de ação do modal ── */
 .section-eventos .btn-primario, .section-eventos .btn-secundario { height: 38px; padding: 0 20px; border-radius: 30px; border: none; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.16s, transform 0.14s; }
-.section-eventos .btn-primario { background: var(--verde-escuro, #2d6a4f); color: #fff; }
-.section-eventos .btn-primario:hover { background: #3a7d5e; }
-.section-eventos .btn-secundario { background: #e4e4e4; color: #333; }
-.section-eventos .btn-secundario:hover { background: #d8d8d8; }
+.section-eventos .btn-primario { background: var(--verde-escuro); color: var(--branco); }
+.section-eventos .btn-primario:hover { background: var(--verde); }
+.section-eventos .btn-secundario { background: var(--cinza-claro); color: var(--texto); }
+.section-eventos .btn-secundario:hover { background: var(--cinza-medio); }
 
 /* ── Responsivo ── */
 @media (max-width: 600px) {
