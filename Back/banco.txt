@@ -76,18 +76,18 @@ CREATE TABLE evento (
 CREATE TABLE evento_personagem (
   id_evento_personagem INT AUTO_INCREMENT PRIMARY KEY,
   id_evento INT NOT NULL,
-  id_personagem INT NOT NULL,
+  id_personagem_item INT NOT NULL,
 
   CONSTRAINT fk_ep_evento
     FOREIGN KEY (id_evento)
     REFERENCES evento(id),
 
-  CONSTRAINT fk_ep_personagem
-    FOREIGN KEY (id_personagem)
-    REFERENCES personagem(id),
+  CONSTRAINT fk_ep_personagem_item
+    FOREIGN KEY (id_personagem_item)
+    REFERENCES personagem_item(id_personagem_item),
 
   CONSTRAINT uq_evento_personagem
-    UNIQUE (id_evento, id_personagem)
+    UNIQUE (id_evento, id_personagem_item)
 );
 
 CREATE TABLE convite (
