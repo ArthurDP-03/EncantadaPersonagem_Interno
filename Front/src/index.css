@@ -63,20 +63,7 @@
   --sombra-escura: rgba(0, 0, 0, 0.5);
   --sombra-grande: rgba(0, 0, 0, 0.15);
   --sombra-pequena: rgba(0, 0, 0, 0.08);
-  
-  /* Variáveis para Demo Page */
-  --rosa-opacity-55: rgba(242, 193, 196, 0.55);
-  --verde-opacity-12: rgba(59, 100, 86, 0.12);
-  --verde-opacity-8: rgba(59, 100, 86, 0.08);
-  --verde-opacity-15: rgba(59, 100, 86, 0.15);
-  --verde-opacity-25: rgba(59, 100, 86, 0.25);
-  --fundo-light: #ffffff;
-  --fundo-lighter: #f8f9f8;
-  --overlay: rgba(255, 255, 255, 0.8);
-  --overlay-medio: rgba(255, 255, 255, 0.6);
-  --overlay-claro: rgba(255, 255, 255, 0.4);
-  --rosa-rgba-acao: rgba(242, 193, 196, 0.2);
-  --rosa-opacity-35: rgba(242, 193, 196, 0.35);
+
 }
 
 

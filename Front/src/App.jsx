@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 
 import Login from './components/login'
-import Demo from './components/demo'
 import Home from './components/home'
 
 import PrivateRoute from './components/PrivateRoute'
@@ -23,7 +22,6 @@ function App() {
       <Routes>
         {/* rotas públicas */}
         <Route path="/login" element={<Login />} />
-        <Route path="/testes" element={<Demo />} />
         {/* privadas com layout */}
         <Route element={<PrivateLayout dark={dark} setDark={setDark}/>}>          
           <Route path="/" element={<Home/>}/>
