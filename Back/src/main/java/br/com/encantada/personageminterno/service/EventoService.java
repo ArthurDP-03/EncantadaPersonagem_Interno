@@ -3,9 +3,7 @@ package br.com.encantada.personageminterno.service;
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Evento;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
-import br.com.encantada.personageminterno.domain.entity.Personagem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
-import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
@@ -14,11 +12,8 @@ import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.EventoRepository;
-import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
-import br.com.encantada.personageminterno.repository.PersonagemRepository;
 import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
-import br.com.encantada.personageminterno.web.dto.eventopersonagem.AdicionarPersonagemRequest;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -30,22 +25,16 @@ public class EventoService {
     private final EventoRepository eventoRepository;
     private final ClienteService clienteService;
     private final AdministradorRepository administradorRepository;
-    private final PersonagemRepository personagemRepository;
-    private final PersonagemItemRepository personagemItemRepository;
     private final EventoPersonagemRepository eventoPersonagemRepository;
 
     public EventoService(
             EventoRepository eventoRepository,
             ClienteService clienteService,
             AdministradorRepository administradorRepository,
-            PersonagemRepository personagemRepository,
-            PersonagemItemRepository personagemItemRepository,
             EventoPersonagemRepository eventoPersonagemRepository) {
         this.eventoRepository = eventoRepository;
         this.clienteService = clienteService;
         this.administradorRepository = administradorRepository;
-        this.personagemRepository = personagemRepository;
-        this.personagemItemRepository = personagemItemRepository;
         this.eventoPersonagemRepository = eventoPersonagemRepository;
     }
 
@@ -79,49 +68,6 @@ public class EventoService {
                 .build();
 
         return toResponse(eventoRepository.save(evento));
-    }
-
-    @Transactional
-    public EventoPersonagemResponse adicionarPersonagem(int eventoId, AdicionarPersonagemRequest req, String adminEmail) {
-        Evento evento = eventoRepository.findById(eventoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + eventoId));
-
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
-
-        if (!evento.getAdministradorCriador().getId().equals(admin.getId())) {
-            throw new ForbiddenException("Você não tem permissão para modificar este evento");
-        }
-        if (evento.getStatus() == EventoStatus.CANCELADO || evento.getStatus() == EventoStatus.FINALIZADO) {
-            throw new BusinessException("Não é possível adicionar personagens em evento " + evento.getStatus());
-        }
-
-        Personagem personagem = personagemRepository.findById(req.personagemId())
-                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com id: " + req.personagemId()));
-
-        if (eventoPersonagemRepository.existsByEventoIdAndPersonagemId(eventoId, req.personagemId())) {
-            throw new ConflictException("Personagem já está vinculado a este evento");
-        }
-
-        long disponiveis = personagemItemRepository.countByPersonagemIdAndStatus(
-                req.personagemId(), PersonagemItemStatus.DISPONIVEL);
-        long vagasFuturas = eventoPersonagemRepository.countVagasFuturas(req.personagemId());
-        if (disponiveis - vagasFuturas <= 0) {
-            throw new BusinessException("Sem fantasias disponíveis para o personagem: " + personagem.getNome());
-        }
-
-        EventoPersonagem ep = EventoPersonagem.builder()
-                .evento(evento)
-                .personagem(personagem)
-                .build();
-        EventoPersonagem salvo = eventoPersonagemRepository.save(ep);
-
-        return new EventoPersonagemResponse(
-                salvo.getId(),
-                evento.getId(),
-                evento.getTitulo(),
-                personagem.getId(),
-                personagem.getNome());
     }
 
     private EventoResponse toResponse(Evento evento) {
@@ -158,22 +104,6 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + id));
         return toResponse(evento);
-    }
-
-    @Transactional(readOnly = true)
-    public List<EventoPersonagemResponse> listarPersonagens(int eventoId) {
-        if (!eventoRepository.existsById(eventoId)) {
-            throw new ResourceNotFoundException("Evento não encontrado com id: " + eventoId);
-        }
-        return eventoPersonagemRepository.findByEventoId(eventoId)
-                .stream()
-                .map(ep -> new EventoPersonagemResponse(
-                        ep.getId(),
-                        ep.getEvento().getId(),
-                        ep.getEvento().getTitulo(),
-                        ep.getPersonagem().getId(),
-                        ep.getPersonagem().getNome()))
-                .toList();
     }
 
     @Transactional

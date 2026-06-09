@@ -7,6 +7,13 @@ import jakarta.validation.constraints.NotNull;
 public record AdicionarPersonagemRequest(
 
         @Schema(
+                description = "Identificador do evento ao qual o personagem será vinculado",
+                example = "1"
+        )
+        @NotNull
+        Integer eventoId,
+
+        @Schema(
                 description = "Identificador do personagem a ser vinculado ao evento",
                 example = "5"
         )
