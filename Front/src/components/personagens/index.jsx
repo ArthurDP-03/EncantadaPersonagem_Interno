@@ -102,7 +102,7 @@ function Personagens() {
             {personagensFiltrados.map(personagem => (
               <li key={personagem.id} className="card-personagem">
                 <div className="imagem-container">
-                  <img src={personagem.foto || imagem} alt="" className="imagem" />
+                  <img src={imagem} alt="" className="imagem" />
                   <div className="card-personagem-acoes">
                     <button
                       className="btn-icone btn-editar"
