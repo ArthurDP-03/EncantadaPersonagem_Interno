@@ -1,5 +1,5 @@
 .section-personagens{}
-.section-personagens .conteudo{padding: 0 0 0 100px;}
+.section-personagens .conteudo{padding: 0 0 100px 100px;}
 .section-personagens .titulo{margin: 1em 0 0;}
 .section-personagens .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
 .section-personagens .input-container{position: relative;}

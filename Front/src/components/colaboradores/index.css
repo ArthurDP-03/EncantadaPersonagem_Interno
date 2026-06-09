@@ -1,5 +1,5 @@
 .section-colaboradores{}
-.section-colaboradores .conteudo{padding: 0 0 0 100px;}
+.section-colaboradores .conteudo{padding: 0 0 100px 100px;}
 .section-colaboradores .titulo{margin: 1em 0 0;}
 .section-colaboradores .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
 .section-colaboradores .input-container{position: relative;}
