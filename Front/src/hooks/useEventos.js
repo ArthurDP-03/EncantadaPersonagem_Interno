@@ -7,6 +7,46 @@ import {
   deletarEvento,
 } from "../services/eventosService";
 
+const escapeHtml = (value) =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const formatarCamposValidacao = (fields) => {
+  const itens = Object.entries(fields)
+    .map(([campo, msg]) => `<li><strong>${escapeHtml(campo)}</strong>: ${escapeHtml(msg)}</li>`)
+    .join("");
+
+  return `<div style="text-align:left;"><ul style="margin:0;padding-left:1.25rem;">${itens}</ul></div>`;
+};
+
+const obterMensagemErro = (err, fallback) =>
+  err.data?.message || err.data?.error || fallback;
+
+const mostrarErroGenerico = (err, title, fallback) => {
+  Swal.fire({
+    icon: "error",
+    title,
+    text: obterMensagemErro(err, fallback),
+  });
+};
+
+const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
+  if (err.status === 422 && err.data?.fields) {
+    Swal.fire({
+      icon: "error",
+      title: "Dados inválidos",
+      html: formatarCamposValidacao(err.data.fields),
+    });
+    return;
+  }
+
+  mostrarErroGenerico(err, title, fallback);
+};
+
 export function useEventos() {
   const [eventos, setEventos] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -17,11 +57,12 @@ export function useEventos() {
       .then(setEventos)
       .catch(err => {
         console.error("Erro completo:", err);
-        setErro(err.data?.error || "Erro ao carregar eventos");
+        const mensagemErro = obterMensagemErro(err, "Erro ao carregar eventos");
+        setErro(mensagemErro);
         Swal.fire({
           icon: "error",
           title: "Erro ao carregar",
-          text: err.data?.error || "Não foi possível carregar os eventos",
+          text: mensagemErro,
         });
       })
       .finally(() => setCarregando(false));
@@ -46,11 +87,7 @@ export function useEventos() {
       Swal.fire({ icon: "success", title: "Evento deletado", timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao deletar evento:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao deletar",
-        text: err.data?.message || err.data?.error || "Não foi possível deletar o evento",
-      });
+      mostrarErroGenerico(err, "Erro ao deletar", "Não foi possível deletar o evento");
     }
   };
 
@@ -61,11 +98,9 @@ export function useEventos() {
       Swal.fire({ icon: "success", title: "Evento criado", timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao criar evento:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao criar",
-        text: err.data?.error || "Não foi possível criar o evento",
-      });
+      mostrarErroValidacaoOuGenerico(err, "Erro ao criar", "Não foi possível criar o evento");
+
+      throw err;
     }
   };
 
@@ -76,11 +111,9 @@ export function useEventos() {
       Swal.fire({ icon: "success", title: "Evento atualizado", timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao editar evento:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao atualizar",
-        text: err.data?.error || "Não foi possível atualizar o evento",
-      });
+      mostrarErroValidacaoOuGenerico(err, "Erro ao atualizar", "Não foi possível atualizar o evento");
+
+      throw err;
     }
   };
 
