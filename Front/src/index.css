@@ -115,20 +115,6 @@
   --sombra-escura: rgba(0, 0, 0, 0.7);
   --sombra-grande: rgba(0, 0, 0, 0.3);
   --sombra-pequena: rgba(0, 0, 0, 0.15);
-  
-  /* Variáveis para Demo Page */
-  --rosa-opacity-55: rgba(212, 165, 165, 0.55);
-  --verde-opacity-12: rgba(117, 155, 126, 0.12);
-  --verde-opacity-8: rgba(117, 155, 126, 0.08);
-  --verde-opacity-15: rgba(117, 155, 126, 0.15);
-  --verde-opacity-25: rgba(117, 155, 126, 0.25);
-  --fundo-light: #1a1a1a;
-  --fundo-lighter: #242424;
-  --overlay: rgba(255, 255, 255, 0.08);
-  --overlay-medio: rgba(255, 255, 255, 0.06);
-  --overlay-claro: rgba(255, 255, 255, 0.04);
-  --rosa-rgba-acao: rgba(212, 165, 165, 0.15);
-  --rosa-opacity-35: rgba(212, 165, 165, 0.35);
 }
 *{
   font-family: var(--font-1);

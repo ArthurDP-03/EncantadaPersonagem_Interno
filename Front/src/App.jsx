@@ -24,7 +24,6 @@ function App() {
         <Routes>
           {/* rotas públicas */}
           <Route path="/login" element={<Login />} />
-          <Route path="/testes" element={<Demo />} />
           {/* privadas com layout */}
           <Route element={<PrivateLayout />}>
             <Route path="/" element={<Home/>}/>
