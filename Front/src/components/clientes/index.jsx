@@ -65,10 +65,6 @@ function Clientes() {
       .then(() => {
         setModalCriar(false);
         setForm(clienteVazio);
-      })
-      .catch(err => {
-        console.error("Erro ao criar cliente:", err);
-        // O erro é tratado no hook com Swal
       });
   }
 
@@ -93,10 +89,6 @@ function Clientes() {
     editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email })
       .then(() => {
         setModalEditar(null);
-      })
-      .catch(err => {
-        console.error("Erro ao editar cliente:", err);
-        // O erro é tratado no hook com Swal
       });
   }
 

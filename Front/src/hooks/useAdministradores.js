@@ -2,6 +2,46 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { getAdministrador, deletarAdministrador, criarAdministrador, atualizarAdministrador } from "../services/administradoresService";
 
+const escapeHtml = (value) =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const formatarCamposValidacao = (fields) => {
+  const itens = Object.entries(fields)
+    .map(([campo, msg]) => `<li><strong>${escapeHtml(campo)}</strong>: ${escapeHtml(msg)}</li>`)
+    .join("");
+
+  return `<div style="text-align:left;"><ul style="margin:0;padding-left:1.25rem;">${itens}</ul></div>`;
+};
+
+const obterMensagemErro = (err, fallback) =>
+  err.data?.message || err.data?.error || fallback;
+
+const mostrarErroGenerico = (err, title, fallback) => {
+  Swal.fire({
+    icon: "error",
+    title,
+    text: obterMensagemErro(err, fallback),
+  });
+};
+
+const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
+  if (err.status === 422 && err.data?.fields) {
+    Swal.fire({
+      icon: "error",
+      title: "Dados inválidos",
+      html: formatarCamposValidacao(err.data.fields),
+    });
+    return;
+  }
+
+  mostrarErroGenerico(err, title, fallback);
+};
+
 export function useAdministradores() {
   const [administradores, setAdministradores] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -12,8 +52,9 @@ export function useAdministradores() {
       .then(setAdministradores)
       .catch(err => {
         console.error("Erro completo:", err);
-        setErro(err.data?.error || "Erro ao carregar administradores");
-        Swal.fire({ icon: "error", title: "Erro ao carregar", text: err.data?.error || "Não foi possível carregar os administradores" });
+        const mensagemErro = obterMensagemErro(err, "Erro ao carregar administradores");
+        setErro(mensagemErro);
+        Swal.fire({ icon: "error", title: "Erro ao carregar", text: mensagemErro });
       })
       .finally(() => setCarregando(false));
   }, []);
@@ -27,7 +68,7 @@ export function useAdministradores() {
       Swal.fire({ icon: "success", title: "Administrador deletado", timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao deletar administrador:", err);
-      Swal.fire({ icon: "error", title: "Erro ao deletar", text: err.data?.error || "Não foi possível deletar o administrador" });
+      mostrarErroGenerico(err, "Erro ao deletar", "Não foi possível deletar o administrador");
     }
   };
 
@@ -38,7 +79,7 @@ export function useAdministradores() {
       Swal.fire({ icon: "success", title: "Administrador criado", timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao criar administrador:", err);
-      Swal.fire({ icon: "error", title: "Erro ao criar", text: err.data?.error || "Não foi possível criar o administrador" });
+      mostrarErroValidacaoOuGenerico(err, "Erro ao criar", "Não foi possível criar o administrador");
     }
   };
 
@@ -49,7 +90,7 @@ export function useAdministradores() {
       Swal.fire({ icon: "success", title: "Administrador atualizado", timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao editar administrador:", err);
-      Swal.fire({ icon: "error", title: "Erro ao atualizar", text: err.data?.error || "Não foi possível atualizar o administrador" });
+      mostrarErroValidacaoOuGenerico(err, "Erro ao atualizar", "Não foi possível atualizar o administrador");
     }
   };
 
