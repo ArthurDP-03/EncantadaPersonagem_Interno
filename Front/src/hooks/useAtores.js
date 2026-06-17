@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import i18n from "../i18n";
 import { getAtores, deletarAtor, criarAtor, atualizarAtor } from "../services/atoresService";
+
+const t = i18n.t.bind(i18n);
 
 const escapeHtml = (value) =>
   String(value)
@@ -33,7 +36,7 @@ const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
   if (err.status === 422 && err.data?.fields) {
     Swal.fire({
       icon: "error",
-      title: "Dados inválidos",
+      title: t('common.validation.invalidData'),
       html: formatarCamposValidacao(err.data.fields),
     });
     return;
@@ -52,23 +55,31 @@ export function useAtores() {
       .then(setAtores)
       .catch(err => {
         console.error("Erro completo:", err);
-        const mensagemErro = obterMensagemErro(err, "Erro ao carregar atores");
+        const mensagemErro = obterMensagemErro(err, t('collaborators.actors.errors.load'));
         setErro(mensagemErro);
-        Swal.fire({ icon: "error", title: "Erro ao carregar", text: mensagemErro });
+        Swal.fire({ icon: "error", title: t('collaborators.actors.titles.load'), text: mensagemErro });
       })
       .finally(() => setCarregando(false));
   }, []);
 
   const deletar = async (id) => {
-    const resultado = await Swal.fire({ title: "Deseja deletar este ator?", text: "Esta ação não poderá ser desfeita.", icon: "warning", showCancelButton: true, confirmButtonText: "Deletar", cancelButtonText: "Cancelar", confirmButtonColor: "#d33" });
+    const resultado = await Swal.fire({
+      title: t('common.confirm.deleteTitle', { item: t('common.items.actor').toLowerCase() }),
+      text: t('common.confirm.deleteText'),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: t('common.confirm.confirmBtn'),
+      cancelButtonText: t('common.confirm.cancelBtn'),
+      confirmButtonColor: "#d33"
+    });
     if (!resultado.isConfirmed) return;
     try {
       await deletarAtor(id);
       setAtores(prev => prev.filter(a => a.id !== id));
-      Swal.fire({ icon: "success", title: "Ator deletado", timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: t('common.success.deleted', { item: t('common.items.actor') }), timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao deletar ator:", err);
-      mostrarErroGenerico(err, "Erro ao deletar", "Não foi possível deletar o ator");
+      mostrarErroGenerico(err, t('collaborators.actors.titles.delete'), t('collaborators.actors.errors.delete'));
     }
   };
 
@@ -76,10 +87,10 @@ export function useAtores() {
     try {
       const novoAtor = await criarAtor(dados);
       setAtores(prev => [...prev, novoAtor]);
-      Swal.fire({ icon: "success", title: "Ator criado", timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: t('common.success.created', { item: t('common.items.actor') }), timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao criar ator:", err);
-      mostrarErroValidacaoOuGenerico(err, "Erro ao criar", "Não foi possível criar o ator");
+      mostrarErroValidacaoOuGenerico(err, t('collaborators.actors.titles.create'), t('collaborators.actors.errors.create'));
     }
   };
 
@@ -87,10 +98,10 @@ export function useAtores() {
     try {
       const atualizado = await atualizarAtor(id, dados);
       setAtores(prev => prev.map(a => a.id === id ? atualizado : a));
-      Swal.fire({ icon: "success", title: "Ator atualizado", timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: t('common.success.updated', { item: t('common.items.actor') }), timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao editar ator:", err);
-      mostrarErroValidacaoOuGenerico(err, "Erro ao atualizar", "Não foi possível atualizar o ator");
+      mostrarErroValidacaoOuGenerico(err, t('collaborators.actors.titles.update'), t('collaborators.actors.errors.update'));
     }
   };
 

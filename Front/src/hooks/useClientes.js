@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import i18n from "../i18n";
 import {
   getClientes,
   criarCliente,
   atualizarCliente,
   deletarCliente
 } from "../services/cliente";
+
+const t = i18n.t.bind(i18n);
 
 const escapeHtml = (value) =>
   String(value)
@@ -38,7 +41,7 @@ const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
   if (err.status === 422 && err.data?.fields) {
     Swal.fire({
       icon: "error",
-      title: "Dados inválidos",
+      title: t('common.validation.invalidData'),
       html: formatarCamposValidacao(err.data.fields),
     });
     return;
@@ -58,12 +61,12 @@ export function useClientes() {
       .catch(err => {
         console.error("Erro completo:", err);
 
-        const mensagemErro = obterMensagemErro(err, "Erro ao carregar clientes");
+        const mensagemErro = obterMensagemErro(err, t('clients.errors.load'));
         setErro(mensagemErro);
 
         Swal.fire({
           icon: "error",
-          title: "Erro ao carregar",
+          title: t('clients.titles.load'),
           text: mensagemErro
         });
       })
@@ -72,12 +75,12 @@ export function useClientes() {
 
   const deletar = async (id) => {
     const resultado = await Swal.fire({
-      title: "Deseja deletar este cliente?",
-      text: "Esta ação não poderá ser desfeita.",
+      title: t('common.confirm.deleteTitle', { item: t('common.items.client').toLowerCase() }),
+      text: t('common.confirm.deleteText'),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Deletar",
-      cancelButtonText: "Cancelar",
+      confirmButtonText: t('common.confirm.confirmBtn'),
+      cancelButtonText: t('common.confirm.cancelBtn'),
       confirmButtonColor: "#d33"
     });
 
@@ -90,14 +93,14 @@ export function useClientes() {
 
       Swal.fire({
         icon: "success",
-        title: "Cliente deletado",
+        title: t('common.success.deleted', { item: t('common.items.client') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao deletar cliente:", err);
 
-      mostrarErroGenerico(err, "Erro ao deletar", "Não foi possível deletar o cliente");
+      mostrarErroGenerico(err, t('clients.titles.delete'), t('clients.errors.delete'));
     }
   };
 
@@ -109,14 +112,14 @@ export function useClientes() {
 
       Swal.fire({
         icon: "success",
-        title: "Cliente criado",
+        title: t('common.success.created', { item: t('common.items.client') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao criar cliente:", err);
 
-      mostrarErroValidacaoOuGenerico(err, "Erro ao criar", "Não foi possível criar o cliente");
+      mostrarErroValidacaoOuGenerico(err, t('clients.titles.create'), t('clients.errors.create'));
 
       throw err;
     }
@@ -132,14 +135,14 @@ export function useClientes() {
 
       Swal.fire({
         icon: "success",
-        title: "Cliente atualizado",
+        title: t('common.success.updated', { item: t('common.items.client') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao editar cliente:", err);
 
-      mostrarErroValidacaoOuGenerico(err, "Erro ao atualizar", "Não foi possível atualizar o cliente");
+      mostrarErroValidacaoOuGenerico(err, t('clients.titles.update'), t('clients.errors.update'));
 
       throw err;
     }

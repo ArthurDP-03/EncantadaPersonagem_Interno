@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import i18n from "../i18n";
 import {
   getEventos,
   criarEvento,
   atualizarEvento,
   deletarEvento,
 } from "../services/eventosService";
+
+const t = i18n.t.bind(i18n);
 
 const escapeHtml = (value) =>
   String(value)
@@ -38,7 +41,7 @@ const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
   if (err.status === 422 && err.data?.fields) {
     Swal.fire({
       icon: "error",
-      title: "Dados inválidos",
+      title: t('common.validation.invalidData'),
       html: formatarCamposValidacao(err.data.fields),
     });
     return;
@@ -57,11 +60,11 @@ export function useEventos() {
       .then(setEventos)
       .catch(err => {
         console.error("Erro completo:", err);
-        const mensagemErro = obterMensagemErro(err, "Erro ao carregar eventos");
+        const mensagemErro = obterMensagemErro(err, t('events.errors.load'));
         setErro(mensagemErro);
         Swal.fire({
           icon: "error",
-          title: "Erro ao carregar",
+          title: t('events.titles.load'),
           text: mensagemErro,
         });
       })
@@ -70,12 +73,12 @@ export function useEventos() {
 
   const deletar = async (id) => {
     const resultado = await Swal.fire({
-      title: "Deseja deletar este evento?",
-      text: "Esta ação não poderá ser desfeita.",
+      title: t('common.confirm.deleteTitle', { item: t('common.items.event').toLowerCase() }),
+      text: t('common.confirm.deleteText'),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Deletar",
-      cancelButtonText: "Cancelar",
+      confirmButtonText: t('common.confirm.confirmBtn'),
+      cancelButtonText: t('common.confirm.cancelBtn'),
       confirmButtonColor: "#d33",
     });
 
@@ -84,10 +87,10 @@ export function useEventos() {
     try {
       await deletarEvento(id);
       setEventos(prev => prev.filter(e => e.id !== id));
-      Swal.fire({ icon: "success", title: "Evento deletado", timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: t('common.success.deleted', { item: t('common.items.event') }), timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao deletar evento:", err);
-      mostrarErroGenerico(err, "Erro ao deletar", "Não foi possível deletar o evento");
+      mostrarErroGenerico(err, t('events.titles.delete'), t('events.errors.delete'));
     }
   };
 
@@ -95,10 +98,10 @@ export function useEventos() {
     try {
       const novoEvento = await criarEvento(dados);
       setEventos(prev => [...prev, novoEvento]);
-      Swal.fire({ icon: "success", title: "Evento criado", timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: t('common.success.created', { item: t('common.items.event') }), timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao criar evento:", err);
-      mostrarErroValidacaoOuGenerico(err, "Erro ao criar", "Não foi possível criar o evento");
+      mostrarErroValidacaoOuGenerico(err, t('events.titles.create'), t('events.errors.create'));
 
       throw err;
     }
@@ -108,10 +111,10 @@ export function useEventos() {
     try {
       const atualizado = await atualizarEvento(id, dados);
       setEventos(prev => prev.map(e => (e.id === id ? atualizado : e)));
-      Swal.fire({ icon: "success", title: "Evento atualizado", timer: 1800, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: t('common.success.updated', { item: t('common.items.event') }), timer: 1800, showConfirmButton: false });
     } catch (err) {
       console.error("Erro ao editar evento:", err);
-      mostrarErroValidacaoOuGenerico(err, "Erro ao atualizar", "Não foi possível atualizar o evento");
+      mostrarErroValidacaoOuGenerico(err, t('events.titles.update'), t('events.errors.update'));
 
       throw err;
     }

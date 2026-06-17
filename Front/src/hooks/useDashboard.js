@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getDashboard } from "../services/dashboardService";
+import i18n from "../i18n";
 
 export function useDashboard() {
   const [data, setData] = useState(null);
@@ -11,7 +12,7 @@ export function useDashboard() {
     try {
       setData(await getDashboard());
     } catch (e) {
-      setError(e?.data?.message || "Erro ao carregar dashboard");
+      setError(e?.data?.message || i18n.t("dashboard.errors.load"));
     } finally {
       setLoading(false);
     }

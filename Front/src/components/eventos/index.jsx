@@ -7,6 +7,7 @@ import { useAdministradores } from '../../hooks/useAdministradores';
 import logo from '../../assets/logo.png';
 import { formatarPeriodoEvento, agruparEventosPorData, labelData, formatarStatus } from '../../utils/formatters';
 import { EventoStatus } from '../../services/eventosService';
+import { useTranslation } from 'react-i18next';
 
 const eventoVazio = {
   titulo: "",
@@ -22,51 +23,53 @@ const eventoVazio = {
 };
 
 function FormEvento({ dados, onChange, clientes, administradores }) {
+  const { t } = useTranslation();
+
   return (
     <div className="form-evento">
-      <label>Título
-        <input value={dados.titulo} onChange={e => onChange({ ...dados, titulo: e.target.value })} placeholder="Nome do evento" />
+      <label>{t('common.fields.title')}
+        <input value={dados.titulo} onChange={e => onChange({ ...dados, titulo: e.target.value })} placeholder={t('events.placeholders.title')} />
       </label>
-      <label>Descrição
-        <textarea value={dados.descricao} onChange={e => onChange({ ...dados, descricao: e.target.value })} placeholder="Descrição do evento" rows={3} />
+      <label>{t('common.fields.description')}
+        <textarea value={dados.descricao} onChange={e => onChange({ ...dados, descricao: e.target.value })} placeholder={t('events.placeholders.description')} rows={3} />
       </label>
       <div className="form-evento-linha">
-        <label>Data de início
+        <label>{t('common.fields.startDate')}
           <input type="datetime-local" value={dados.dataInicio} onChange={e => onChange({ ...dados, dataInicio: e.target.value })} />
         </label>
-        <label>Data de fim
+        <label>{t('common.fields.endDate')}
           <input type="datetime-local" value={dados.dataFim} onChange={e => onChange({ ...dados, dataFim: e.target.value })} />
         </label>
       </div>
-      <label>Endereço
-        <input value={dados.endereco} onChange={e => onChange({ ...dados, endereco: e.target.value })} placeholder="Rua, número, cidade" />
+      <label>{t('common.fields.address')}
+        <input value={dados.endereco} onChange={e => onChange({ ...dados, endereco: e.target.value })} placeholder={t('events.placeholders.address')} />
       </label>
       <div className="form-evento-linha">
-        <label>Status
+        <label>{t('common.fields.status')}
           <select value={dados.status} onChange={e => onChange({ ...dados, status: e.target.value })}>
             {Object.values(EventoStatus).map(s => (
               <option key={s} value={s}>{formatarStatus(s)}</option>
             ))}
           </select>
         </label>
-        <label>Tipo de pagamento
-          <input value={dados.tipoPagamento} onChange={e => onChange({ ...dados, tipoPagamento: e.target.value })} placeholder="PIX, Cartão..." />
+        <label>{t('common.fields.paymentType')}
+          <input value={dados.tipoPagamento} onChange={e => onChange({ ...dados, tipoPagamento: e.target.value })} placeholder={t('events.placeholders.paymentType')} />
         </label>
       </div>
-      <label>Valor total (R$)
-        <input type="number" value={dados.valorTotal} onChange={e => onChange({ ...dados, valorTotal: e.target.value })} placeholder="0,00" />
+      <label>{t('common.fields.totalValue')} (R$)
+        <input type="number" value={dados.valorTotal} onChange={e => onChange({ ...dados, valorTotal: e.target.value })} placeholder={t('common.placeholders.value')} />
       </label>
-      <label>Cliente
+      <label>{t('common.fields.client')}
         <select value={dados.clienteId} onChange={e => onChange({ ...dados, clienteId: e.target.value })}>
-          <option value="">Selecione um cliente</option>
+          <option value="">{t('events.select.client')}</option>
           {clientes.map(c => (
             <option key={c.id} value={c.id}>{c.nome}</option>
           ))}
         </select>
       </label>
-      <label>Administrador responsável
+      <label>{t('common.fields.responsibleAdmin')}
         <select value={dados.administradorCriadorId} onChange={e => onChange({ ...dados, administradorCriadorId: e.target.value })}>
-          <option value="">Selecione um administrador</option>
+          <option value="">{t('events.select.admin')}</option>
           {administradores.map(a => (
             <option key={a.id} value={a.id}>{a.nome}</option>
           ))}
@@ -77,6 +80,7 @@ function FormEvento({ dados, onChange, clientes, administradores }) {
 }
 
 function Eventos() {
+  const { t } = useTranslation();
   const [busca, setBusca]             = useState("");
   const [ordem, setOrdem]             = useState("");
   const [modalCriar, setModalCriar]   = useState(false);
@@ -88,8 +92,8 @@ function Eventos() {
   const { clientes }                                          = useClientes();
   const { administradores }                                   = useAdministradores();
 
-  if (carregando) return <p>Carregando...</p>;
-  if (erro) return <p>Erro: {erro}</p>;
+  if (carregando) return <p>{t('common.loading')}</p>;
+  if (erro) return <p>{t('common.error', { message: erro })}</p>;
 
   const eventosFiltrados = eventos
     .filter(e =>
@@ -144,11 +148,32 @@ function Eventos() {
       <div className="conteudo-95 layout">
         <div className="conteudo">
 
-          <h1 className="titulo t1">Eventos</h1>
+          <h1 className="titulo t1">{t('events.title')}</h1>
+
+          <div className="filtros">
+            <div className="input-container">
+              <select className="input" value={ordem} onChange={e => setOrdem(e.target.value)}>
+                <option value="">{t('common.order')}</option>
+                <option value="az">{t('common.orderAZ')}</option>
+                <option value="za">{t('common.orderZA')}</option>
+              </select>
+              <ChevronDown className="icon" size={18} />
+            </div>
+            <div className="input-container">
+              <input
+                type="text"
+                placeholder={t('common.search')}
+                className="input"
+                value={busca}
+                onChange={e => setBusca(e.target.value)}
+              />
+              <Search className="icon" size={18} />
+            </div>
+          </div>
 
           <div className="timeline">
             {grupos.length === 0 ? (
-              <div className="eventos-vazio">Nenhum evento encontrado.</div>
+              <div className="eventos-vazio">{t('events.empty')}</div>
             ) : (
               grupos.map((item, idx) => {
                 const { prefixo, texto } = labelData(item.data);
@@ -168,7 +193,7 @@ function Eventos() {
                               <button
                                 className="btn-icone btn-editar"
                                 type="button"
-                                title="Editar"
+                                title={t('common.edit')}
                                 onClick={() => setModalEditar({ ...evento })}
                               >
                                 <Pencil size={16} />
@@ -176,7 +201,7 @@ function Eventos() {
                               <button
                                 className="btn-icone btn-deletar"
                                 type="button"
-                                title="Deletar"
+                                title={t('common.delete')}
                                 onClick={() => deletar(evento.id)}
                               >
                                 <Trash2 size={16} />
@@ -202,7 +227,7 @@ function Eventos() {
       </div>
 
       {/* FAB – Novo evento */}
-      <button className="eventos-fab" title="Novo evento" onClick={() => { setForm(eventoVazio); setModalCriar(true); }}>
+      <button className="eventos-fab" title={t('events.newButton')} onClick={() => { setForm(eventoVazio); setModalCriar(true); }}>
         <Plus size={24} />
       </button>
 
@@ -210,11 +235,11 @@ function Eventos() {
       {modalCriar && (
         <div className="modal">
           <form onSubmit={handleCriar}>
-            <h2 className="modal-titulo">Novo Evento</h2>
+            <h2 className="modal-titulo">{t('events.newTitle')}</h2>
             <FormEvento dados={form} onChange={setForm} {...formProps} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(eventoVazio); }}>Cancelar</button>
-              <button type="submit" className="btn-primario">Criar</button>
+              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(eventoVazio); }}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario">{t('common.create')}</button>
             </div>
           </form>
         </div>
@@ -224,11 +249,11 @@ function Eventos() {
       {modalEditar && (
         <div className="modal">
           <form onSubmit={handleEditar}>
-            <h2 className="modal-titulo">Editar Evento</h2>
+            <h2 className="modal-titulo">{t('events.editTitle')}</h2>
             <FormEvento dados={modalEditar} onChange={setModalEditar} {...formProps} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
-              <button type="submit" className="btn-primario">Salvar</button>
+              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario">{t('common.save')}</button>
             </div>
           </form>
         </div>

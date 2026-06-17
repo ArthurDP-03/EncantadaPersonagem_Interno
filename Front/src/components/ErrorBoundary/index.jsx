@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import './index.css';
+import i18n from '../../i18n';
 
 export class ErrorBoundary extends Component {
   constructor(props) {
@@ -26,15 +27,15 @@ export class ErrorBoundary extends Component {
       return (
         <div className="error-boundary">
           <div className="error-container">
-            <h1>⚠️ Erro</h1>
+            <h1>{i18n.t('errors.boundary.title')}</h1>
             <p className="error-message">
-              {this.state.error?.message || 'Erro inesperado'}
+              {this.state.error?.message || i18n.t('errors.boundary.unexpected')}
             </p>
             <button
               className="error-button"
               onClick={() => window.location.reload()}
             >
-              Recarregar página
+              {i18n.t('errors.boundary.reload')}
             </button>
           </div>
         </div>
