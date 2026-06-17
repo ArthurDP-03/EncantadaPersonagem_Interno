@@ -1,0 +1,378 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro: {{message}}",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "create": "Criar",
+    "edit": "Editar",
+    "delete": "Deletar",
+    "search": "Buscar",
+    "order": "Ordenar",
+    "orderAZ": "Alfabética (A-Z)",
+    "orderZA": "Alfabética (Z-A)",
+    "select": "Selecione",
+    "back": "Voltar",
+    "logoAlt": "Logo",
+    "notFound": "Nenhum {{item}} encontrado.",
+    "confirm": {
+      "deleteTitle": "Deseja deletar este {{item}}?",
+      "deleteText": "Esta ação não poderá ser desfeita.",
+      "confirmBtn": "Deletar",
+      "cancelBtn": "Cancelar"
+    },
+    "success": {
+      "created": "{{item}} criado",
+      "updated": "{{item}} atualizado",
+      "deleted": "{{item}} deletado"
+    },
+    "validation": {
+      "title": "Validação",
+      "required": "O campo {{field}} é obrigatório para preenchimento",
+      "requiredNumber": "O campo {{field}} é obrigatório para preenchimento e deve ser um número",
+      "invalidData": "Dados inválidos"
+    },
+    "fields": {
+      "name": "Nome",
+      "email": "Email",
+      "phone": "Telefone",
+      "password": "Senha",
+      "type": "Tipo",
+      "gender": "Gênero",
+      "height": "Altura",
+      "weight": "Peso",
+      "observation": "Observação",
+      "title": "Título",
+      "description": "Descrição",
+      "startDate": "Data de início",
+      "endDate": "Data de fim",
+      "address": "Endereço",
+      "paymentType": "Tipo de pagamento",
+      "totalValue": "Valor total",
+      "client": "Cliente",
+      "responsibleAdmin": "Administrador responsável",
+      "status": "Status",
+      "photo": "Foto",
+      "url": "URL"
+    },
+    "placeholders": {
+      "name": "Nome completo",
+      "email": "email@exemplo.com",
+      "phone": "41 9 9999-0000",
+      "password": "Senha",
+      "url": "URL",
+      "value": "0,00",
+      "observations": "Observações..."
+    },
+    "items": {
+      "client": "Cliente",
+      "character": "Personagem",
+      "administrator": "Administrador",
+      "actor": "Ator",
+      "event": "Evento",
+      "invitation": "Convite",
+      "characterItem": "Item de personagem",
+      "collaborator": "Colaborador"
+    },
+    "roles": {
+      "admin": "Administrador",
+      "actor": "Ator"
+    },
+    "languages": {
+      "pt": "PT",
+      "en": "EN"
+    }
+  },
+  "nav": {
+    "general": "Geral",
+    "events": "Eventos",
+    "finance": "Financeiro",
+    "clients": "Clientes",
+    "characters": "Personagens",
+    "collaborators": "Colaboradores",
+    "logout": "Sair"
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Senha",
+    "entering": "Entrando...",
+    "enter": "Entrar",
+    "validation": {
+      "requiredFields": "Preencha todos os campos",
+      "shortPassword": "Senha muito curta"
+    },
+    "errors": {
+      "tokenMissing": "Token não recebido",
+      "tokenInvalid": "Token inválido ou expirado",
+      "invalidCredentials": "Email ou senha inválidos",
+      "accessDenied": "Acesso negado",
+      "generic": "Erro ao fazer login"
+    }
+  },
+  "clients": {
+    "title": "Clientes",
+    "empty": "Nenhum cliente encontrado.",
+    "newButton": "Novo cliente",
+    "newTitle": "Novo Cliente",
+    "editTitle": "Editar Cliente",
+    "placeholders": {
+      "name": "Nome completo",
+      "email": "email@exemplo.com",
+      "phone": "41 9 9999-0000"
+    },
+    "titles": {
+      "load": "Erro ao carregar",
+      "create": "Erro ao criar",
+      "update": "Erro ao atualizar",
+      "delete": "Erro ao deletar"
+    },
+    "errors": {
+      "load": "Erro ao carregar clientes",
+      "create": "Não foi possível criar o cliente",
+      "update": "Não foi possível atualizar o cliente",
+      "delete": "Não foi possível deletar o cliente"
+    },
+    "success": {
+      "created": "Cliente criado",
+      "updated": "Cliente atualizado",
+      "deleted": "Cliente deletado"
+    }
+  },
+  "characters": {
+    "title": "Personagens",
+    "empty": "Nenhum personagem encontrado.",
+    "noDescription": "Sem descrição",
+    "newButton": "Novo personagem",
+    "newTitle": "Novo Personagem",
+    "editTitle": "Editar Personagem",
+    "placeholders": {
+      "name": "Nome do personagem",
+      "description": "Descrição do personagem",
+      "photo": "URL da foto"
+    },
+    "titles": {
+      "load": "Erro ao carregar",
+      "create": "Erro ao criar",
+      "update": "Erro ao atualizar",
+      "delete": "Erro ao deletar"
+    },
+    "errors": {
+      "load": "Erro ao carregar personagens",
+      "create": "Não foi possível criar o personagem",
+      "update": "Não foi possível atualizar o personagem",
+      "delete": "Não foi possível deletar o personagem"
+    },
+    "success": {
+      "created": "Personagem criado",
+      "updated": "Personagem atualizado",
+      "deleted": "Personagem deletado"
+    }
+  },
+  "collaborators": {
+    "title": "Colaboradores",
+    "newButton": "Novo colaborador",
+    "newTitle": "Novo Colaborador",
+    "editTitle": "Editar {{item}}",
+    "sections": {
+      "admins": "Administradores",
+      "actors": "Atores"
+    },
+    "tabs": {
+      "admin": "Administrador",
+      "actor": "Ator"
+    },
+    "empty": {
+      "admins": "Nenhum administrador encontrado.",
+      "actors": "Nenhum ator encontrado."
+    },
+    "gender": {
+      "select": "Selecione",
+      "male": "Masculino",
+      "female": "Feminino",
+      "other": "Outro"
+    },
+    "placeholders": {
+      "name": "Nome completo",
+      "email": "email@exemplo.com",
+      "phone": "41 9 9999-0000",
+      "password": "Senha",
+      "height": "1.80",
+      "weight": "78",
+      "observations": "Observações..."
+    },
+    "administrators": {
+      "titles": {
+        "load": "Erro ao carregar",
+        "create": "Erro ao criar",
+        "update": "Erro ao atualizar",
+        "delete": "Erro ao deletar"
+      },
+      "errors": {
+        "load": "Erro ao carregar administradores",
+        "create": "Não foi possível criar o administrador",
+        "update": "Não foi possível atualizar o administrador",
+        "delete": "Não foi possível deletar o administrador"
+      },
+      "success": {
+        "created": "Administrador criado",
+        "updated": "Administrador atualizado",
+        "deleted": "Administrador deletado"
+      }
+    },
+    "actors": {
+      "titles": {
+        "load": "Erro ao carregar",
+        "create": "Erro ao criar",
+        "update": "Erro ao atualizar",
+        "delete": "Erro ao deletar"
+      },
+      "errors": {
+        "load": "Erro ao carregar atores",
+        "create": "Não foi possível criar o ator",
+        "update": "Não foi possível atualizar o ator",
+        "delete": "Não foi possível deletar o ator"
+      },
+      "success": {
+        "created": "Ator criado",
+        "updated": "Ator atualizado",
+        "deleted": "Ator deletado"
+      }
+    }
+  },
+  "events": {
+    "title": "Eventos",
+    "empty": "Nenhum evento encontrado.",
+    "newButton": "Novo evento",
+    "newTitle": "Novo Evento",
+    "editTitle": "Editar Evento",
+    "select": {
+      "client": "Selecione um cliente",
+      "admin": "Selecione um administrador"
+    },
+    "placeholders": {
+      "title": "Nome do evento",
+      "description": "Descrição do evento",
+      "address": "Rua, número, cidade",
+      "paymentType": "PIX, Cartão..."
+    },
+    "timeline": {
+      "today": "Hoje",
+      "yesterday": "Ontem",
+      "tomorrow": "Amanhã"
+    },
+    "statusLabels": {
+      "draft": "Rascunho",
+      "confirmed": "Confirmado",
+      "inProgress": "Em andamento",
+      "finished": "Finalizado",
+      "cancelled": "Cancelado"
+    },
+    "period": "{{date}} às {{time}} - duração: {{duration}}",
+    "duration": {
+      "hours": "{{hours}}h",
+      "hoursMinutes": "{{hours}}h{{minutes}}min"
+    },
+    "titles": {
+      "load": "Erro ao carregar",
+      "create": "Erro ao criar",
+      "update": "Erro ao atualizar",
+      "delete": "Erro ao deletar"
+    },
+    "errors": {
+      "load": "Erro ao carregar eventos",
+      "create": "Não foi possível criar o evento",
+      "update": "Não foi possível atualizar o evento",
+      "delete": "Não foi possível deletar o evento"
+    },
+    "success": {
+      "created": "Evento criado",
+      "updated": "Evento atualizado",
+      "deleted": "Evento deletado"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "errors": {
+      "load": "Erro ao carregar dashboard"
+    },
+    "cards": {
+      "totalEvents": "Total de Eventos",
+      "billing": "Faturamento",
+      "activeActors": "Atores Ativos",
+      "pendingInvites": "Convites Pendentes"
+    },
+    "charts": {
+      "status": "Status dos Eventos",
+      "byMonth": "Eventos por Mês",
+      "upcoming": "Próximos Eventos"
+    },
+    "table": {
+      "event": "Evento",
+      "client": "Cliente",
+      "date": "Data",
+      "status": "Status"
+    },
+    "eventsLabel": "Eventos"
+  },
+  "errors": {
+    "boundary": {
+      "title": "Erro",
+      "unexpected": "Erro inesperado",
+      "reload": "Recarregar página"
+    }
+  },
+  "invites": {
+    "titles": {
+      "load": "Erro ao carregar",
+      "send": "Erro ao enviar",
+      "respond": "Erro ao responder",
+      "cancel": "Erro ao cancelar"
+    },
+    "errors": {
+      "load": "Erro ao carregar convites",
+      "loadSent": "Erro ao carregar convites enviados",
+      "loadMine": "Erro ao carregar seus convites",
+      "send": "Não foi possível enviar os convites",
+      "respond": "Não foi possível responder o convite",
+      "cancel": "Não foi possível cancelar o convite"
+    },
+    "confirm": {
+      "cancelTitle": "Deseja cancelar este convite?",
+      "cancelText": "Esta ação não poderá ser desfeita.",
+      "confirmBtn": "Cancelar",
+      "cancelBtn": "Voltar"
+    },
+    "success": {
+      "sent": "Convites enviados",
+      "accepted": "Convite aceito",
+      "declined": "Convite recusado",
+      "cancelled": "Convite cancelado"
+    }
+  },
+  "characterItems": {
+    "titles": {
+      "load": "Erro ao carregar",
+      "create": "Erro ao criar",
+      "updateStatus": "Erro ao atualizar",
+      "delete": "Erro ao deletar"
+    },
+    "errors": {
+      "load": "Erro ao carregar itens de personagem",
+      "create": "Não foi possível criar o item de personagem",
+      "updateStatus": "Não foi possível atualizar o status do item",
+      "delete": "Não foi possível deletar o item de personagem"
+    },
+    "confirm": {
+      "deleteTitle": "Deseja deletar este item de personagem?",
+      "deleteText": "Esta ação não poderá ser desfeita.",
+      "confirmBtn": "Deletar",
+      "cancelBtn": "Cancelar"
+    },
+    "success": {
+      "created": "Item criado",
+      "statusUpdated": "Status atualizado",
+      "deleted": "Item deletado"
+    }
+  }
+}

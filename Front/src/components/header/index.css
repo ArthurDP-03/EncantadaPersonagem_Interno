@@ -10,6 +10,14 @@
 .cabecalho-section .funcionalidades {display: flex; gap: 14px; align-items: center;flex: 1;  justify-content: flex-end;}
 .cabecalho-section .funcionalidades .icone{aspect-ratio: 1 / 1;display: flex;align-items: center;justify-content: center;}
 .cabecalho-section .funcionalidades .icone svg{stroke: var(--verde-1);}
+.cabecalho-section .funcionalidades .language-toggle{
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--verde-1);
+  font: var(--semibold) 0.85rem var(--font-1);
+  cursor: pointer;
+}
 
 
 
