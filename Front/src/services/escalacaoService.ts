@@ -53,3 +53,9 @@ export const cancelarEscalacao = async (id: number): Promise<void> => {
 export const getEscalacaoById = async (id: number): Promise<EscalacaoResponse> => {
   return request(`/escalacoes/${id}`);
 };
+
+export const getEscalacoesByEventoId = async (
+  eventoId: number
+): Promise<EscalacaoResponse[]> => {
+  return request(`/escalacoes/evento/${eventoId}`);
+};

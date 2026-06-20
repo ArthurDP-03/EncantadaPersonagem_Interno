@@ -1,6 +1,7 @@
 package br.com.encantada.personageminterno.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.ConviteRepository;
 import br.com.encantada.personageminterno.repository.EscalacaoRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
+import br.com.encantada.personageminterno.repository.EventoRepository;
 import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.web.dto.escalacao.EscalacaoCreateRequest;
 import br.com.encantada.personageminterno.web.dto.escalacao.EscalacaoResponse;
@@ -33,18 +35,21 @@ public class EscalacaoService {
     private final ConviteRepository conviteRepository;
     private final PersonagemItemRepository personagemItemRepository;
     private final AdministradorRepository administradorRepository;
+    private final EventoRepository eventoRepository;
 
     public EscalacaoService(
             EscalacaoRepository escalacaoRepository,
             EventoPersonagemRepository epRepository,
             ConviteRepository conviteRepository,
             PersonagemItemRepository personagemItemRepository,
-            AdministradorRepository administradorRepository) {
+            AdministradorRepository administradorRepository,
+            EventoRepository eventoRepository) {
         this.escalacaoRepository = escalacaoRepository;
         this.epRepository = epRepository;
         this.conviteRepository = conviteRepository;
         this.personagemItemRepository = personagemItemRepository;
         this.administradorRepository = administradorRepository;
+        this.eventoRepository = eventoRepository;
     }
 
     @Transactional
@@ -139,6 +144,18 @@ public class EscalacaoService {
         Escalacao e = escalacaoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Escalação não encontrada"));
         return toResponse(e);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EscalacaoResponse> listarPorEvento(int eventoId) {
+        if (!eventoRepository.existsById(eventoId)) {
+            throw new ResourceNotFoundException("Evento não encontrado");
+        }
+
+        return escalacaoRepository.findByEventoPersonagemEventoId(eventoId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private EscalacaoResponse toResponse(Escalacao e) {
