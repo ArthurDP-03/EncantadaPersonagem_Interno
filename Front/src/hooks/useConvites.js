@@ -75,9 +75,9 @@ export const useConvite = () => {
     }
   };
 
-  const enviar = async (eventoPersonagemId, atoresIds) => {
+  const enviar = async (eventoPersonagemId, convites) => {
     try {
-      const novosConvites = await enviarConvites({ eventoPersonagemId, atoresIds });
+      const novosConvites = await enviarConvites({ eventoPersonagemId, convites });
       setConvites(prev => [...prev, ...novosConvites]);
       Swal.fire({
         icon: 'success',
