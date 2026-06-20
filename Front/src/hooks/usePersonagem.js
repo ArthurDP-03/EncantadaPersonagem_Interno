@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import i18n from "../i18n";
 import { getPersonagens, criarPersonagem, atualizarPersonagem, deletarPersonagem } from "../services/personagensService";
+
+const t = i18n.t.bind(i18n);
 
 const escapeHtml = (value) =>
   String(value)
@@ -33,7 +36,7 @@ const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
   if (err.status === 422 && err.data?.fields) {
     Swal.fire({
       icon: "error",
-      title: "Dados inválidos",
+      title: t('common.validation.invalidData'),
       html: formatarCamposValidacao(err.data.fields),
     });
     return;
@@ -52,12 +55,12 @@ export function usePersonagens() {
       .then(setPersonagens)
       .catch(err => {
         console.error("Erro completo:", err);
-        const mensagemErro = obterMensagemErro(err, "Erro ao carregar personagens");
+        const mensagemErro = obterMensagemErro(err, t('characters.errors.load'));
         setErro(mensagemErro);
 
         Swal.fire({
           icon: "error",
-          title: "Erro ao carregar",
+          title: t('characters.titles.load'),
           text: mensagemErro
         });
       })
@@ -75,14 +78,14 @@ export function usePersonagens() {
 
       Swal.fire({
         icon: "success",
-        title: "Personagem criado",
+        title: t('common.success.created', { item: t('common.items.character') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao criar personagem:", err);
 
-      mostrarErroValidacaoOuGenerico(err, "Erro ao criar", "Não foi possível criar o personagem");
+      mostrarErroValidacaoOuGenerico(err, t('characters.titles.create'), t('characters.errors.create'));
 
       throw err;
     }
@@ -95,14 +98,14 @@ export function usePersonagens() {
 
       Swal.fire({
         icon: "success",
-        title: "Personagem atualizado",
+        title: t('common.success.updated', { item: t('common.items.character') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao editar personagem:", err);
 
-      mostrarErroValidacaoOuGenerico(err, "Erro ao atualizar", "Não foi possível atualizar o personagem");
+      mostrarErroValidacaoOuGenerico(err, t('characters.titles.update'), t('characters.errors.update'));
 
       throw err;
     }
@@ -110,12 +113,12 @@ export function usePersonagens() {
 
   const deletar = async (id) => {
     const resultado = await Swal.fire({
-      title: "Deseja deletar este personagem?",
-      text: "Esta ação não poderá ser desfeita.",
+      title: t('common.confirm.deleteTitle', { item: t('common.items.character').toLowerCase() }),
+      text: t('common.confirm.deleteText'),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Deletar",
-      cancelButtonText: "Cancelar",
+      confirmButtonText: t('common.confirm.confirmBtn'),
+      cancelButtonText: t('common.confirm.cancelBtn'),
       confirmButtonColor: "#d33"
     });
 
@@ -127,14 +130,14 @@ export function usePersonagens() {
 
       Swal.fire({
         icon: "success",
-        title: "Personagem deletado",
+        title: t('common.success.deleted', { item: t('common.items.character') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao deletar personagem:", err);
 
-      mostrarErroGenerico(err, "Erro ao deletar", "Não foi possível deletar o personagem");
+      mostrarErroGenerico(err, t('characters.titles.delete'), t('characters.errors.delete'));
     }
   };
 

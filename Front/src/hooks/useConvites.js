@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
+import i18n from '../i18n';
 import {
   enviarConvites,
   listarPorEventoPersonagem,
@@ -10,12 +11,13 @@ import {
   ConviteStatus
 } from '../services/conviteService';
 
+const t = i18n.t.bind(i18n);
+
 export const useConvite = () => {
   const [convites, setConvites] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
-  // Listar convites por evento-personagem
   const listarPorEvento = async (epId) => {
     try {
       setCarregando(true);
@@ -24,18 +26,17 @@ export const useConvite = () => {
       return dados;
     } catch (err) {
       console.error('Erro ao listar convites:', err);
-      setErro(err.data?.error || 'Erro ao carregar convites');
+      setErro(err.data?.error || t('invites.errors.load'));
       Swal.fire({
         icon: 'error',
-        title: 'Erro ao carregar',
-        text: err.data?.error || 'Não foi possível carregar os convites',
+        title: t('invites.titles.load'),
+        text: err.data?.error || t('invites.errors.load'),
       });
     } finally {
       setCarregando(false);
     }
   };
 
-  // Listar convites enviados pelo admin
   const listarEnviados = async () => {
     try {
       setCarregando(true);
@@ -44,18 +45,17 @@ export const useConvite = () => {
       return dados;
     } catch (err) {
       console.error('Erro ao listar convites enviados:', err);
-      setErro(err.data?.error || 'Erro ao carregar convites enviados');
+      setErro(err.data?.error || t('invites.errors.loadSent'));
       Swal.fire({
         icon: 'error',
-        title: 'Erro ao carregar',
-        text: err.data?.error || 'Não foi possível carregar os convites',
+        title: t('invites.titles.load'),
+        text: err.data?.error || t('invites.errors.loadSent'),
       });
     } finally {
       setCarregando(false);
     }
   };
 
-  // Listar meus convites (ator)
   const listarMeus = async () => {
     try {
       setCarregando(true);
@@ -64,25 +64,24 @@ export const useConvite = () => {
       return dados;
     } catch (err) {
       console.error('Erro ao listar meus convites:', err);
-      setErro(err.data?.error || 'Erro ao carregar seus convites');
+      setErro(err.data?.error || t('invites.errors.loadMine'));
       Swal.fire({
         icon: 'error',
-        title: 'Erro ao carregar',
-        text: err.data?.error || 'Não foi possível carregar seus convites',
+        title: t('invites.titles.load'),
+        text: err.data?.error || t('invites.errors.loadMine'),
       });
     } finally {
       setCarregando(false);
     }
   };
 
-  // Enviar convites
   const enviar = async (eventoPersonagemId, atoresIds) => {
     try {
       const novosConvites = await enviarConvites({ eventoPersonagemId, atoresIds });
       setConvites(prev => [...prev, ...novosConvites]);
       Swal.fire({
         icon: 'success',
-        title: 'Convites enviados',
+        title: t('invites.success.sent'),
         timer: 1800,
         showConfirmButton: false
       });
@@ -91,19 +90,18 @@ export const useConvite = () => {
       console.error('Erro ao enviar convites:', err);
       Swal.fire({
         icon: 'error',
-        title: 'Erro ao enviar',
-        text: err.data?.error || 'Não foi possível enviar os convites',
+        title: t('invites.titles.send'),
+        text: err.data?.error || t('invites.errors.send'),
       });
     }
   };
 
-  // Responder convite
   const responder = async (conviteId, status) => {
     try {
       const atualizado = await responderConvite(conviteId, { status });
       setConvites(prev => prev.map(c => (c.id === conviteId ? atualizado : c)));
       
-      const mensagem = status === ConviteStatus.ACEITO ? 'Convite aceito' : 'Convite recusado';
+      const mensagem = status === ConviteStatus.ACEITO ? t('invites.success.accepted') : t('invites.success.declined');
       Swal.fire({
         icon: 'success',
         title: mensagem,
@@ -115,21 +113,20 @@ export const useConvite = () => {
       console.error('Erro ao responder convite:', err);
       Swal.fire({
         icon: 'error',
-        title: 'Erro ao responder',
-        text: err.data?.error || 'Não foi possível responder o convite',
+        title: t('invites.titles.respond'),
+        text: err.data?.error || t('invites.errors.respond'),
       });
     }
   };
 
-  // Cancelar convite
   const cancelar = async (conviteId) => {
     const resultado = await Swal.fire({
-      title: 'Deseja cancelar este convite?',
-      text: 'Esta ação não poderá ser desfeita.',
+      title: t('invites.confirm.cancelTitle'),
+      text: t('invites.confirm.cancelText'),
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Cancelar',
-      cancelButtonText: 'Voltar',
+      confirmButtonText: t('invites.confirm.confirmBtn'),
+      cancelButtonText: t('invites.confirm.cancelBtn'),
       confirmButtonColor: '#d33',
     });
 
@@ -140,7 +137,7 @@ export const useConvite = () => {
       setConvites(prev => prev.filter(c => c.id !== conviteId));
       Swal.fire({
         icon: 'success',
-        title: 'Convite cancelado',
+        title: t('invites.success.cancelled'),
         timer: 1800,
         showConfirmButton: false
       });
@@ -148,8 +145,8 @@ export const useConvite = () => {
       console.error('Erro ao cancelar convite:', err);
       Swal.fire({
         icon: 'error',
-        title: 'Erro ao cancelar',
-        text: err.data?.error || 'Não foi possível cancelar o convite',
+        title: t('invites.titles.cancel'),
+        text: err.data?.error || t('invites.errors.cancel'),
       });
     }
   };

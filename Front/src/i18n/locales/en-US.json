@@ -1,0 +1,378 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error: {{message}}",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "order": "Sort",
+    "orderAZ": "Alphabetical (A-Z)",
+    "orderZA": "Alphabetical (Z-A)",
+    "select": "Select",
+    "back": "Back",
+    "logoAlt": "Logo",
+    "notFound": "No {{item}} found.",
+    "confirm": {
+      "deleteTitle": "Do you want to delete this {{item}}?",
+      "deleteText": "This action cannot be undone.",
+      "confirmBtn": "Delete",
+      "cancelBtn": "Cancel"
+    },
+    "success": {
+      "created": "{{item}} created",
+      "updated": "{{item}} updated",
+      "deleted": "{{item}} deleted"
+    },
+    "validation": {
+      "title": "Validation",
+      "required": "The {{field}} field is required",
+      "requiredNumber": "The {{field}} field is required and must be a number",
+      "invalidData": "Invalid data"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Password",
+      "type": "Type",
+      "gender": "Gender",
+      "height": "Height",
+      "weight": "Weight",
+      "observation": "Observation",
+      "title": "Title",
+      "description": "Description",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "address": "Address",
+      "paymentType": "Payment type",
+      "totalValue": "Total value",
+      "client": "Client",
+      "responsibleAdmin": "Responsible administrator",
+      "status": "Status",
+      "photo": "Photo",
+      "url": "URL"
+    },
+    "placeholders": {
+      "name": "Full name",
+      "email": "email@example.com",
+      "phone": "41 9 9999-0000",
+      "password": "Password",
+      "url": "URL",
+      "value": "0.00",
+      "observations": "Observations..."
+    },
+    "items": {
+      "client": "Client",
+      "character": "Character",
+      "administrator": "Administrator",
+      "actor": "Actor",
+      "event": "Event",
+      "invitation": "Invitation",
+      "characterItem": "Character item",
+      "collaborator": "Collaborator"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "actor": "Actor"
+    },
+    "languages": {
+      "pt": "PT",
+      "en": "EN"
+    }
+  },
+  "nav": {
+    "general": "General",
+    "events": "Events",
+    "finance": "Finance",
+    "clients": "Clients",
+    "characters": "Characters",
+    "collaborators": "Collaborators",
+    "logout": "Log out"
+  },
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "entering": "Signing in...",
+    "enter": "Sign In",
+    "validation": {
+      "requiredFields": "Please fill in all fields",
+      "shortPassword": "Password is too short"
+    },
+    "errors": {
+      "tokenMissing": "Token not received",
+      "tokenInvalid": "Invalid or expired token",
+      "invalidCredentials": "Invalid email or password",
+      "accessDenied": "Access denied",
+      "generic": "Error signing in"
+    }
+  },
+  "clients": {
+    "title": "Clients",
+    "empty": "No clients found.",
+    "newButton": "New client",
+    "newTitle": "New Client",
+    "editTitle": "Edit Client",
+    "placeholders": {
+      "name": "Full name",
+      "email": "email@example.com",
+      "phone": "41 9 9999-0000"
+    },
+    "titles": {
+      "load": "Error loading",
+      "create": "Error creating",
+      "update": "Error updating",
+      "delete": "Error deleting"
+    },
+    "errors": {
+      "load": "Error loading clients",
+      "create": "Could not create the client",
+      "update": "Could not update the client",
+      "delete": "Could not delete the client"
+    },
+    "success": {
+      "created": "Client created",
+      "updated": "Client updated",
+      "deleted": "Client deleted"
+    }
+  },
+  "characters": {
+    "title": "Characters",
+    "empty": "No characters found.",
+    "noDescription": "No description",
+    "newButton": "New character",
+    "newTitle": "New Character",
+    "editTitle": "Edit Character",
+    "placeholders": {
+      "name": "Character name",
+      "description": "Character description",
+      "photo": "Photo URL"
+    },
+    "titles": {
+      "load": "Error loading",
+      "create": "Error creating",
+      "update": "Error updating",
+      "delete": "Error deleting"
+    },
+    "errors": {
+      "load": "Error loading characters",
+      "create": "Could not create the character",
+      "update": "Could not update the character",
+      "delete": "Could not delete the character"
+    },
+    "success": {
+      "created": "Character created",
+      "updated": "Character updated",
+      "deleted": "Character deleted"
+    }
+  },
+  "collaborators": {
+    "title": "Collaborators",
+    "newButton": "New collaborator",
+    "newTitle": "New Collaborator",
+    "editTitle": "Edit {{item}}",
+    "sections": {
+      "admins": "Administrators",
+      "actors": "Actors"
+    },
+    "tabs": {
+      "admin": "Administrator",
+      "actor": "Actor"
+    },
+    "empty": {
+      "admins": "No administrators found.",
+      "actors": "No actors found."
+    },
+    "gender": {
+      "select": "Select",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "placeholders": {
+      "name": "Full name",
+      "email": "email@example.com",
+      "phone": "41 9 9999-0000",
+      "password": "Password",
+      "height": "1.80",
+      "weight": "78",
+      "observations": "Observations..."
+    },
+    "administrators": {
+      "titles": {
+        "load": "Error loading",
+        "create": "Error creating",
+        "update": "Error updating",
+        "delete": "Error deleting"
+      },
+      "errors": {
+        "load": "Error loading administrators",
+        "create": "Could not create the administrator",
+        "update": "Could not update the administrator",
+        "delete": "Could not delete the administrator"
+      },
+      "success": {
+        "created": "Administrator created",
+        "updated": "Administrator updated",
+        "deleted": "Administrator deleted"
+      }
+    },
+    "actors": {
+      "titles": {
+        "load": "Error loading",
+        "create": "Error creating",
+        "update": "Error updating",
+        "delete": "Error deleting"
+      },
+      "errors": {
+        "load": "Error loading actors",
+        "create": "Could not create the actor",
+        "update": "Could not update the actor",
+        "delete": "Could not delete the actor"
+      },
+      "success": {
+        "created": "Actor created",
+        "updated": "Actor updated",
+        "deleted": "Actor deleted"
+      }
+    }
+  },
+  "events": {
+    "title": "Events",
+    "empty": "No events found.",
+    "newButton": "New event",
+    "newTitle": "New Event",
+    "editTitle": "Edit Event",
+    "select": {
+      "client": "Select a client",
+      "admin": "Select an administrator"
+    },
+    "placeholders": {
+      "title": "Event name",
+      "description": "Event description",
+      "address": "Street, number, city",
+      "paymentType": "PIX, Card..."
+    },
+    "timeline": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "tomorrow": "Tomorrow"
+    },
+    "statusLabels": {
+      "draft": "Draft",
+      "confirmed": "Confirmed",
+      "inProgress": "In progress",
+      "finished": "Finished",
+      "cancelled": "Canceled"
+    },
+    "period": "{{date}} at {{time}} - duration: {{duration}}",
+    "duration": {
+      "hours": "{{hours}}h",
+      "hoursMinutes": "{{hours}}h{{minutes}}m"
+    },
+    "titles": {
+      "load": "Error loading",
+      "create": "Error creating",
+      "update": "Error updating",
+      "delete": "Error deleting"
+    },
+    "errors": {
+      "load": "Error loading events",
+      "create": "Could not create the event",
+      "update": "Could not update the event",
+      "delete": "Could not delete the event"
+    },
+    "success": {
+      "created": "Event created",
+      "updated": "Event updated",
+      "deleted": "Event deleted"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "errors": {
+      "load": "Error loading dashboard"
+    },
+    "cards": {
+      "totalEvents": "Total Events",
+      "billing": "Revenue",
+      "activeActors": "Active Actors",
+      "pendingInvites": "Pending Invites"
+    },
+    "charts": {
+      "status": "Event Status",
+      "byMonth": "Events by Month",
+      "upcoming": "Upcoming Events"
+    },
+    "table": {
+      "event": "Event",
+      "client": "Client",
+      "date": "Date",
+      "status": "Status"
+    },
+    "eventsLabel": "Events"
+  },
+  "errors": {
+    "boundary": {
+      "title": "Error",
+      "unexpected": "Unexpected error",
+      "reload": "Reload page"
+    }
+  },
+  "invites": {
+    "titles": {
+      "load": "Error loading",
+      "send": "Error sending",
+      "respond": "Error responding",
+      "cancel": "Error canceling"
+    },
+    "errors": {
+      "load": "Error loading invites",
+      "loadSent": "Error loading sent invites",
+      "loadMine": "Error loading your invites",
+      "send": "Could not send the invites",
+      "respond": "Could not respond to the invite",
+      "cancel": "Could not cancel the invite"
+    },
+    "confirm": {
+      "cancelTitle": "Do you want to cancel this invite?",
+      "cancelText": "This action cannot be undone.",
+      "confirmBtn": "Cancel",
+      "cancelBtn": "Back"
+    },
+    "success": {
+      "sent": "Invites sent",
+      "accepted": "Invite accepted",
+      "declined": "Invite declined",
+      "cancelled": "Invite canceled"
+    }
+  },
+  "characterItems": {
+    "titles": {
+      "load": "Error loading",
+      "create": "Error creating",
+      "updateStatus": "Error updating",
+      "delete": "Error deleting"
+    },
+    "errors": {
+      "load": "Error loading character items",
+      "create": "Could not create the character item",
+      "updateStatus": "Could not update the item status",
+      "delete": "Could not delete the character item"
+    },
+    "confirm": {
+      "deleteTitle": "Do you want to delete this character item?",
+      "deleteText": "This action cannot be undone.",
+      "confirmBtn": "Delete",
+      "cancelBtn": "Cancel"
+    },
+    "success": {
+      "created": "Item created",
+      "statusUpdated": "Status updated",
+      "deleted": "Item deleted"
+    }
+  }
+}
