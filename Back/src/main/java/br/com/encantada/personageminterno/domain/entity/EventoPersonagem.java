@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Table(
         name = "evento_personagem",
-        uniqueConstraints = @UniqueConstraint(name = "uq_evento_personagem", columnNames = {"id_evento", "id_personagem"})
+        uniqueConstraints = @UniqueConstraint(name = "uq_evento_personagem", columnNames = {"id_evento", "id_personagem_item"})
 )
 @Getter
 @Setter
@@ -37,6 +37,6 @@ public class EventoPersonagem {
     private Evento evento;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_personagem", nullable = false)
-    private Personagem personagem;
+    @JoinColumn(name = "id_personagem_item", nullable = false)
+    private PersonagemItem personagemItem;
 }

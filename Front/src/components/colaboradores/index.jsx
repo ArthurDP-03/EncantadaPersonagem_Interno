@@ -3,7 +3,9 @@ import { useAtores } from "../../hooks/useAtores";
 import Card_linha from "../card_linha";
 import "./index.css";
 import { Search, ChevronDown, Plus } from "lucide-react";
+import Swal from "sweetalert2";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const adminVazio = {
   nome: "",
@@ -24,39 +26,41 @@ const atorVazio = {
 };
 
 function FormAdministrador({ dados, onChange }) {
+  const { t } = useTranslation();
+
   return (
     <div className="form-colaborador">
       <label className="campo-largo">
-        Nome
+        {t('common.fields.name')}
         <input
           value={dados.nome}
           onChange={(e) => onChange({ ...dados, nome: e.target.value })}
-          placeholder="Nome completo"
+          placeholder={t('collaborators.placeholders.name')}
         />
       </label>
       <label className="campo-largo">
-        Email
+        {t('common.fields.email')}
         <input
           value={dados.email}
           onChange={(e) => onChange({ ...dados, email: e.target.value })}
-          placeholder="email@exemplo.com"
+          placeholder={t('collaborators.placeholders.email')}
         />
       </label>
       <label>
-        Telefone
+        {t('common.fields.phone')}
         <input
           value={dados.telefone}
           onChange={(e) => onChange({ ...dados, telefone: e.target.value })}
-          placeholder="41 9 9999-0000"
+          placeholder={t('collaborators.placeholders.phone')}
         />
       </label>
       <label>
-        Senha
+        {t('common.fields.password')}
         <input
           type="password"
           value={dados.senha}
           onChange={(e) => onChange({ ...dados, senha: e.target.value })}
-          placeholder="Senha"
+          placeholder={t('collaborators.placeholders.password')}
         />
       </label>
     </div>
@@ -64,78 +68,80 @@ function FormAdministrador({ dados, onChange }) {
 }
 
 function FormAtor({ dados, onChange }) {
+  const { t } = useTranslation();
+
   return (
     <div className="form-colaborador">
       <label className="campo-largo">
-        Nome
+        {t('common.fields.name')}
         <input
           value={dados.nome}
           onChange={(e) => onChange({ ...dados, nome: e.target.value })}
-          placeholder="Nome completo"
+          placeholder={t('collaborators.placeholders.name')}
         />
       </label>
       <label className="campo-largo">
-        Email
+        {t('common.fields.email')}
         <input
           value={dados.email}
           onChange={(e) => onChange({ ...dados, email: e.target.value })}
-          placeholder="email@exemplo.com"
+          placeholder={t('collaborators.placeholders.email')}
         />
       </label>
       <label>
-        Senha
+        {t('common.fields.password')}
         <input
           type="password"
           value={dados.senha}
           onChange={(e) => onChange({ ...dados, senha: e.target.value })}
-          placeholder="Senha"
+          placeholder={t('collaborators.placeholders.password')}
         />
       </label>
       <label>
-        Telefone
+        {t('common.fields.phone')}
         <input
           value={dados.telefone}
           onChange={(e) => onChange({ ...dados, telefone: e.target.value })}
-          placeholder="41 9 9999-0000"
+          placeholder={t('collaborators.placeholders.phone')}
         />
       </label>
       <label>
-        Gênero
+        {t('common.fields.gender')}
         <select
           value={dados.genero}
           onChange={(e) => onChange({ ...dados, genero: e.target.value })}
         >
-          <option value="">Selecione</option>
-          <option value="Masculino">Masculino</option>
-          <option value="Feminino">Feminino</option>
-          <option value="Outro">Outro</option>
+          <option value="">{t('collaborators.gender.select')}</option>
+          <option value="Masculino">{t('collaborators.gender.male')}</option>
+          <option value="Feminino">{t('collaborators.gender.female')}</option>
+          <option value="Outro">{t('collaborators.gender.other')}</option>
         </select>
       </label>
       <label>
-        Altura (m)
+        {t('common.fields.height')} (m)
         <input
           type="number"
           step="0.01"
           value={dados.altura}
           onChange={(e) => onChange({ ...dados, altura: e.target.value })}
-          placeholder="1.80"
+          placeholder={t('collaborators.placeholders.height')}
         />
       </label>
       <label>
-        Peso (kg)
+        {t('common.fields.weight')} (kg)
         <input
           type="number"
           value={dados.peso}
           onChange={(e) => onChange({ ...dados, peso: e.target.value })}
-          placeholder="78"
+          placeholder={t('collaborators.placeholders.weight')}
         />
       </label>
       <label className="campo-largo">
-        Observação
+        {t('common.fields.observation')}
         <textarea
           value={dados.observacao}
           onChange={(e) => onChange({ ...dados, observacao: e.target.value })}
-          placeholder="Observações..."
+          placeholder={t('collaborators.placeholders.observations')}
         />
       </label>
     </div>
@@ -143,6 +149,7 @@ function FormAtor({ dados, onChange }) {
 }
 
 function Colaboradores() {
+  const { t } = useTranslation();
   const {
     administradores,
     carregando: carregandoAdministradores,
@@ -169,9 +176,9 @@ function Colaboradores() {
   const [ordem, setOrdem] = useState("");
 
   if (carregandoAdministradores || carregandoAtores)
-    return <p>Carregando...</p>;
+    return <p>{t('common.loading')}</p>;
   if (erroAdministradores || erroAtores)
-    return <p>Erro: {erroAdministradores || erroAtores}</p>;
+    return <p>{t('common.error', { message: erroAdministradores || erroAtores })}</p>;
 
   function filtrarEOrdenar(lista) {
     return lista
@@ -190,23 +197,93 @@ function Colaboradores() {
   const administradoresFiltrados = filtrarEOrdenar(administradores);
   const atoresFiltrados = filtrarEOrdenar(atores);
 
+  function mostrarValidacao(fieldKey, requiredNumber = false) {
+    Swal.fire({
+      icon: "warning",
+      title: t('common.validation.title'),
+      text: requiredNumber
+        ? t('common.validation.requiredNumber', { field: t(fieldKey) })
+        : t('common.validation.required', { field: t(fieldKey) }),
+    });
+  }
+
   function handleCriar(event) {
     event.preventDefault();
     if (tipoForm === "admin") {
-      criarAdmin(formAdmin).then(() => {
-        setModalCriar(false);
-        setFormAdmin(adminVazio);
-      });
+      if (!formAdmin.nome.trim()) {
+        mostrarValidacao('common.fields.name');
+        return;
+      }
+      if (!formAdmin.email.trim()) {
+        mostrarValidacao('common.fields.email');
+        return;
+      }
+      if (!formAdmin.telefone.trim()) {
+        mostrarValidacao('common.fields.phone');
+        return;
+      }
+      if (!formAdmin.senha.trim()) {
+        mostrarValidacao('common.fields.password');
+        return;
+      }
+      if (!formAdmin.tipo?.trim()) {
+        mostrarValidacao('common.fields.type');
+        return;
+      }
+
+      criarAdmin(formAdmin)
+        .then(() => {
+          setModalCriar(false);
+          setFormAdmin(adminVazio);
+        })
+        .catch(err => {
+          console.error("Erro ao criar administrador:", err);
+          // O erro é tratado no hook com Swal
+        });
     } else {
+      if (!formAtor.nome.trim()) {
+        mostrarValidacao('common.fields.name');
+        return;
+      }
+      if (!formAtor.email.trim()) {
+        mostrarValidacao('common.fields.email');
+        return;
+      }
+      if (!formAtor.telefone.trim()) {
+        mostrarValidacao('common.fields.phone');
+        return;
+      }
+      if (!formAtor.senha.trim()) {
+        mostrarValidacao('common.fields.password');
+        return;
+      }
+      if (!formAtor.genero.trim()) {
+        mostrarValidacao('common.fields.gender');
+        return;
+      }
+      if (formAtor.altura === "" || formAtor.altura === null || formAtor.altura === undefined || isNaN(Number(formAtor.altura))) {
+        mostrarValidacao('common.fields.height', true);
+        return;
+      }
+      if (formAtor.peso === "" || formAtor.peso === null || formAtor.peso === undefined || isNaN(Number(formAtor.peso))) {
+        mostrarValidacao('common.fields.weight', true);
+        return;
+      }
+
       criarAtor({
         ...formAtor,
         altura: parseFloat(formAtor.altura),
         peso: parseFloat(formAtor.peso),
-        ativo: true,
-      }).then(() => {
-        setModalCriar(false);
-        setFormAtor(atorVazio);
-      });
+        ativo: true
+      })
+        .then(() => {
+          setModalCriar(false);
+          setFormAtor(atorVazio);
+        })
+        .catch(err => {
+          console.error("Erro ao criar ator:", err);
+          // O erro é tratado no hook com Swal
+        });
     }
   }
 
@@ -214,16 +291,68 @@ function Colaboradores() {
     event.preventDefault();
     if (!modalEditar) return;
 
+    const dados = modalEditar.dados || {};
+    if (!dados.nome?.trim()) {
+      mostrarValidacao('common.fields.name');
+      return;
+    }
+    if (!dados.email?.trim()) {
+      mostrarValidacao('common.fields.email');
+      return;
+    }
+    if (!dados.telefone?.trim()) {
+      mostrarValidacao('common.fields.phone');
+      return;
+    }
+
     if (modalEditar.tipo === "admin") {
-      editarAdmin(modalEditar.dados.id, modalEditar.dados).then(() =>
-        setModalEditar(null),
-      );
+      if (!dados.senha?.trim()) {
+        mostrarValidacao('common.fields.password');
+        return;
+      }
+      if (!dados.tipo?.trim()) {
+        mostrarValidacao('common.fields.type');
+        return;
+      }
+
+      editarAdmin(modalEditar.dados.id, modalEditar.dados)
+        .then(() => {
+          setModalEditar(null);
+        })
+        .catch(err => {
+          console.error("Erro ao editar administrador:", err);
+          // O erro é tratado no hook com Swal
+        });
     } else {
+      if (!dados.senha?.trim()) {
+        mostrarValidacao('common.fields.password');
+        return;
+      }
+      if (!dados.genero?.trim()) {
+        mostrarValidacao('common.fields.gender');
+        return;
+      }
+      if (dados.altura === "" || dados.altura === null || dados.altura === undefined || isNaN(Number(dados.altura))) {
+        mostrarValidacao('common.fields.height', true);
+        return;
+      }
+      if (dados.peso === "" || dados.peso === null || dados.peso === undefined || isNaN(Number(dados.peso))) {
+        mostrarValidacao('common.fields.weight', true);
+        return;
+      }
+
       editarAtor(modalEditar.dados.id, {
         ...modalEditar.dados,
         altura: parseFloat(modalEditar.dados.altura),
         peso: parseFloat(modalEditar.dados.peso),
-      }).then(() => setModalEditar(null));
+      })
+        .then(() => {
+          setModalEditar(null);
+        })
+        .catch(err => {
+          console.error("Erro ao editar ator:", err);
+          // O erro é tratado no hook com Swal
+        });
     }
   }
 
@@ -231,7 +360,7 @@ function Colaboradores() {
     <section className="section-colaboradores">
       <div className="conteudo-95 layout">
         <div className="conteudo">
-          <h1 className="titulo t1">Colaboradores</h1>
+          <h1 className="titulo t1">{t('collaborators.title')}</h1>
           <div className="filtros">
             <div className="input-container">
               <select
@@ -239,16 +368,16 @@ function Colaboradores() {
                 value={ordem}
                 onChange={(e) => setOrdem(e.target.value)}
               >
-                <option value="">Ordenar</option>
-                <option value="az">Alfabética (A-Z)</option>
-                <option value="za">Alfabética (Z-A)</option>
+                <option value="">{t('common.order')}</option>
+                <option value="az">{t('common.orderAZ')}</option>
+                <option value="za">{t('common.orderZA')}</option>
               </select>
               <ChevronDown className="icon" size={18} />
             </div>
             <div className="input-container">
               <input
                 type="text"
-                placeholder="Buscar"
+                placeholder={t('common.search')}
                 className="input"
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
@@ -259,17 +388,17 @@ function Colaboradores() {
 
           <div className="lista lista-administradores">
             <div className="titulo t2">
-              <p>Administradores</p>
+              <p>{t('collaborators.sections.admins')}</p>
             </div>
             <div className="cards">
               {administradoresFiltrados.length === 0 ? (
-                <div className="clientes-vazio">Nenhum administrador encontrado.</div>
+                <div className="clientes-vazio">{t('collaborators.empty.admins')}</div>
               ) : (
                 administradoresFiltrados.map((admin) => (
                   <Card_linha
                     key={admin.id}
                     titulo={admin.nome}
-                    informacoes={{ Email: admin.email, Celular: admin.telefone }}
+                    informacoes={{ [t('common.fields.email')]: admin.email, [t('common.fields.phone')]: admin.telefone }}
                     onEditar={() =>
                       setModalEditar({
                         tipo: "admin",
@@ -285,23 +414,23 @@ function Colaboradores() {
 
           <div className="lista lista-atores">
             <div className="titulo t2">
-              <p>Atores</p>
+              <p>{t('collaborators.sections.actors')}</p>
             </div>
             <div className="cards">
               {atoresFiltrados.length === 0 ? (
-                <div className="clientes-vazio">Nenhum ator encontrado.</div>
+                <div className="clientes-vazio">{t('collaborators.empty.actors')}</div>
               ) : (
                 atoresFiltrados.map((ator) => (
                   <Card_linha
                     key={ator.id}
                     titulo={ator.nome}
                     informacoes={{
-                      Email: ator.email,
-                      Celular: ator.telefone,
-                      Gênero: ator.genero,
-                      Altura: ator.altura,
-                      Peso: ator.peso,
-                      Observação: ator.observacao,
+                      [t('common.fields.email')]: ator.email,
+                      [t('common.fields.phone')]: ator.telefone,
+                      [t('common.fields.gender')]: ator.genero,
+                      [t('common.fields.height')]: ator.altura,
+                      [t('common.fields.weight')]: ator.peso,
+                      [t('common.fields.observation')]: ator.observacao,
                     }}
                     onEditar={() =>
                       setModalEditar({
@@ -318,28 +447,28 @@ function Colaboradores() {
         </div>
       </div>
 
-      <button className="btn-create" onClick={() => setModalCriar(true)}>
+      <button className="btn-create" title={t('collaborators.newButton')} onClick={() => setModalCriar(true)}>
         <Plus size={24} />
       </button>
 
       {modalCriar && (
         <div className="modal">
           <form onSubmit={handleCriar}>
-            <h2 className="modal-titulo">Novo Colaborador</h2>
+            <h2 className="modal-titulo">{t('collaborators.newTitle')}</h2>
             <div className="modal-abas">
               <button
                 type="button"
                 className={tipoForm === "admin" ? "aba-ativa" : ""}
                 onClick={() => setTipoForm("admin")}
               >
-                Administrador
+                {t('collaborators.tabs.admin')}
               </button>
               <button
                 type="button"
                 className={tipoForm === "ator" ? "aba-ativa" : ""}
                 onClick={() => setTipoForm("ator")}
               >
-                Ator
+                {t('collaborators.tabs.actor')}
               </button>
             </div>
             {tipoForm === "admin" ? (
@@ -357,10 +486,10 @@ function Colaboradores() {
                   setFormAtor(atorVazio);
                 }}
               >
-                Cancelar
+                {t('common.cancel')}
               </button>
               <button type="submit" className="btn-primario">
-                Criar
+                {t('common.create')}
               </button>
             </div>
           </form>
@@ -371,7 +500,11 @@ function Colaboradores() {
         <div className="modal">
           <form onSubmit={handleEditar}>
             <h2 className="modal-titulo">
-              Editar {modalEditar.tipo === "admin" ? "Administrador" : "Ator"}
+              {t('collaborators.editTitle', {
+                item: modalEditar.tipo === "admin"
+                  ? t('collaborators.tabs.admin')
+                  : t('collaborators.tabs.actor'),
+              })}
             </h2>
             {modalEditar.tipo === "admin" ? (
               <FormAdministrador
@@ -390,10 +523,10 @@ function Colaboradores() {
                 className="btn-secundario"
                 onClick={() => setModalEditar(null)}
               >
-                Cancelar
+                {t('common.cancel')}
               </button>
               <button type="submit" className="btn-primario">
-                Salvar
+                {t('common.save')}
               </button>
             </div>
           </form>

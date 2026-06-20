@@ -55,7 +55,8 @@ public interface DashboardRepository extends JpaRepository<Evento, Integer> {
             SELECT p.nome, COUNT(es.id_escalacao) AS total
             FROM escalacao es
             JOIN evento_personagem ep ON es.id_evento_personagem = ep.id_evento_personagem
-            JOIN personagem p ON ep.id_personagem = p.id
+            JOIN personagem_item pi ON ep.id_personagem_item = pi.id_personagem_item 
+            JOIN personagem p ON pi.id_personagem = p.id
             GROUP BY p.nome
             ORDER BY total DESC
             LIMIT 5

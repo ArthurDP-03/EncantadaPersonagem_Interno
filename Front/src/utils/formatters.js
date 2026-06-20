@@ -1,23 +1,40 @@
+import i18n from "../i18n";
+
+const getLocale = () => i18n.resolvedLanguage || i18n.language || "pt-BR";
+
 export const formatarPeriodoEvento = (dataInicio, dataFim) => {
   const inicio = new Date(dataInicio);
   const fim = new Date(dataFim);
+  const locale = getLocale();
 
-  const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-  const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-
-  const diaSemana = diasSemana[inicio.getDay()];
-  const dia = inicio.getDate();
-  const mes = meses[inicio.getMonth()];
-  const ano = inicio.getFullYear();
-  const hora = inicio.getHours();
+  const data = new Intl.DateTimeFormat(locale, { dateStyle: "full" }).format(
+    inicio,
+  );
+  const hora = new Intl.DateTimeFormat(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(inicio);
 
   const duracaoMs = fim - inicio;
   const duracaoHoras = Math.floor(duracaoMs / (1000 * 60 * 60));
-  const duracaoMinutos = Math.floor((duracaoMs % (1000 * 60 * 60)) / (1000 * 60));
+  const duracaoMinutos = Math.floor(
+    (duracaoMs % (1000 * 60 * 60)) / (1000 * 60),
+  );
 
-  const duracaoTexto = duracaoMinutos > 0 ? `${duracaoHoras}h${duracaoMinutos}min` : `${duracaoHoras}h`;
+  const duracaoTexto =
+    duracaoMinutos > 0
+      ? i18n.t("events.duration.hoursMinutes", {
+          hours: duracaoHoras,
+          minutes: String(duracaoMinutos).padStart(2, "0"),
+        })
+      : i18n.t("events.duration.hours", { hours: duracaoHoras });
 
-  return `${diaSemana}, ${dia} ${mes} ${ano} às ${hora}h - duração: ${duracaoTexto}`;
+  return i18n.t("events.period", {
+    date: data,
+    time: hora,
+    duration: duracaoTexto,
+  });
 };
 
 export function labelData(data) {
@@ -27,14 +44,14 @@ export function labelData(data) {
   d.setHours(0, 0, 0, 0);
   const diff = Math.round((d - hoje) / 86400000);
 
-  const semanas = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const meses = ['janeiro','fevereiro','março','abril','maio','junho',
-                 'julho','agosto','setembro','outubro','novembro','dezembro'];
-  const texto = `${semanas[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+  const texto = new Intl.DateTimeFormat(getLocale(), {
+    dateStyle: "full",
+  }).format(d);
 
-  if (diff === 0)  return { prefixo: 'Hoje',   texto };
-  if (diff === -1) return { prefixo: 'Ontem',  texto };
-  if (diff === 1)  return { prefixo: 'Amanhã', texto };
+  if (diff === 0) return { prefixo: i18n.t("events.timeline.today"), texto };
+  if (diff === -1)
+    return { prefixo: i18n.t("events.timeline.yesterday"), texto };
+  if (diff === 1) return { prefixo: i18n.t("events.timeline.tomorrow"), texto };
   return { prefixo: null, texto };
 }
 
@@ -58,11 +75,11 @@ export function agruparEventosPorData(eventos) {
 
 export function formatarStatus(status) {
   const labels = {
-    RASCUNHO:    'Rascunho',
-    CONFIRMADO:  'Confirmado',
-    EM_ANDAMENTO: 'Em andamento',
-    FINALIZADO:  'Finalizado',
-    CANCELADO:   'Cancelado',
+    RASCUNHO: i18n.t("events.statusLabels.draft"),
+    CONFIRMADO: i18n.t("events.statusLabels.confirmed"),
+    EM_ANDAMENTO: i18n.t("events.statusLabels.inProgress"),
+    FINALIZADO: i18n.t("events.statusLabels.finished"),
+    CANCELADO: i18n.t("events.statusLabels.cancelled"),
   };
   return labels[status] ?? status;
 }

@@ -1,10 +1,12 @@
 package br.com.encantada.personageminterno.web.dto.evento;
 
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "Dados de retorno de um evento cadastrado no sistema")
 public record EventoResponse(
@@ -85,7 +87,12 @@ public record EventoResponse(
                 description = "Nome do administrador que criou o evento",
                 example = "Mariana Costa"
         )
-        String administradorCriadorNome
+        String administradorCriadorNome,
+
+        @Schema(
+                description = "Personagens associados ao evento"
+        )
+        List<EventoPersonagemResponse> personagens
 
 ) {
 }

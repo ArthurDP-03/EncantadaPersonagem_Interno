@@ -2,11 +2,11 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 
 import Login from './components/login'
-import Demo from './components/demo'
 import Home from './components/home'
 
 import PrivateRoute from './components/PrivateRoute'
 import PrivateLayout from './components/PrivateLayout'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 import './App.css'
 import Personagens from './components/personagens'
@@ -19,22 +19,22 @@ import Dashboard from './components/dashboard'
 function App() {
   const [dark, setDark] = useDarkMode();
   return (
-    <AuthProvider>
-      <Routes>
-        {/* rotas públicas */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/testes" element={<Demo />} />
-        {/* privadas com layout */}
-        <Route element={<PrivateLayout dark={dark} setDark={setDark}/>}>          
-          <Route path="/" element={<Home/>}/>
-          <Route path="/financeiro" element={<PrivateRoute role="ADMIN"><Dashboard /></PrivateRoute>} />
-          <Route path="/personagens" element={<PrivateRoute role="ADMIN"><Personagens /></PrivateRoute>} />
-          <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />
-          <Route path="/colaboradores" element={<PrivateRoute role="ADMIN"><Colaboradores /></PrivateRoute>} />
-          <Route path="/eventos" element={<Eventos />} />
-        </Route>
-      </Routes>
-    </AuthProvider >
+    <ErrorBoundary>
+      <AuthProvider>
+        <Routes>
+          {/* rotas públicas */}
+          <Route path="/login" element={<Login />} />
+          {/* privadas com layout */}
+<Route element={<PrivateLayout dark={dark} setDark={setDark}/>}>               <Route path="/" element={<Home/>}/>
+            <Route path="/financeiro" element={<PrivateRoute role="ADMIN"><Dashboard /></PrivateRoute>} />
+            <Route path="/personagens" element={<PrivateRoute role="ADMIN"><Personagens /></PrivateRoute>} />
+            <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />
+            <Route path="/colaboradores" element={<PrivateRoute role="ADMIN"><Colaboradores /></PrivateRoute>} />
+            <Route path="/eventos" element={<Eventos />} />
+          </Route>
+        </Routes>
+      </AuthProvider >
+    </ErrorBoundary>
   )
 }
 

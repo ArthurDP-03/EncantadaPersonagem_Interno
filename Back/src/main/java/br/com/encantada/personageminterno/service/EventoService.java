@@ -2,6 +2,7 @@ package br.com.encantada.personageminterno.service;
 
 import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Evento;
+import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
@@ -9,9 +10,11 @@ import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
+import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.EventoRepository;
 import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
+import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +25,17 @@ public class EventoService {
     private final EventoRepository eventoRepository;
     private final ClienteService clienteService;
     private final AdministradorRepository administradorRepository;
+    private final EventoPersonagemRepository eventoPersonagemRepository;
 
     public EventoService(
             EventoRepository eventoRepository,
             ClienteService clienteService,
-            AdministradorRepository administradorRepository) {
+            AdministradorRepository administradorRepository,
+            EventoPersonagemRepository eventoPersonagemRepository) {
         this.eventoRepository = eventoRepository;
         this.clienteService = clienteService;
         this.administradorRepository = administradorRepository;
+        this.eventoPersonagemRepository = eventoPersonagemRepository;
     }
 
     @Transactional(readOnly = true)
@@ -65,6 +71,18 @@ public class EventoService {
     }
 
     private EventoResponse toResponse(Evento evento) {
+        List<EventoPersonagemResponse> personagens = eventoPersonagemRepository
+                .findByEventoId(evento.getId())
+                .stream()
+                .map(ep -> new EventoPersonagemResponse(
+                        ep.getId(),
+                        ep.getEvento().getId(),
+                        ep.getEvento().getTitulo(),
+                        ep.getPersonagemItem().getId(),
+                        ep.getPersonagemItem().getCodigo(),
+                        ep.getPersonagemItem().getPersonagem().getNome()))
+                .toList();
+
         return new EventoResponse(
                 evento.getId(),
                 evento.getTitulo(),
@@ -78,7 +96,8 @@ public class EventoService {
                 evento.getCliente().getId(),
                 evento.getCliente().getNome(),
                 evento.getAdministradorCriador().getId(),
-                evento.getAdministradorCriador().getNome());
+                evento.getAdministradorCriador().getNome(),
+                personagens);
     }
 
     @Transactional(readOnly = true)

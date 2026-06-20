@@ -2,8 +2,10 @@
 import { usePersonagens } from "../../hooks/usePersonagem";
 import './index.css'
 import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 import logo from '../../assets/logo.png'
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const personagemVazio = {
   nome: "",
@@ -12,22 +14,25 @@ const personagemVazio = {
 };
 
 function FormPersonagem({ dados, onChange }) {
+  const { t } = useTranslation();
+
   return (
     <div className="form-personagem">
-      <label>Nome
-        <input value={dados.nome} onChange={e => onChange({ ...dados, nome: e.target.value })} placeholder="Nome do personagem" />
+      <label>{t('common.fields.name')}
+        <input value={dados.nome} onChange={e => onChange({ ...dados, nome: e.target.value })} placeholder={t('characters.placeholders.name')} />
       </label>
-      <label>Descrição
-        <textarea value={dados.descricao} onChange={e => onChange({ ...dados, descricao: e.target.value })} placeholder="Descrição do personagem" rows={3} />
+      <label>{t('common.fields.description')}
+        <textarea value={dados.descricao} onChange={e => onChange({ ...dados, descricao: e.target.value })} placeholder={t('characters.placeholders.description')} rows={3} />
       </label>
-      <label>Foto (URL)
-        <input value={dados.foto} onChange={e => onChange({ ...dados, foto: e.target.value })} placeholder="URL da foto" />
+      <label>{t('common.fields.photo')} ({t('common.fields.url')})
+        <input value={dados.foto} onChange={e => onChange({ ...dados, foto: e.target.value })} placeholder={t('characters.placeholders.photo')} />
       </label>
     </div>
   );
 }
 
 function Personagens() {
+  const { t } = useTranslation();
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("");
   const [modalCriar, setModalCriar] = useState(false);
@@ -37,8 +42,8 @@ function Personagens() {
 
   const { personagens, carregando, erro, criar, editar, deletar } = usePersonagens();
 
-  if (carregando) return <p>Carregando...</p>;
-  if (erro) return <p>Erro: {erro}</p>;
+  if (carregando) return <p>{t('common.loading')}</p>;
+  if (erro) return <p>{t('common.error', { message: erro })}</p>;
 
   const personagensFiltrados = personagens
     .filter(p =>
@@ -51,25 +56,53 @@ function Personagens() {
       return 0;
     });
 
+  function mostrarValidacao() {
+    Swal.fire({
+      icon: "warning",
+      title: t('common.validation.title'),
+      text: t('common.validation.required', { field: t('common.fields.name') }),
+    });
+  }
+
   function handleCriar(event) {
     event.preventDefault();
-    if (!form.nome.trim()) return;
+    if (!form.nome.trim()) {
+      mostrarValidacao();
+      return;
+    }
 
-    criar(form).then(() => {
-      setModalCriar(false);
-      setForm(personagemVazio);
-    });
+    criar(form)
+      .then(() => {
+        setModalCriar(false);
+        setForm(personagemVazio);
+      })
+      .catch(err => {
+        console.error("Erro ao criar personagem:", err);
+        // O erro é tratado no hook com Swal
+      });
   }
 
   function handleEditar(event) {
     event.preventDefault();
     if (!modalEditar) return;
 
+    if (!modalEditar.nome.trim()) {
+      mostrarValidacao();
+      return;
+    }
+
     editar(modalEditar.id, {
       nome: modalEditar.nome,
       descricao: modalEditar.descricao,
       foto: modalEditar.foto,
-    }).then(() => setModalEditar(null));
+    })
+      .then(() => {
+        setModalEditar(null);
+      })
+      .catch(err => {
+        console.error("Erro ao editar personagem:", err);
+        // O erro é tratado no hook com Swal
+      });
   }
 
   return (
@@ -77,20 +110,20 @@ function Personagens() {
       <div className="conteudo-95 layout">
         <div className="conteudo">
 
-          <h1 className="titulo t1">Personagens</h1>
+          <h1 className="titulo t1">{t('characters.title')}</h1>
           <div className="filtros">
             <div className="input-container">
               <select className="input" value={ordem} onChange={e => setOrdem(e.target.value)}>
-                <option value="">Ordenar</option>
-                <option value="az">Alfabética (A-Z)</option>
-                <option value="za">Alfabética (Z-A)</option>
+                <option value="">{t('common.order')}</option>
+                <option value="az">{t('common.orderAZ')}</option>
+                <option value="za">{t('common.orderZA')}</option>
               </select>
               <ChevronDown className="icon" size={18} />
             </div>
             <div className="input-container">
               <input
                 type="text"
-                placeholder="Buscar"
+                placeholder={t('common.search')}
                 className="input"
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
@@ -102,12 +135,12 @@ function Personagens() {
             {personagensFiltrados.map(personagem => (
               <li key={personagem.id} className="card-personagem">
                 <div className="imagem-container">
-                  <img src={personagem.foto || imagem} alt="" className="imagem" />
+                  <img src={imagem} alt="" className="imagem" />
                   <div className="card-personagem-acoes">
                     <button
                       className="btn-icone btn-editar"
                       type="button"
-                      title="Editar"
+                      title={t('common.edit')}
                       onClick={() => setModalEditar({ ...personagem })}
                     >
                       <Pencil size={16} />
@@ -115,7 +148,7 @@ function Personagens() {
                     <button
                       className="btn-icone btn-deletar"
                       type="button"
-                      title="Deletar"
+                      title={t('common.delete')}
                       onClick={() => deletar(personagem.id)}
                     >
                       <Trash2 size={16} />
@@ -124,7 +157,7 @@ function Personagens() {
                 </div>
                 <div className="textos">
                   <div className="texto t1"><p>{personagem.nome}</p></div>
-                  <div className="texto t2"><p>{personagem.descricao || "Sem descrição"}</p></div>
+                  <div className="texto t2"><p>{personagem.descricao || t('characters.noDescription')}</p></div>
                 </div>
               </li>
             ))}
@@ -133,7 +166,7 @@ function Personagens() {
       </div>
 
       {/* FAB – Novo personagem */}
-      <button className="personagens-fab" title="Novo personagem" onClick={() => { setForm(personagemVazio); setModalCriar(true); }}>
+      <button className="personagens-fab" title={t('characters.newButton')} onClick={() => { setForm(personagemVazio); setModalCriar(true); }}>
         <Plus size={24} />
       </button>
 
@@ -141,11 +174,11 @@ function Personagens() {
       {modalCriar && (
         <div className="modal">
           <form onSubmit={handleCriar}>
-            <h2 className="modal-titulo">Novo Personagem</h2>
+            <h2 className="modal-titulo">{t('characters.newTitle')}</h2>
             <FormPersonagem dados={form} onChange={setForm} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(personagemVazio); }}>Cancelar</button>
-              <button type="submit" className="btn-primario">Criar</button>
+              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(personagemVazio); }}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario">{t('common.create')}</button>
             </div>
           </form>
         </div>
@@ -155,11 +188,11 @@ function Personagens() {
       {modalEditar && (
         <div className="modal">
           <form onSubmit={handleEditar}>
-            <h2 className="modal-titulo">Editar Personagem</h2>
+            <h2 className="modal-titulo">{t('characters.editTitle')}</h2>
             <FormPersonagem dados={modalEditar} onChange={setModalEditar} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
-              <button type="submit" className="btn-primario">Salvar</button>
+              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario">{t('common.save')}</button>
             </div>
           </form>
         </div>

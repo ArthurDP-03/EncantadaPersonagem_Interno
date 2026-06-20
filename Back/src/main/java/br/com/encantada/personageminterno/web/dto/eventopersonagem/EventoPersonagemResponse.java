@@ -24,10 +24,16 @@ public record EventoPersonagemResponse(
         String eventoTitulo,
 
         @Schema(
-                description = "Identificador do personagem",
+                description = "Identificador do item de personagem (figurino)",
                 example = "3"
         )
-        Integer personagemId,
+        Integer personagemItemId,
+
+        @Schema(
+                description = "Código do item de personagem",
+                example = "ALICE-001"
+        )
+        String personagemItemCodigo,
 
         @Schema(
                 description = "Nome do personagem associado ao evento",
