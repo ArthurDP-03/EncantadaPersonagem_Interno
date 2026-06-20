@@ -125,4 +125,50 @@ public class AtorService {
         }
         atorRepository.deleteById(id);
     }
+    @Transactional(readOnly = true)
+    public AtorResponse buscarPorId(int id) {
+        Ator ator = atorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ator nao encontrado com o id: " + id));
+        return toResponse(ator);
+
+    }
+
+    @Transactional
+    public AtorResponse atualizar(int id, AtorRequest request) {
+        Ator ator = atorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ator não encontrado com id: " + id));
+
+        // Verifica se o email já existe em outro registro
+        if (!ator.getEmail().equals(request.email())) {
+            if (administradorRepository.existsByEmail(request.email())) {
+                throw new BusinessException("Já existe administrador com esse email");
+            }
+            if (atorRepository.existsByEmail(request.email())) {
+                throw new BusinessException("Já existe ator com esse email");
+            }
+        }
+    
+        ator.setNome(request.nome());
+        ator.setEmail(request.email());
+        ator.setTelefone(request.telefone());
+        ator.setGenero(request.genero());
+        ator.setAltura(request.altura());
+        ator.setPeso(request.peso());
+        ator.setObservacao(request.observacao());
+        ator.setAtivo(request.ativo() == null ? Boolean.TRUE : request.ativo());
+
+        if (request.senha() != null && !request.senha().isBlank()) {
+            ator.setSenha(passwordEncoder.encode(request.senha()));
+        }
+        
+        return toResponse(atorRepository.save(ator));
+}
+
+    @Transactional
+    public void deletar (int id){
+        if (!atorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Ator não encontrado");
+        }
+        atorRepository.deleteById(id);
+    }
 }
