@@ -3,11 +3,13 @@ import { useState } from 'react'
 import { useLogin } from '../../hooks/useLogin'
 import logo from '../../assets/logo.png'
 import './index.css'
+import { useTranslation } from 'react-i18next'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const { entrar, erro, setErro, carregando } = useLogin()
+  const { t } = useTranslation()
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -18,14 +20,14 @@ function Login() {
     <section className="section-login">
       <div className='form-container'>
         <div className="imagem-container">
-          <img src={logo} alt="Logo" className='imagem' />
+          <img src={logo} alt={t('common.logoAlt')} className='imagem' />
         </div>
 
-        <h1 className='title'>Login</h1>
+        <h1 className='title'>{t('login.title')}</h1>
 
         <form className='form' onSubmit={handleSubmit}>
           <div className='input-container text'>
-            <label htmlFor="email" className='label'>Email</label>
+            <label htmlFor="email" className='label'>{t('common.fields.email')}</label>
             <input
               type="email"
               id="email"
@@ -39,7 +41,7 @@ function Login() {
           </div>
 
           <div className='input-container text'>
-            <label htmlFor="password" className='label'>Senha</label>
+            <label htmlFor="password" className='label'>{t('common.fields.password')}</label>
             <input
               type="password"
               id="password"
@@ -55,7 +57,7 @@ function Login() {
           {erro && <p style={{ color: 'red', fontSize: '14px' }}>{erro}</p>}
 
           <button type="submit" className='button' disabled={carregando}>
-            {carregando ? 'Entrando...' : 'Entrar'}
+            {carregando ? t('login.entering') : t('login.enter')}
           </button>
         </form>
       </div>

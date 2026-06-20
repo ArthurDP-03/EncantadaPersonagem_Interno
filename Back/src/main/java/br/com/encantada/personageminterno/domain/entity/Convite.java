@@ -1,6 +1,7 @@
 package br.com.encantada.personageminterno.domain.entity;
 
 import br.com.encantada.personageminterno.domain.enums.ConviteStatus;
+import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -45,6 +46,10 @@ public class Convite {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_administrador", nullable = false)
     private Administrador administrador;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_personagem_item", nullable = false)
+    private PersonagemItem personagemItem;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)

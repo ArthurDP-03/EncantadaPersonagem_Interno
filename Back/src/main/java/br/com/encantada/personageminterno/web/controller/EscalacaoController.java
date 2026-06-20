@@ -15,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Escalações", description = "Gerenciamento de escalações de atores para eventos")
 @RestController
 @RequestMapping("/escalacoes")
@@ -73,6 +75,17 @@ public class EscalacaoController {
     public ResponseEntity<Void> cancelar(@PathVariable Integer id, Authentication authentication) {
         escalacaoService.cancelar(id, authentication.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Listar escalações por evento", description = "Retorna todas as escalações vinculadas a um evento específico.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de escalações retornada com sucesso"),
+        @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+        @ApiResponse(responseCode = "404", description = "Evento não encontrado")
+    })
+    @GetMapping("/evento/{eventoId}")
+    public ResponseEntity<List<EscalacaoResponse>> listarPorEvento(@PathVariable Integer eventoId) {
+        return ResponseEntity.ok(escalacaoService.listarPorEvento(eventoId));
     }
 
     @Operation(summary = "Buscar escalação por ID", description = "Retorna os detalhes completos de uma escalação pelo seu identificador.")

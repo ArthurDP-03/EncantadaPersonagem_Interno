@@ -1,11 +1,54 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import i18n from "../i18n";
 import {
   getClientes,
   criarCliente,
   atualizarCliente,
   deletarCliente
 } from "../services/cliente";
+
+const t = i18n.t.bind(i18n);
+
+const escapeHtml = (value) =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const formatarCamposValidacao = (fields) => {
+  const itens = Object.entries(fields)
+    .map(([campo, msg]) => `<li><strong>${escapeHtml(campo)}</strong>: ${escapeHtml(msg)}</li>`)
+    .join("");
+
+  return `<div style="text-align:left;"><ul style="margin:0;padding-left:1.25rem;">${itens}</ul></div>`;
+};
+
+const obterMensagemErro = (err, fallback) =>
+  err.data?.message || err.data?.error || fallback;
+
+const mostrarErroGenerico = (err, title, fallback) => {
+  Swal.fire({
+    icon: "error",
+    title,
+    text: obterMensagemErro(err, fallback),
+  });
+};
+
+const mostrarErroValidacaoOuGenerico = (err, title, fallback) => {
+  if (err.status === 422 && err.data?.fields) {
+    Swal.fire({
+      icon: "error",
+      title: t('common.validation.invalidData'),
+      html: formatarCamposValidacao(err.data.fields),
+    });
+    return;
+  }
+
+  mostrarErroGenerico(err, title, fallback);
+};
 
 export function useClientes() {
   const [clientes, setClientes] = useState([]);
@@ -18,12 +61,13 @@ export function useClientes() {
       .catch(err => {
         console.error("Erro completo:", err);
 
-        setErro(err.data?.error || "Erro ao carregar clientes");
+        const mensagemErro = obterMensagemErro(err, t('clients.errors.load'));
+        setErro(mensagemErro);
 
         Swal.fire({
           icon: "error",
-          title: "Erro ao carregar",
-          text: err.data?.error || "Não foi possível carregar os clientes"
+          title: t('clients.titles.load'),
+          text: mensagemErro
         });
       })
       .finally(() => setCarregando(false));
@@ -31,12 +75,12 @@ export function useClientes() {
 
   const deletar = async (id) => {
     const resultado = await Swal.fire({
-      title: "Deseja deletar este cliente?",
-      text: "Esta ação não poderá ser desfeita.",
+      title: t('common.confirm.deleteTitle', { item: t('common.items.client').toLowerCase() }),
+      text: t('common.confirm.deleteText'),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Deletar",
-      cancelButtonText: "Cancelar",
+      confirmButtonText: t('common.confirm.confirmBtn'),
+      cancelButtonText: t('common.confirm.cancelBtn'),
       confirmButtonColor: "#d33"
     });
 
@@ -49,21 +93,14 @@ export function useClientes() {
 
       Swal.fire({
         icon: "success",
-        title: "Cliente deletado",
+        title: t('common.success.deleted', { item: t('common.items.client') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao deletar cliente:", err);
 
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao deletar",
-        text:
-          err.data?.message ||
-          err.data?.error ||
-          "Não foi possível deletar o cliente"
-      });
+      mostrarErroGenerico(err, t('clients.titles.delete'), t('clients.errors.delete'));
     }
   };
 
@@ -75,18 +112,16 @@ export function useClientes() {
 
       Swal.fire({
         icon: "success",
-        title: "Cliente criado",
+        title: t('common.success.created', { item: t('common.items.client') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao criar cliente:", err);
 
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao criar",
-        text: err.data?.error || "Não foi possível criar o cliente"
-      });
+      mostrarErroValidacaoOuGenerico(err, t('clients.titles.create'), t('clients.errors.create'));
+
+      throw err;
     }
   };
 
@@ -100,18 +135,16 @@ export function useClientes() {
 
       Swal.fire({
         icon: "success",
-        title: "Cliente atualizado",
+        title: t('common.success.updated', { item: t('common.items.client') }),
         timer: 1800,
         showConfirmButton: false
       });
     } catch (err) {
       console.error("Erro ao editar cliente:", err);
 
-      Swal.fire({
-        icon: "error",
-        title: "Erro ao atualizar",
-        text: err.data?.error || "Não foi possível atualizar o cliente"
-      });
+      mostrarErroValidacaoOuGenerico(err, t('clients.titles.update'), t('clients.errors.update'));
+
+      throw err;
     }
   };
 

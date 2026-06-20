@@ -1,6 +1,7 @@
 import "./index.css";
 import { Navigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import {
   House,
   CalendarDays,
@@ -16,52 +17,56 @@ import {
 
 function Header({ dark, setDark }) {
   const { user, logout } = useAuth();
+  const { t, i18n } = useTranslation();
+  const currentLanguage = i18n.resolvedLanguage || i18n.language || "pt-BR";
+  const isPortuguese = currentLanguage.startsWith("pt");
 
   function handleLogout() {
     logout();
     Navigate("/login");
   }
 
-  // define links por perfil
+  function toggleLanguage() {
+    i18n.changeLanguage(isPortuguese ? "en-US" : "pt-BR");
+  }
+
   const links =
     user?.role === "ADMIN"
-      ? //se for admin
-        [
-          { label: "Geral", href: "/", icone: <House size={18} /> }, // revisar como vai ser essa navegação sem sair da tela de admin.
+      ? [
+          { label: t("nav.general"), href: "/", icone: <House size={18} /> },
           {
-            label: "Eventos",
+            label: t("nav.events"),
             href: "/eventos",
             icone: <CalendarDays size={18} />,
           },
           {
-            label: "Financeiro",
+            label: t("nav.finance"),
             href: "/financeiro",
             icone: <BarChart2 size={18} />,
           },
           {
-            label: "Clientes",
+            label: t("nav.clients"),
             href: "/clientes",
             icone: <Handshake size={18} />,
           },
           {
-            label: "Personagens",
+            label: t("nav.characters"),
             href: "/personagens",
             icone: <Drama size={18} />,
           },
           {
-            label: "Colaboradores",
+            label: t("nav.collaborators"),
             href: "/colaboradores",
             icone: <Users size={18} />,
           },
         ]
-      : //se nao for admin, no caso ator
-        [
-          { label: "Geral", href: "/", icone: <House size={18} /> }, //editar permissoes depois do que ator pode acessar
+      : [
+          { label: t("nav.general"), href: "/", icone: <House size={18} /> },
           {
-            label: "Eventos",
+            label: t("nav.events"),
             href: "/eventos",
             icone: <CalendarDays size={18} />,
-          }, //editar permissoes depois do que ator pode acessar
+          },
         ];
 
   if (!user) return null;
@@ -81,7 +86,11 @@ function Header({ dark, setDark }) {
                   <p>{user.name}</p>
                 </div>
                 <div className="cargo">
-                  <p>{user.role === "ADMIN" ? "Administrador" : "Ator"}</p>
+                  <p>
+                    {user.role === "ADMIN"
+                      ? t("common.roles.admin")
+                      : t("common.roles.actor")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -96,6 +105,13 @@ function Header({ dark, setDark }) {
               <div className="icone" onClick={() => setDark((d) => !d)}>
                 {dark ? <Sun size={30} /> : <Moon size={30} />}
               </div>
+              <button
+                type="button"
+                className="icone language-toggle"
+                onClick={toggleLanguage}
+              >
+                <span>{isPortuguese ? t("common.languages.pt") : t("common.languages.en")}</span>
+              </button>
               <div className="icone">
                 <Bell size={30} />
               </div>
@@ -123,7 +139,7 @@ function Header({ dark, setDark }) {
         <div className="lista-link">
           <button onClick={handleLogout} className="link logout">
             <div className="texto">
-              <p>Sair</p>
+              <p>{t("nav.logout")}</p>
             </div>
             <div className="icone">
               <LogOut size={18} />

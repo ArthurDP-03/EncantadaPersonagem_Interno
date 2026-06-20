@@ -2,36 +2,41 @@
 import './index.css'
 import { Search, ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 import { useClientes } from '../../hooks/useClientes';
 import Card_linha from '../card_linha';
 
 const clienteVazio = { nome: "", email: "", telefone: "" };
 
 function FormCliente({ dados, onChange }) {
+  const { t } = useTranslation();
+
   return (
     <div className="form-cliente">
-      <label>Nome
-        <input value={dados.nome} onChange={e => onChange({ ...dados, nome: e.target.value })} placeholder="Nome completo" />
+      <label>{t('common.fields.name')}
+        <input value={dados.nome} onChange={e => onChange({ ...dados, nome: e.target.value })} placeholder={t('clients.placeholders.name')} />
       </label>
-      <label>Email
-        <input value={dados.email} onChange={e => onChange({ ...dados, email: e.target.value })} placeholder="email@exemplo.com" />
+      <label>{t('common.fields.email')}
+        <input value={dados.email} onChange={e => onChange({ ...dados, email: e.target.value })} placeholder={t('clients.placeholders.email')} />
       </label>
-      <label>Telefone
-        <input value={dados.telefone} onChange={e => onChange({ ...dados, telefone: e.target.value })} placeholder="41 9 9999-0000" />
+      <label>{t('common.fields.phone')}
+        <input value={dados.telefone} onChange={e => onChange({ ...dados, telefone: e.target.value })} placeholder={t('clients.placeholders.phone')} />
       </label>
     </div>
   );
 }
 
 function Clientes() {
+  const { t } = useTranslation();
   const [busca, setBusca]               = useState("");
   const [ordem, setOrdem]               = useState("");
   const [modalCriar, setModalCriar]     = useState(false);
   const [modalEditar, setModalEditar]   = useState(null);
   const [form, setForm]                 = useState(clienteVazio);
   const { clientes, carregando, erro, criar: adicionarCliente, editar: editarCliente, deletar: removerCliente } = useClientes();
-  if (carregando) return <p>Carregando...</p>;
-  if (erro) return <p>Erro: {erro}</p>;
+  if (carregando) return <p>{t('common.loading')}</p>;
+  if (erro) return <p>{t('common.error', { message: erro })}</p>;
 
   const clientesFiltrados = clientes
     .filter(c =>
@@ -44,17 +49,33 @@ function Clientes() {
       return 0;
     });
 
+  function mostrarValidacao(fieldKey) {
+    Swal.fire({
+      icon: "warning",
+      title: t('common.validation.title'),
+      text: t('common.validation.required', { field: t(fieldKey) }),
+    });
+  }
+
   function handleCriar(event) {
     event.preventDefault();
-    if (!form.nome.trim()) return;
+    if (!form.nome.trim()) {
+      mostrarValidacao('common.fields.name');
+      return;
+    }
+    if (!form.email.trim()) {
+      mostrarValidacao('common.fields.email');
+      return;
+    }
+    if (!form.telefone.trim()) {
+      mostrarValidacao('common.fields.phone');
+      return;
+    }
 
     adicionarCliente({ nome: form.nome, telefone: form.telefone, email: form.email })
       .then(() => {
         setModalCriar(false);
         setForm(clienteVazio);
-      })
-      .catch(err => {
-        console.error("Erro ao criar cliente:", err);
       });
   }
 
@@ -62,12 +83,22 @@ function Clientes() {
     event.preventDefault();
     if (!modalEditar) return;
 
+    if (!modalEditar.nome.trim()) {
+      mostrarValidacao('common.fields.name');
+      return;
+    }
+    if (!modalEditar.email.trim()) {
+      mostrarValidacao('common.fields.email');
+      return;
+    }
+    if (!modalEditar.telefone.trim()) {
+      mostrarValidacao('common.fields.phone');
+      return;
+    }
+
     editarCliente(modalEditar.id, { nome: modalEditar.nome, telefone: modalEditar.telefone, email: modalEditar.email })
       .then(() => {
         setModalEditar(null);
-      })
-      .catch(err => {
-        console.error("Erro ao editar cliente:", err);
       });
   }
 
@@ -76,21 +107,21 @@ function Clientes() {
       <div className="conteudo-95 layout">
         <div className="conteudo">
 
-          <h1 className="titulo t1">Clientes</h1>
+          <h1 className="titulo t1">{t('clients.title')}</h1>
 
           <div className="filtros">
             <div className="input-container">
               <select className="input" value={ordem} onChange={e => setOrdem(e.target.value)}>
-                <option value="">Ordenar</option>
-                <option value="az">Alfabética (A-Z)</option>
-                <option value="za">Alfabética (Z-A)</option>
+                <option value="">{t('common.order')}</option>
+                <option value="az">{t('common.orderAZ')}</option>
+                <option value="za">{t('common.orderZA')}</option>
               </select>
               <ChevronDown className="icon" size={18} />
             </div>
             <div className="input-container">
               <input
                 type="text"
-                placeholder="Buscar"
+                placeholder={t('common.search')}
                 className="input"
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
@@ -102,15 +133,15 @@ function Clientes() {
           {/*Tabela CRUD*/}
           <div className="cards">
             {clientesFiltrados.length === 0 ? (
-              <div className="clientes-vazio">Nenhum cliente encontrado.</div>
+              <div className="clientes-vazio">{t('clients.empty')}</div>
             ) : (
               clientesFiltrados.map((c) => (
                 <Card_linha
                   key={c.id}
                   titulo={c.nome}
                   informacoes={{
-                    Email: c.email,
-                    Telefone: c.telefone,
+                    [t('common.fields.email')]: c.email,
+                    [t('common.fields.phone')]: c.telefone,
                   }}
                   onEditar={() => setModalEditar({ ...c })}
                   onDeletar={() => removerCliente(c.id)}
@@ -123,7 +154,7 @@ function Clientes() {
       </div>
 
       {/* FAB – Novo cliente */}
-      <button className="clientes-fab" title="Novo cliente" onClick={() => { setForm(clienteVazio); setModalCriar(true); }}>
+      <button className="clientes-fab" title={t('clients.newButton')} onClick={() => { setForm(clienteVazio); setModalCriar(true); }}>
         <Plus size={24} />
       </button>
 
@@ -131,11 +162,11 @@ function Clientes() {
       {modalCriar && (
         <div className="modal">
           <form onSubmit={handleCriar}>
-            <h2 className="modal-titulo">Novo Cliente</h2>
+            <h2 className="modal-titulo">{t('clients.newTitle')}</h2>
             <FormCliente dados={form} onChange={setForm} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(clienteVazio); }}>Cancelar</button>
-              <button type="submit" className="btn-primario">Criar</button>
+              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(clienteVazio); }}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario">{t('common.create')}</button>
             </div>
           </form>
         </div>
@@ -145,11 +176,11 @@ function Clientes() {
       {modalEditar && (
         <div className="modal">
           <form onSubmit={handleEditar}>
-            <h2 className="modal-titulo">Editar Cliente</h2>
+            <h2 className="modal-titulo">{t('clients.editTitle')}</h2>
             <FormCliente dados={modalEditar} onChange={setModalEditar} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>Cancelar</button>
-              <button type="submit" className="btn-primario">Salvar</button>
+              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario">{t('common.save')}</button>
             </div>
           </form>
         </div>

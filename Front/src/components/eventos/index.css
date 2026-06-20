@@ -1,5 +1,5 @@
 .section-eventos{}
-.section-eventos .conteudo{padding: 0 0 0 100px;}
+.section-eventos .conteudo{padding: 0 0 100px 100px;}
 .section-eventos .titulo{margin: 1em 0 0;}
 .section-eventos .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
 .section-eventos .input-container{position: relative;}
@@ -9,8 +9,8 @@
 .section-eventos .filtros .input::placeholder{color: var(--texto-opacity-7);}
 
 .section-eventos .lista-eventos{display: flex; gap: 24px; margin: 0 0 24px ; flex-wrap: wrap;}
-.section-eventos .lista-eventos .card-eventos{box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25); border-radius: 20px; overflow: hidden; }
-.section-eventos .lista-eventos .card-eventos .imagem-container{aspect-ratio: 330/ 256; width: 252px; display: flex; justify-content: center; align-items: center;}
+.section-eventos .lista-eventos .card-eventos{box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25); border-radius: 20px; overflow: hidden; width: 252px;}
+.section-eventos .lista-eventos .card-eventos .imagem-container{aspect-ratio: 330/ 256; width:100%; display: flex; justify-content: center; align-items: center;}
 .section-eventos .lista-eventos .card-eventos .imagem-container .imagem{width: 70%; }
 .section-eventos .lista-eventos .card-eventos .textos{background: var(--fundo); padding: 10px 16px 8px;}
 
