@@ -12,6 +12,7 @@ import './App.css'
 import Personagens from './components/personagens'
 import Clientes from './components/clientes'
 import Eventos from './components/eventos'
+import EventoDetalhes from './components/eventoDetalhes'
 import Colaboradores from './components/colaboradores'
 import { useDarkMode } from './hooks/useDarkMode'
 import Dashboard from './components/dashboard'
@@ -31,7 +32,8 @@ function App() {
             <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />
             <Route path="/colaboradores" element={<PrivateRoute role="ADMIN"><Colaboradores /></PrivateRoute>} />
             <Route path="/eventos" element={<Eventos />} />
-          </Route>
+            <Route path="/eventos/:id" element={<PrivateRoute role="ADMIN"><EventoDetalhes /></PrivateRoute>} />
+          </Route> 
         </Routes>
       </AuthProvider >
     </ErrorBoundary>
