@@ -1,0 +1,90 @@
+.home-container {
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Nova animação super lenta vindo bem de baixo */
+@keyframes fadeFloatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animação exclusiva para o subtítulo */
+.animate-fade-in {
+  opacity: 0;
+  animation: fadeFloatUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animação exclusiva para os cards (recebem delay via style inline) */
+.animate-fade-in-card {
+  opacity: 0;
+  animation: fadeFloatUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  width: 100%;
+  max-width: 350px;
+}
+
+.delay-subtitle {
+  animation-delay: 1.5s; /* Aparece logo após o texto terminar de digitar */
+}
+
+/* Estilos do Cabeçalho Centralizado */
+.home-header {
+  margin-bottom: 3.5rem;
+  text-align: center;
+  min-height: 80px; /* Evita pulos na tela enquanto o texto é digitado */
+}
+
+.home-header h1 {
+  font-size: 2.5rem;
+  color: var(--texto-cinza-escuro);
+  margin-bottom: 0.5rem;
+  font-weight: var(--bold);
+}
+
+.home-header h1 span {
+  color: var(--verde-1);
+}
+
+/* Cursor piscando para a animação de digitação */
+.home-header h1::after {
+  content: '|';
+  color: var(--verde-1);
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.home-header p {
+  font-size: 1.25rem;
+  color: var(--cinza-4);
+  font-weight: var(--medium);
+}
+
+.cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.75rem;
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 2rem 1rem;
+  }
+  
+  .home-header h1 {
+    font-size: 1.75rem;
+  }
+}

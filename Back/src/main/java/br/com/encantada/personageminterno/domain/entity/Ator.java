@@ -52,4 +52,44 @@ public class Ator {
 
     @Column(nullable = false)
     private Boolean ativo;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public BigDecimal getAltura() {
+        return altura;
+    }
+
+    public BigDecimal getPeso() {
+        return peso;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
 }

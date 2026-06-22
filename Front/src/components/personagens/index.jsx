@@ -3,9 +3,10 @@ import { usePersonagens } from "../../hooks/usePersonagem";
 import './index.css'
 import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
-import logo from '../../assets/logo.png'
+import no_image from '../../assets/default.png';
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import ImageUpload from "../imageUpload";
 
 const personagemVazio = {
   nome: "",
@@ -13,7 +14,7 @@ const personagemVazio = {
   foto: "",
 };
 
-function FormPersonagem({ dados, onChange }) {
+function FormPersonagem({ dados, onChange, onUploadingChange }) {
   const { t } = useTranslation();
 
   return (
@@ -24,9 +25,11 @@ function FormPersonagem({ dados, onChange }) {
       <label>{t('common.fields.description')}
         <textarea value={dados.descricao} onChange={e => onChange({ ...dados, descricao: e.target.value })} placeholder={t('characters.placeholders.description')} rows={3} />
       </label>
-      <label>{t('common.fields.photo')} ({t('common.fields.url')})
-        <input value={dados.foto} onChange={e => onChange({ ...dados, foto: e.target.value })} placeholder={t('characters.placeholders.photo')} />
-      </label>
+      <ImageUpload
+        value={dados.foto}
+        onChange={(url) => onChange({ ...dados, foto: url })}
+        onUploadingChange={onUploadingChange}
+      />
     </div>
   );
 }
@@ -38,7 +41,7 @@ function Personagens() {
   const [modalCriar, setModalCriar] = useState(false);
   const [modalEditar, setModalEditar] = useState(null);
   const [form, setForm] = useState(personagemVazio);
-  const [imagem] = useState(logo);
+  const [fotoCarregando, setFotoCarregando] = useState(false);
 
   const { personagens, carregando, erro, criar, editar, deletar } = usePersonagens();
 
@@ -66,6 +69,10 @@ function Personagens() {
 
   function handleCriar(event) {
     event.preventDefault();
+    if (fotoCarregando) {
+      return;
+    }
+
     if (!form.nome.trim()) {
       mostrarValidacao();
       return;
@@ -75,6 +82,7 @@ function Personagens() {
       .then(() => {
         setModalCriar(false);
         setForm(personagemVazio);
+        setFotoCarregando(false);
       })
       .catch(err => {
         console.error("Erro ao criar personagem:", err);
@@ -85,6 +93,10 @@ function Personagens() {
   function handleEditar(event) {
     event.preventDefault();
     if (!modalEditar) return;
+
+    if (fotoCarregando) {
+      return;
+    }
 
     if (!modalEditar.nome.trim()) {
       mostrarValidacao();
@@ -98,6 +110,7 @@ function Personagens() {
     })
       .then(() => {
         setModalEditar(null);
+        setFotoCarregando(false);
       })
       .catch(err => {
         console.error("Erro ao editar personagem:", err);
@@ -135,13 +148,13 @@ function Personagens() {
             {personagensFiltrados.map(personagem => (
               <li key={personagem.id} className="card-personagem">
                 <div className="imagem-container">
-                  <img src={imagem} alt="" className="imagem" />
+                  <img src={personagem.foto || no_image} alt={personagem.nome} className="imagem" />
                   <div className="card-personagem-acoes">
                     <button
                       className="btn-icone btn-editar"
                       type="button"
                       title={t('common.edit')}
-                      onClick={() => setModalEditar({ ...personagem })}
+                      onClick={() => { setFotoCarregando(false); setModalEditar({ ...personagem }); }}
                     >
                       <Pencil size={16} />
                     </button>
@@ -166,7 +179,7 @@ function Personagens() {
       </div>
 
       {/* FAB – Novo personagem */}
-      <button className="personagens-fab" title={t('characters.newButton')} onClick={() => { setForm(personagemVazio); setModalCriar(true); }}>
+      <button className="personagens-fab" title={t('characters.newButton')} onClick={() => { setForm(personagemVazio); setFotoCarregando(false); setModalCriar(true); }}>
         <Plus size={24} />
       </button>
 
@@ -175,10 +188,10 @@ function Personagens() {
         <div className="modal">
           <form onSubmit={handleCriar}>
             <h2 className="modal-titulo">{t('characters.newTitle')}</h2>
-            <FormPersonagem dados={form} onChange={setForm} />
+            <FormPersonagem dados={form} onChange={setForm} onUploadingChange={setFotoCarregando} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(personagemVazio); }}>{t('common.cancel')}</button>
-              <button type="submit" className="btn-primario">{t('common.create')}</button>
+              <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(personagemVazio); setFotoCarregando(false); }}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario" disabled={fotoCarregando}>{fotoCarregando ? t('common.upload.loading') : t('common.create')}</button>
             </div>
           </form>
         </div>
@@ -189,10 +202,10 @@ function Personagens() {
         <div className="modal">
           <form onSubmit={handleEditar}>
             <h2 className="modal-titulo">{t('characters.editTitle')}</h2>
-            <FormPersonagem dados={modalEditar} onChange={setModalEditar} />
+            <FormPersonagem dados={modalEditar} onChange={setModalEditar} onUploadingChange={setFotoCarregando} />
             <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>{t('common.cancel')}</button>
-              <button type="submit" className="btn-primario">{t('common.save')}</button>
+              <button type="button" className="btn-secundario" onClick={() => { setModalEditar(null); setFotoCarregando(false); }}>{t('common.cancel')}</button>
+              <button type="submit" className="btn-primario" disabled={fotoCarregando}>{fotoCarregando ? t('common.upload.loading') : t('common.save')}</button>
             </div>
           </form>
         </div>

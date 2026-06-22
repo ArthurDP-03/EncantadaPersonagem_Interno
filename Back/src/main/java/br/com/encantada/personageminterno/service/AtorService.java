@@ -1,15 +1,10 @@
 package br.com.encantada.personageminterno.service;
 
-import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Ator;
-import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
-import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
-import br.com.encantada.personageminterno.web.dto.administrador.AdministradorRequest;
-import br.com.encantada.personageminterno.web.dto.administrador.AdministradorResponse;
 import br.com.encantada.personageminterno.web.dto.ator.AtorRequest;
 import br.com.encantada.personageminterno.web.dto.ator.AtorResponse;
 import java.util.List;
@@ -24,7 +19,9 @@ public class AtorService {
     private final AtorRepository atorRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AtorService(AdministradorRepository administradorRepository, AtorRepository atorRepository,
+    public AtorService(
+            AdministradorRepository administradorRepository,
+            AtorRepository atorRepository,
             PasswordEncoder passwordEncoder) {
         this.administradorRepository = administradorRepository;
         this.atorRepository = atorRepository;
@@ -40,13 +37,7 @@ public class AtorService {
 
     @Transactional
     public AtorResponse criar(AtorRequest request) {
-        if (atorRepository.existsByEmail(request.email())) {
-            throw new ConflictException("Ja existe ator com esse email");
-        }
-        if (administradorRepository.existsByEmail(request.email())) {
-            throw new ConflictException("Ja existe administrador com esse email");
-
-        }
+        validarEmailDisponivel(request.email(), null);
 
         Ator ator = Ator.builder()
                 .nome(request.nome())
@@ -63,44 +54,19 @@ public class AtorService {
         return toResponse(atorRepository.save(ator));
     }
 
-    private AtorResponse toResponse(Ator ator) {
-        return new AtorResponse(
-                ator.getId(),
-                ator.getNome(),
-                ator.getEmail(),
-                ator.getTelefone(),
-                ator.getGenero(),
-                ator.getAltura(),
-                ator.getPeso(),
-                ator.getObservacao(),
-                ator.getAtivo());
-    }
-
     @Transactional(readOnly = true)
     public AtorResponse buscarPorId(int id) {
         Ator ator = atorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ator nao encontrado com o id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ator nao encontrado com id: " + id));
         return toResponse(ator);
-
     }
 
     @Transactional
     public AtorResponse atualizar(int id, AtorRequest request) {
         Ator ator = atorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ator não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ator nao encontrado com id: " + id));
 
-        if (!ator.getEmail().equals(request.email())) {
-            throw new ForbiddenException("Você não tem permissão para atualizar dados de outro ator");
-        }
-        // Verifica se o email já existe em outro registro
-        if (!ator.getEmail().equals(request.email())) {
-            if (administradorRepository.existsByEmail(request.email())) {
-                throw new ConflictException("Já existe administrador com esse email");
-            }
-            if (atorRepository.existsByEmail(request.email())) {
-                throw new ConflictException("Já existe ator com esse email");
-            }
-        }
+        validarEmailDisponivel(request.email(), id);
 
         ator.setNome(request.nome());
         ator.setEmail(request.email());
@@ -121,54 +87,36 @@ public class AtorService {
     @Transactional
     public void deletar(int id) {
         if (!atorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Ator não encontrado");
+            throw new ResourceNotFoundException("Ator nao encontrado");
         }
+
         atorRepository.deleteById(id);
     }
-    @Transactional(readOnly = true)
-    public AtorResponse buscarPorId(int id) {
-        Ator ator = atorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ator nao encontrado com o id: " + id));
-        return toResponse(ator);
 
+    private void validarEmailDisponivel(String email, Integer idAtual) {
+        boolean emailEmUsoPorOutroAtor = atorRepository.findByEmail(email)
+                .filter(ator -> idAtual == null || !ator.getId().equals(idAtual))
+                .isPresent();
+
+        if (emailEmUsoPorOutroAtor) {
+            throw new ConflictException("Ja existe ator com esse email");
+        }
+
+        if (administradorRepository.existsByEmail(email)) {
+            throw new ConflictException("Ja existe administrador com esse email");
+        }
     }
 
-    @Transactional
-    public AtorResponse atualizar(int id, AtorRequest request) {
-        Ator ator = atorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ator não encontrado com id: " + id));
-
-        // Verifica se o email já existe em outro registro
-        if (!ator.getEmail().equals(request.email())) {
-            if (administradorRepository.existsByEmail(request.email())) {
-                throw new BusinessException("Já existe administrador com esse email");
-            }
-            if (atorRepository.existsByEmail(request.email())) {
-                throw new BusinessException("Já existe ator com esse email");
-            }
-        }
-    
-        ator.setNome(request.nome());
-        ator.setEmail(request.email());
-        ator.setTelefone(request.telefone());
-        ator.setGenero(request.genero());
-        ator.setAltura(request.altura());
-        ator.setPeso(request.peso());
-        ator.setObservacao(request.observacao());
-        ator.setAtivo(request.ativo() == null ? Boolean.TRUE : request.ativo());
-
-        if (request.senha() != null && !request.senha().isBlank()) {
-            ator.setSenha(passwordEncoder.encode(request.senha()));
-        }
-        
-        return toResponse(atorRepository.save(ator));
-}
-
-    @Transactional
-    public void deletar (int id){
-        if (!atorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Ator não encontrado");
-        }
-        atorRepository.deleteById(id);
+    private AtorResponse toResponse(Ator ator) {
+        return new AtorResponse(
+                ator.getId(),
+                ator.getNome(),
+                ator.getEmail(),
+                ator.getTelefone(),
+                ator.getGenero(),
+                ator.getAltura(),
+                ator.getPeso(),
+                ator.getObservacao(),
+                ator.getAtivo());
     }
 }

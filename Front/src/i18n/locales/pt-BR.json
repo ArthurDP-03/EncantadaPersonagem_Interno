@@ -1,4 +1,5 @@
 {
+  
   "common": {
     "loading": "Carregando...",
     "error": "Erro: {{message}}",
@@ -64,6 +65,24 @@
       "value": "0,00",
       "observations": "Observações..."
     },
+    "upload": {
+      "label": "Foto do personagem",
+      "hint": "Arraste e solte uma imagem ou clique para selecionar.",
+      "emptyTitle": "Nenhuma imagem",
+      "emptyText": "Clique ou arraste uma imagem para iniciar.",
+      "formats": "JPEG, PNG ou WEBP, ate 5 MB.",
+      "loading": "Enviando imagem...",
+      "select": "Selecionar imagem",
+      "change": "Trocar imagem",
+      "remove": "Remover imagem",
+      "previewAlt": "Preview da imagem enviada",
+      "errors": {
+        "required": "Selecione uma imagem.",
+        "type": "Use uma imagem JPEG, PNG ou WEBP.",
+        "size": "A imagem deve ter no maximo 5 MB.",
+        "generic": "Nao foi possivel enviar a imagem."
+      }
+    },
     "items": {
       "client": "Cliente",
       "character": "Personagem",
@@ -120,6 +139,24 @@
       "name": "Nome completo",
       "email": "email@exemplo.com",
       "phone": "41 9 9999-0000"
+    },
+    "upload": {
+      "label": "Foto do personagem",
+      "hint": "Arraste e solte uma imagem ou clique para selecionar.",
+      "emptyTitle": "Nenhuma imagem",
+      "emptyText": "Clique ou arraste uma imagem para iniciar.",
+      "formats": "JPEG, PNG ou WEBP, ate 5 MB.",
+      "loading": "Enviando imagem...",
+      "select": "Selecionar imagem",
+      "change": "Trocar imagem",
+      "remove": "Remover imagem",
+      "previewAlt": "Preview da imagem enviada",
+      "errors": {
+        "required": "Selecione uma imagem.",
+        "type": "Use uma imagem JPEG, PNG ou WEBP.",
+        "size": "A imagem deve ter no maximo 5 MB.",
+        "generic": "Nao foi possivel enviar a imagem."
+      }
     },
     "titles": {
       "load": "Erro ao carregar",
@@ -373,6 +410,20 @@
       "created": "Item criado",
       "statusUpdated": "Status atualizado",
       "deleted": "Item deletado"
+    }
+  },
+  "home": {
+    "welcome": "Bem-vindo(a) ao sistema, ",
+    "question": "O que gostaria de fazer hoje?",
+    "cards": {
+      "dashboard": { "title": "Dashboard", "description": "Visão geral do sistema e métricas." },
+      "colaboradores": { "title": "Colaboradores", "description": "Gerencie o elenco e disponibilidades." },
+      "clientes": { "title": "Clientes", "description": "Carteira de clientes e contatos." },
+      "eventos": { "title": "Eventos", "description": "Calendário de festas e agendamentos." },
+      "personagens": { "title": "Personagens", "description": "Catálogo de figurinos e personagens." },
+      "meus_eventos": { "title": "Meus Eventos", "description": "Eventos nos quais você está confirmado." },
+      "minha_agenda": { "title": "Minha Agenda", "description": "Verifique suas próximas escalas." },
+      "responder_convites": { "title": "Responder Convites", "description": "Aceite ou recuse novos convites." }
     }
   }
 }

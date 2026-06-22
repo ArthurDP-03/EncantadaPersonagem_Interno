@@ -64,6 +64,24 @@
       "value": "0.00",
       "observations": "Observations..."
     },
+    "upload": {
+      "label": "Character photo",
+      "hint": "Drag and drop an image or click to choose one.",
+      "emptyTitle": "No image yet",
+      "emptyText": "Click or drag an image to get started.",
+      "formats": "JPEG, PNG or WEBP, up to 5 MB.",
+      "loading": "Uploading image...",
+      "select": "Select image",
+      "change": "Change image",
+      "remove": "Remove image",
+      "previewAlt": "Uploaded image preview",
+      "errors": {
+        "required": "Please select an image.",
+        "type": "Use a JPEG, PNG or WEBP image.",
+        "size": "The image must be 5 MB or smaller.",
+        "generic": "Could not upload the image."
+      }
+    },
     "items": {
       "client": "Client",
       "character": "Character",
@@ -120,6 +138,24 @@
       "name": "Full name",
       "email": "email@example.com",
       "phone": "41 9 9999-0000"
+    },
+    "upload": {
+      "label": "Character photo",
+      "hint": "Drag and drop an image or click to choose one.",
+      "emptyTitle": "No image yet",
+      "emptyText": "Click or drag an image to get started.",
+      "formats": "JPEG, PNG or WEBP, up to 5 MB.",
+      "loading": "Uploading image...",
+      "select": "Select image",
+      "change": "Change image",
+      "remove": "Remove image",
+      "previewAlt": "Uploaded image preview",
+      "errors": {
+        "required": "Please select an image.",
+        "type": "Use a JPEG, PNG or WEBP image.",
+        "size": "The image must be 5 MB or smaller.",
+        "generic": "Could not upload the image."
+      }
     },
     "titles": {
       "load": "Error loading",
@@ -374,5 +410,20 @@
       "statusUpdated": "Status updated",
       "deleted": "Item deleted"
     }
+  },
+  "home": {
+    "welcome": "Welcome to the system, ",
+    "question": "What would you like to do today?",
+    "cards": {
+      "dashboard": { "title": "Dashboard", "description": "System overview and metrics." },
+      "colaboradores": { "title": "Collaborators", "description": "Manage the cast and availability." },
+      "clientes": { "title": "Clients", "description": "Client portfolio and contacts." },
+      "eventos": { "title": "Events", "description": "Party calendar and schedules." },
+      "personagens": { "title": "Characters", "description": "Costume and character catalog." },
+      "meus_eventos": { "title": "My Events", "description": "Events where you are confirmed." },
+      "minha_agenda": { "title": "My Schedule", "description": "Check your upcoming assignments." },
+      "responder_convites": { "title": "Respond to Invites", "description": "Accept or decline new invitations." }
+    }
   }
+  
 }
