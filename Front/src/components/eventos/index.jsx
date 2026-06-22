@@ -1,6 +1,7 @@
 import './index.css';
 import { Search, ChevronDown, Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useEventos } from '../../hooks/useEventos';
 import { useClientes } from '../../hooks/useClientes';
 import { useAdministradores } from '../../hooks/useAdministradores';
@@ -84,11 +85,11 @@ function Eventos() {
   const [busca, setBusca]             = useState("");
   const [ordem, setOrdem]             = useState("");
   const [modalCriar, setModalCriar]   = useState(false);
-  const [modalEditar, setModalEditar] = useState(null);
   const [form, setForm]               = useState(eventoVazio);
   const [imagem]                      = useState(logo);
+  const navigate                       = useNavigate();
 
-  const { eventos, carregando, erro, criar, editar, deletar } = useEventos();
+  const { eventos, carregando, erro, criar, deletar } = useEventos();
   const { clientes }                                          = useClientes();
   const { administradores }                                   = useAdministradores();
 
@@ -121,24 +122,6 @@ function Eventos() {
       setModalCriar(false);
       setForm(eventoVazio);
     });
-  }
-
-  function handleEditar(event) {
-    event.preventDefault();
-    if (!modalEditar) return;
-
-    editar(modalEditar.id, {
-      titulo: modalEditar.titulo,
-      descricao: modalEditar.descricao,
-      dataInicio: modalEditar.dataInicio,
-      dataFim: modalEditar.dataFim,
-      endereco: modalEditar.endereco,
-      status: modalEditar.status,
-      tipoPagamento: modalEditar.tipoPagamento,
-      valorTotal: Number(modalEditar.valorTotal),
-      clienteId: Number(modalEditar.clienteId),
-      administradorCriadorId: Number(modalEditar.administradorCriadorId),
-    }).then(() => setModalEditar(null));
   }
 
   const formProps = { clientes, administradores };
@@ -193,8 +176,8 @@ function Eventos() {
                               <button
                                 className="btn-icone btn-editar"
                                 type="button"
-                                title={t('common.edit')}
-                                onClick={() => setModalEditar({ ...evento })}
+                                title="Detalhes do evento"
+                                onClick={() => navigate(`/eventos/${evento.id}`)}
                               >
                                 <Pencil size={16} />
                               </button>
@@ -240,20 +223,6 @@ function Eventos() {
             <div className="modal-acoes">
               <button type="button" className="btn-secundario" onClick={() => { setModalCriar(false); setForm(eventoVazio); }}>{t('common.cancel')}</button>
               <button type="submit" className="btn-primario">{t('common.create')}</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Modal: Editar */}
-      {modalEditar && (
-        <div className="modal">
-          <form onSubmit={handleEditar}>
-            <h2 className="modal-titulo">{t('events.editTitle')}</h2>
-            <FormEvento dados={modalEditar} onChange={setModalEditar} {...formProps} />
-            <div className="modal-acoes">
-              <button type="button" className="btn-secundario" onClick={() => setModalEditar(null)}>{t('common.cancel')}</button>
-              <button type="submit" className="btn-primario">{t('common.save')}</button>
             </div>
           </form>
         </div>
