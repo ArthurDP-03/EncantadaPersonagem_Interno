@@ -410,5 +410,20 @@
       "statusUpdated": "Status updated",
       "deleted": "Item deleted"
     }
+  },
+  "home": {
+    "welcome": "Welcome to the system, ",
+    "question": "What would you like to do today?",
+    "cards": {
+      "dashboard": { "title": "Dashboard", "description": "System overview and metrics." },
+      "colaboradores": { "title": "Collaborators", "description": "Manage the cast and availability." },
+      "clientes": { "title": "Clients", "description": "Client portfolio and contacts." },
+      "eventos": { "title": "Events", "description": "Party calendar and schedules." },
+      "personagens": { "title": "Characters", "description": "Costume and character catalog." },
+      "meus_eventos": { "title": "My Events", "description": "Events where you are confirmed." },
+      "minha_agenda": { "title": "My Schedule", "description": "Check your upcoming assignments." },
+      "responder_convites": { "title": "Respond to Invites", "description": "Accept or decline new invitations." }
+    }
   }
+  
 }

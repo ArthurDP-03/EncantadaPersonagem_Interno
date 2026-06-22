@@ -1,4 +1,5 @@
 {
+  
   "common": {
     "loading": "Carregando...",
     "error": "Erro: {{message}}",
@@ -409,6 +410,20 @@
       "created": "Item criado",
       "statusUpdated": "Status atualizado",
       "deleted": "Item deletado"
+    }
+  },
+  "home": {
+    "welcome": "Bem-vindo(a) ao sistema, ",
+    "question": "O que gostaria de fazer hoje?",
+    "cards": {
+      "dashboard": { "title": "Dashboard", "description": "Visão geral do sistema e métricas." },
+      "colaboradores": { "title": "Colaboradores", "description": "Gerencie o elenco e disponibilidades." },
+      "clientes": { "title": "Clientes", "description": "Carteira de clientes e contatos." },
+      "eventos": { "title": "Eventos", "description": "Calendário de festas e agendamentos." },
+      "personagens": { "title": "Personagens", "description": "Catálogo de figurinos e personagens." },
+      "meus_eventos": { "title": "Meus Eventos", "description": "Eventos nos quais você está confirmado." },
+      "minha_agenda": { "title": "Minha Agenda", "description": "Verifique suas próximas escalas." },
+      "responder_convites": { "title": "Responder Convites", "description": "Aceite ou recuse novos convites." }
     }
   }
 }
