@@ -57,9 +57,7 @@ public class SecurityConfig {
 
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/uploads/**",
-                                "/api/uploads/**"
+                                "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/administradores", "/atores").permitAll()
                         .anyRequest().authenticated())
