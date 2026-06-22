@@ -43,45 +43,18 @@ public class ClienteService {
     public Cliente buscarEntidade(Integer id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
-                        "Cliente nao encontrado"));
+                "Cliente nao encontrado"));
     }
 
     private ClienteResponse toResponse(Cliente cliente) {
         return new ClienteResponse(cliente.getId(), cliente.getNome(), cliente.getTelefone(), cliente.getEmail());
-    } 
-    @Transactional(readOnly = true)
-public ClienteResponse buscarPorId(int id) {
-    Cliente cliente = clienteRepository.findById(id)
-            .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
-                "Cliente não encontrado com id: " + id));
-    return toResponse(cliente);
-}
-
-@Transactional
-public ClienteResponse atualizar(int id, ClienteRequest request) {
-    Cliente cliente = clienteRepository.findById(id)
-            .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
-                "Cliente não encontrado com id: " + id));
-    
-    cliente.setNome(request.nome());
-    cliente.setTelefone(request.telefone());
-    cliente.setEmail(request.email());
-    
-    return toResponse(clienteRepository.save(cliente));
-}
-
-@Transactional
-public void deletar(int id) {
-    if (!clienteRepository.existsById(id)) {
-        throw new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
-            "Cliente não encontrado com id: " + id);
     }
 
     @Transactional(readOnly = true)
     public ClienteResponse buscarPorId(int id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
-                        "Cliente não encontrado com id: " + id));
+                "Cliente não encontrado com id: " + id));
         return toResponse(cliente);
     }
 
@@ -89,7 +62,36 @@ public void deletar(int id) {
     public ClienteResponse atualizar(int id, ClienteRequest request) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
-                        "Cliente não encontrado com id: " + id));
+                "Cliente não encontrado com id: " + id));
+
+        cliente.setNome(request.nome());
+        cliente.setTelefone(request.telefone());
+        cliente.setEmail(request.email());
+
+        return toResponse(clienteRepository.save(cliente));
+    }
+
+    @Transactional
+    public void deletar(int id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
+                    "Cliente não encontrado com id: " + id);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ClienteResponse buscarPorId(int id) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
+                "Cliente não encontrado com id: " + id));
+        return toResponse(cliente);
+    }
+
+    @Transactional
+    public ClienteResponse atualizar(int id, ClienteRequest request) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new br.com.encantada.personageminterno.exception.ResourceNotFoundException(
+                "Cliente não encontrado com id: " + id));
 
         cliente.setNome(request.nome());
         cliente.setTelefone(request.telefone());
