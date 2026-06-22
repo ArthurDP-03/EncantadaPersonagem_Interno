@@ -38,6 +38,7 @@ application.yml
 # ======================
 logs/
 *.log
+uploads/
 
 # ======================
 # Maven wrapper
