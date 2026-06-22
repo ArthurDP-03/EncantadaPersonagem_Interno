@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api'
+export const API_BASE_URL = 'http://localhost:8080/api'
 const REQUEST_TIMEOUT = 30000 // 30 segundos
 
 export async function request(path: string, options: RequestInit = {}): Promise<any> {
@@ -14,7 +14,7 @@ export async function request(path: string, options: RequestInit = {}): Promise<
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT)
 
   try {
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
       headers,
       signal: controller.signal

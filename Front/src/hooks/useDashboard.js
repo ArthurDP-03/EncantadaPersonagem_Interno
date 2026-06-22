@@ -18,7 +18,13 @@ export function useDashboard() {
     }
   }
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    const timerId = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
+
+    return () => window.clearTimeout(timerId);
+  }, []);
 
   return { data, loading, error, refresh: fetchData };
 }

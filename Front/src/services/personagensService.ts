@@ -1,5 +1,11 @@
 import { request } from "./api";
 
+export interface PersonagemFormData {
+  nome: string;
+  descricao: string;
+  foto: string;
+}
+
 export interface PersonagemResponse {
   id: number;
   nome: string;
@@ -16,7 +22,7 @@ export const getPersonagemById = async (id: number): Promise<PersonagemResponse>
 };
 
 export const criarPersonagem = async (
-  personagem: PersonagemResponse
+  personagem: PersonagemFormData
 ): Promise<PersonagemResponse> => {
   return request("/personagens", {
     method: "POST",
@@ -26,7 +32,7 @@ export const criarPersonagem = async (
 
 export const atualizarPersonagem = async (
   id: number,
-  personagem: PersonagemResponse
+  personagem: PersonagemFormData
 ): Promise<PersonagemResponse> => {
   return request(`/personagens/${id}`, {
     method: "PUT",
