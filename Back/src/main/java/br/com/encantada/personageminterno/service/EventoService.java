@@ -82,13 +82,9 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
 
-        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+        administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
-            throw new ForbiddenException(
-                    "Voce nao tem permissao para atualizar este evento. Apenas o criador pode modifica-lo");
-        }
         if (!request.dataInicio().isBefore(request.dataFim())) {
             throw new PreconditionFailedException("A data de inicio deve ser anterior a data de fim");
         }

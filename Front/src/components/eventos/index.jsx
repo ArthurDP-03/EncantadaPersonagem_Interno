@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEventos } from '../../hooks/useEventos';
 import { useClientes } from '../../hooks/useClientes';
-import { useAdministradores } from '../../hooks/useAdministradores';
 import logo from '../../assets/logo.png';
 import { formatarPeriodoEvento, agruparEventosPorData, labelData, formatarStatus } from '../../utils/formatters';
 import { EventoStatus } from '../../services/eventosService';
@@ -20,10 +19,9 @@ const eventoVazio = {
   tipoPagamento: "",
   valorTotal: "",
   clienteId: "",
-  administradorCriadorId: "",
 };
 
-function FormEvento({ dados, onChange, clientes, administradores }) {
+function FormEvento({ dados, onChange, clientes }) {
   const { t } = useTranslation();
 
   return (
@@ -68,14 +66,6 @@ function FormEvento({ dados, onChange, clientes, administradores }) {
           ))}
         </select>
       </label>
-      <label>{t('common.fields.responsibleAdmin')}
-        <select value={dados.administradorCriadorId} onChange={e => onChange({ ...dados, administradorCriadorId: e.target.value })}>
-          <option value="">{t('events.select.admin')}</option>
-          {administradores.map(a => (
-            <option key={a.id} value={a.id}>{a.nome}</option>
-          ))}
-        </select>
-      </label>
     </div>
   );
 }
@@ -91,7 +81,6 @@ function Eventos() {
 
   const { eventos, carregando, erro, criar, deletar } = useEventos();
   const { clientes }                                          = useClientes();
-  const { administradores }                                   = useAdministradores();
 
   if (carregando) return <p>{t('common.loading')}</p>;
   if (erro) return <p>{t('common.error', { message: erro })}</p>;
@@ -117,14 +106,13 @@ function Eventos() {
       ...form,
       valorTotal: Number(form.valorTotal),
       clienteId: Number(form.clienteId),
-      administradorCriadorId: Number(form.administradorCriadorId),
     }).then(() => {
       setModalCriar(false);
       setForm(eventoVazio);
     });
   }
 
-  const formProps = { clientes, administradores };
+  const formProps = { clientes };
 
   return (
     <section className="section-eventos">

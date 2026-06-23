@@ -24,7 +24,10 @@ export interface EventoResponse {
   administradorCriadorNome: string;
 }
 
-export type EventoPayload = Omit<EventoResponse, "id" | "clienteNome" | "administradorCriadorNome">;
+export type EventoPayload = Omit<
+  EventoResponse,
+  "id" | "clienteNome" | "administradorCriadorId" | "administradorCriadorNome"
+>;
 
 export const getEventos = async (): Promise<EventoResponse[]> => {
   return request("/eventos");

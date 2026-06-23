@@ -15,7 +15,7 @@ const eventoInicial = {
   tipoPagamento: "",
   valorTotal: "",
   clienteId: "",
-  administradorCriadorId: "",
+  administradorCriadorNome: "",
 };
 
 const formatarDataInput = (value) => (value ? String(value).slice(0, 16) : "");
@@ -30,15 +30,19 @@ const normalizarEventoParaForm = (evento) => ({
   tipoPagamento: evento.tipoPagamento ?? "",
   valorTotal: evento.valorTotal ?? "",
   clienteId: evento.clienteId ?? "",
-  administradorCriadorId: evento.administradorCriadorId ?? "",
+  administradorCriadorNome: evento.administradorCriadorNome ?? "",
 });
 
-const montarPayloadEvento = (form) => ({
-  ...form,
-  valorTotal: Number(form.valorTotal),
-  clienteId: Number(form.clienteId),
-  administradorCriadorId: Number(form.administradorCriadorId),
-});
+const montarPayloadEvento = (form) => {
+  const payload = { ...form };
+  delete payload.administradorCriadorNome;
+
+  return {
+    ...payload,
+    valorTotal: Number(form.valorTotal),
+    clienteId: Number(form.clienteId),
+  };
+};
 
 const obterMensagemErro = (err, fallback) =>
   err.data?.message || err.data?.error || fallback;

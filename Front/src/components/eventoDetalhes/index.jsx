@@ -1,7 +1,6 @@
 import "./index.css";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAdministradores } from "../../hooks/useAdministradores";
 import { useClientes } from "../../hooks/useClientes";
 import { useEventoDetalhes } from "../../hooks/useEventoDetalhes";
 import EventoForm from "./EventoForm";
@@ -12,7 +11,6 @@ function EventoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { clientes } = useClientes();
-  const { administradores } = useAdministradores();
 
   const {
     evento,
@@ -69,7 +67,6 @@ function EventoDetalhes() {
               dados={form}
               onChange={setForm}
               clientes={clientes}
-              administradores={administradores}
               disabled={!editando}
               editando={editando}
               salvando={salvando}
@@ -80,11 +77,11 @@ function EventoDetalhes() {
           </section>
 
           <aside className="evento-detalhes-right">
+            <ConvitesList convites={convites} />
             <EscalacaoList
               escalacoes={escalacoes}
               personagensEvento={personagensEvento}
             />
-            <ConvitesList convites={convites} />
           </aside>
         </div>
       </div>
