@@ -7,8 +7,13 @@ import {
   removerPersonagemDoEvento,
 } from "../services/eventoPersonagemService";
 import { getPersonagemItens } from "../services/personagemItemService";
-import { listarPorEventoPersonagem } from "../services/conviteService";
-import { getEscalacoesByEventoId } from "../services/escalacaoService";
+import {
+  cancelarConvite,
+  enviarConvites,
+  listarPorEventoPersonagem,
+} from "../services/conviteService";
+import { escolherAtorFinal, getEscalacoesByEventoId } from "../services/escalacaoService";
+import { getAtores } from "../services/atoresService";
 
 const eventoInicial = {
   titulo: "",
@@ -69,11 +74,15 @@ export function useEventoDetalhes(eventoId) {
   const [personagemItensDisponiveis, setPersonagemItensDisponiveis] = useState([]);
   const [escalacoes, setEscalacoes] = useState([]);
   const [convites, setConvites] = useState([]);
+  const [atores, setAtores] = useState([]);
   const [editando, setEditando] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [adicionandoPersonagemItemId, setAdicionandoPersonagemItemId] = useState(null);
   const [removendoEventoPersonagemId, setRemovendoEventoPersonagemId] = useState(null);
+  const [processandoConviteId, setProcessandoConviteId] = useState(null);
+  const [enviandoConvitesEventoPersonagemId, setEnviandoConvitesEventoPersonagemId] = useState(null);
+  const [escalandoConviteId, setEscalandoConviteId] = useState(null);
   const [erro, setErro] = useState(null);
 
   const carregarDados = useCallback(async () => {
@@ -83,11 +92,12 @@ export function useEventoDetalhes(eventoId) {
       setCarregando(true);
       setErro(null);
 
-      const [eventoAtual, personagens, escalacoesEvento, personagemItens] = await Promise.all([
+      const [eventoAtual, personagens, escalacoesEvento, personagemItens, atoresEvento] = await Promise.all([
         getEventoById(eventoId),
         listarPersonagensDoEvento(eventoId),
         getEscalacoesByEventoId(eventoId),
         getPersonagemItens(),
+        getAtores(),
       ]);
 
       const convitesPorPersonagem = await Promise.all(
@@ -100,6 +110,7 @@ export function useEventoDetalhes(eventoId) {
       setPersonagemItensDisponiveis(filtrarItensDisponiveis(personagemItens, personagens));
       setEscalacoes(escalacoesEvento);
       setConvites(convitesPorPersonagem.flat());
+      setAtores(atoresEvento);
     } catch (err) {
       console.error("Erro ao carregar detalhes do evento:", err);
       const mensagem = obterMensagemErro(err, "Erro ao carregar detalhes do evento");
@@ -226,6 +237,108 @@ export function useEventoDetalhes(eventoId) {
     }
   };
 
+  const adicionarConvitesPersonagem = async (personagemEvento, atoresIds) => {
+    if (!personagemEvento || atoresIds.length === 0) return false;
+
+    try {
+      setEnviandoConvitesEventoPersonagemId(personagemEvento.id);
+      await enviarConvites({
+        eventoPersonagemId: personagemEvento.id,
+        convites: atoresIds.map((atorId) => ({
+          atorId,
+          personagemItemId: personagemEvento.personagemItemId,
+        })),
+      });
+      await carregarDados();
+
+      Swal.fire({
+        icon: "success",
+        title: "Convites enviados",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return true;
+    } catch (err) {
+      console.error("Erro ao enviar convites:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível enviar os convites",
+        text: obterMensagemErro(err, "Verifique os atores selecionados e tente novamente"),
+      });
+      return false;
+    } finally {
+      setEnviandoConvitesEventoPersonagemId(null);
+    }
+  };
+
+  const excluirConvitePersonagem = async (convite) => {
+    const resultado = await Swal.fire({
+      icon: "warning",
+      title: "Excluir convite?",
+      text: `${convite.atorNome} deixará de ter este convite ativo.`,
+      showCancelButton: true,
+      confirmButtonText: "Excluir",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#c97b7b",
+    });
+
+    if (!resultado.isConfirmed) return false;
+
+    try {
+      setProcessandoConviteId(convite.id);
+      await cancelarConvite(convite.id);
+      await carregarDados();
+
+      Swal.fire({
+        icon: "success",
+        title: "Convite excluído",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return true;
+    } catch (err) {
+      console.error("Erro ao excluir convite:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível excluir o convite",
+        text: obterMensagemErro(err, "Apenas convites pendentes podem ser cancelados"),
+      });
+      return false;
+    } finally {
+      setProcessandoConviteId(null);
+    }
+  };
+
+  const adicionarConviteNaEscalacao = async (convite) => {
+    try {
+      setEscalandoConviteId(convite.id);
+      await escolherAtorFinal({
+        eventoPersonagemId: convite.eventoPersonagemId,
+        atorId: convite.atorId,
+        personagemItemId: convite.personagemItemId,
+      });
+      await carregarDados();
+
+      Swal.fire({
+        icon: "success",
+        title: "Ator adicionado à escalação",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return true;
+    } catch (err) {
+      console.error("Erro ao adicionar à escalação:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível adicionar à escalação",
+        text: obterMensagemErro(err, "Verifique se o convite foi aceito e tente novamente"),
+      });
+      return false;
+    } finally {
+      setEscalandoConviteId(null);
+    }
+  };
+
   return {
     evento,
     form,
@@ -234,16 +347,23 @@ export function useEventoDetalhes(eventoId) {
     personagemItensDisponiveis,
     escalacoes,
     convites,
+    atores,
     editando,
     carregando,
     salvando,
     adicionandoPersonagemItemId,
     removendoEventoPersonagemId,
+    processandoConviteId,
+    enviandoConvitesEventoPersonagemId,
+    escalandoConviteId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
     adicionarPersonagemItem,
     removerPersonagemItem,
+    adicionarConvitesPersonagem,
+    excluirConvitePersonagem,
+    adicionarConviteNaEscalacao,
   };
 }

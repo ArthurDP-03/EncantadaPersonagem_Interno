@@ -2,7 +2,9 @@ package br.com.encantada.personageminterno.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
 import br.com.encantada.personageminterno.repository.ConviteRepository;
+import br.com.encantada.personageminterno.repository.EscalacaoRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteAtorItemRequest;
@@ -37,18 +40,21 @@ public class ConviteService {
     private final AtorRepository atorRepository;
     private final AdministradorRepository administradorRepository;
     private final PersonagemItemRepository personagemItemRepository;
+    private final EscalacaoRepository escalacaoRepository;
 
     public ConviteService(
             ConviteRepository conviteRepository,
             EventoPersonagemRepository epRepository,
             AtorRepository atorRepository,
             AdministradorRepository administradorRepository,
-            PersonagemItemRepository personagemItemRepository) {
+            PersonagemItemRepository personagemItemRepository,
+            EscalacaoRepository escalacaoRepository) {
         this.conviteRepository = conviteRepository;
         this.epRepository = epRepository;
         this.atorRepository = atorRepository;
         this.administradorRepository = administradorRepository;
         this.personagemItemRepository = personagemItemRepository;
+        this.escalacaoRepository = escalacaoRepository;
     }
 
     @Transactional
@@ -66,12 +72,24 @@ public class ConviteService {
         }
 
         List<Convite> criados = new ArrayList<>();
+        Set<Integer> atoresNoPayload = new HashSet<>();
         for (ConviteAtorItemRequest par : req.convites()) {
+            if (!atoresNoPayload.add(par.atorId())) {
+                throw new BusinessException("Ator " + par.atorId() + " foi informado mais de uma vez");
+            }
             if (conviteRepository.findByEventoPersonagemIdAndAtorId(ep.getId(), par.atorId()).isPresent()) {
                 continue;
             }
             Ator ator = atorRepository.findById(par.atorId())
                     .orElseThrow(() -> new ResourceNotFoundException("Ator " + par.atorId() + " não encontrado"));
+
+            if (conviteRepository.existsAtorComConviteAtivoEmOutroPersonagemDoEvento(
+                    ep.getEvento().getId(), ator.getId(), ep.getId())
+                    || escalacaoRepository.existsAtorEscaladoEmOutroPersonagemDoEvento(
+                            ep.getEvento().getId(), ator.getId(), ep.getId())) {
+                throw new BusinessException(
+                        "Ator " + ator.getNome() + " já está vinculado a outro personagem deste evento");
+            }
 
             PersonagemItem item = personagemItemRepository.findById(par.personagemItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item de personagem " + par.personagemItemId() + " não encontrado"));

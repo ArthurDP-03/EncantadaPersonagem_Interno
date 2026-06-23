@@ -21,17 +21,24 @@ function EventoDetalhes() {
     personagemItensDisponiveis,
     escalacoes,
     convites,
+    atores,
     editando,
     carregando,
     salvando,
     adicionandoPersonagemItemId,
     removendoEventoPersonagemId,
+    processandoConviteId,
+    enviandoConvitesEventoPersonagemId,
+    escalandoConviteId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
     adicionarPersonagemItem,
     removerPersonagemItem,
+    adicionarConvitesPersonagem,
+    excluirConvitePersonagem,
+    adicionarConviteNaEscalacao,
   } = useEventoDetalhes(Number(id));
 
   if (carregando) {
@@ -91,7 +98,18 @@ function EventoDetalhes() {
               onAdicionar={adicionarPersonagemItem}
               onRemover={removerPersonagemItem}
             />
-            <ConvitesList convites={convites} />
+            <ConvitesList
+              personagensEvento={personagensEvento}
+              convites={convites}
+              escalacoes={escalacoes}
+              atores={atores}
+              processandoConviteId={processandoConviteId}
+              enviandoConvitesEventoPersonagemId={enviandoConvitesEventoPersonagemId}
+              escalandoConviteId={escalandoConviteId}
+              onAdicionarConvites={adicionarConvitesPersonagem}
+              onExcluirConvite={excluirConvitePersonagem}
+              onAdicionarEscalacao={adicionarConviteNaEscalacao}
+            />
             <EscalacaoList
               escalacoes={escalacoes}
               personagensEvento={personagensEvento}
