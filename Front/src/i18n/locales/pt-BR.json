@@ -5,6 +5,7 @@
     "error": "Erro: {{message}}",
     "cancel": "Cancelar",
     "save": "Salvar",
+    "saving": "Salvando...",
     "create": "Criar",
     "edit": "Editar",
     "delete": "Deletar",
@@ -31,13 +32,16 @@
       "title": "Validação",
       "required": "O campo {{field}} é obrigatório para preenchimento",
       "requiredNumber": "O campo {{field}} é obrigatório para preenchimento e deve ser um número",
-      "invalidData": "Dados inválidos"
+      "invalidData": "Dados inválidos",
+      "invalidEmail": "O campo Email deve conter um endereço de e-mail válido",
+      "passwordMismatch": "As senhas não coincidem"
     },
     "fields": {
       "name": "Nome",
       "email": "Email",
       "phone": "Telefone",
       "password": "Senha",
+      "passwordConfirmation": "Confirmação de senha",
       "type": "Tipo",
       "gender": "Gênero",
       "height": "Altura",

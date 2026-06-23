@@ -91,6 +91,7 @@ export function useAdministradores() {
     } catch (err) {
       console.error("Erro ao criar administrador:", err);
       mostrarErroValidacaoOuGenerico(err, t('collaborators.administrators.titles.create'), t('collaborators.administrators.errors.create'));
+      throw err;
     }
   };
 
@@ -102,6 +103,7 @@ export function useAdministradores() {
     } catch (err) {
       console.error("Erro ao editar administrador:", err);
       mostrarErroValidacaoOuGenerico(err, t('collaborators.administrators.titles.update'), t('collaborators.administrators.errors.update'));
+      throw err;
     }
   };
 

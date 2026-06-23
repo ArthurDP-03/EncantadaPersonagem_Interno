@@ -21,7 +21,4 @@ i18n
       escapeValue: false,
     },
   });
-
-  console.log(i18n.t("nav.general"));
-
 export default i18n;

@@ -4,6 +4,7 @@
     "error": "Error: {{message}}",
     "cancel": "Cancel",
     "save": "Save",
+    "saving": "Saving...",
     "create": "Create",
     "edit": "Edit",
     "delete": "Delete",
@@ -30,13 +31,16 @@
       "title": "Validation",
       "required": "The {{field}} field is required",
       "requiredNumber": "The {{field}} field is required and must be a number",
-      "invalidData": "Invalid data"
+      "invalidData": "Invalid data",
+      "invalidEmail": "The Email field must contain a valid email address",
+      "passwordMismatch": "Passwords do not match"
     },
     "fields": {
       "name": "Name",
       "email": "Email",
       "phone": "Phone",
       "password": "Password",
+      "passwordConfirmation": "Confirm password",
       "type": "Type",
       "gender": "Gender",
       "height": "Height",

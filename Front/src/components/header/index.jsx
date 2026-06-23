@@ -1,5 +1,5 @@
 import "./index.css";
-import { Navigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import {
@@ -18,12 +18,13 @@ import {
 function Header({ dark, setDark }) {
   const { user, logout } = useAuth();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const currentLanguage = i18n.resolvedLanguage || i18n.language || "pt-BR";
   const isPortuguese = currentLanguage.startsWith("pt");
 
   function handleLogout() {
     logout();
-    Navigate("/login");
+    navigate("/login");
   }
 
   function toggleLanguage() {

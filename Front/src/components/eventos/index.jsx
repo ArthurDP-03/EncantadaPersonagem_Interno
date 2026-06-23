@@ -86,7 +86,7 @@ function Eventos() {
   const [ordem, setOrdem]             = useState("");
   const [modalCriar, setModalCriar]   = useState(false);
   const [form, setForm]               = useState(eventoVazio);
-  const [imagem]                      = useState(logo);
+  const imagem                        = logo;
   const navigate                       = useNavigate();
 
   const { eventos, carregando, erro, criar, deletar } = useEventos();

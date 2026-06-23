@@ -110,6 +110,20 @@ export function useEventoDetalhes(eventoId) {
   const salvarEvento = async (event) => {
     event.preventDefault();
 
+    if (
+      !String(form.titulo ?? "").trim() ||
+      !String(form.dataInicio ?? "").trim() ||
+      !String(form.dataFim ?? "").trim() ||
+      !String(form.clienteId ?? "").trim()
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Campos obrigatórios",
+        text: "Preencha título, data de início, data de fim e cliente antes de salvar.",
+      });
+      return;
+    }
+
     try {
       setSalvando(true);
       const atualizado = await atualizarEvento(eventoId, montarPayloadEvento(form));

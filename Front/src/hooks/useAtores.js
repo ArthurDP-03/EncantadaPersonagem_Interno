@@ -91,6 +91,7 @@ export function useAtores() {
     } catch (err) {
       console.error("Erro ao criar ator:", err);
       mostrarErroValidacaoOuGenerico(err, t('collaborators.actors.titles.create'), t('collaborators.actors.errors.create'));
+      throw err;
     }
   };
 
@@ -102,6 +103,7 @@ export function useAtores() {
     } catch (err) {
       console.error("Erro ao editar ator:", err);
       mostrarErroValidacaoOuGenerico(err, t('collaborators.actors.titles.update'), t('collaborators.actors.errors.update'));
+      throw err;
     }
   };
 
