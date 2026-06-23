@@ -5,7 +5,7 @@
 .section-colaboradores .input-container{position: relative;}
 .section-colaboradores .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
 
-.section-colaboradores .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none;}
+.section-colaboradores .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none; box-sizing: border-box;}
 .section-colaboradores .filtros .input::placeholder{color: var(--texto-opacity-7);}
 
 

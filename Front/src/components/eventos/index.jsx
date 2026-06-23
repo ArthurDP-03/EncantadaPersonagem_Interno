@@ -121,7 +121,7 @@ function Eventos() {
 
           <h1 className="titulo t1">{t('events.title')}</h1>
 
-          <div className="filtros">
+          {/* <div className="filtros">
             <div className="input-container">
               <select className="input" value={ordem} onChange={e => setOrdem(e.target.value)}>
                 <option value="">{t('common.order')}</option>
@@ -140,7 +140,7 @@ function Eventos() {
               />
               <Search className="icon" size={18} />
             </div>
-          </div>
+          </div> */}
 
           <div className="timeline">
             {grupos.length === 0 ? (

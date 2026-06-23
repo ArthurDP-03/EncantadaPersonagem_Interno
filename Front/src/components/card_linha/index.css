@@ -10,7 +10,7 @@
 .card-linha .card-linha-menu-item:hover{background: var(--cinza-3);}
 .card-linha .card-linha-menu-item.excluir{color: var(--vermelho);}
 .card-linha .informacao{display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 0;}
-.card-linha .informacao .texto.t2{flex: 1 1 140px; min-width: 0;}
+}
 .card-linha .informacao .texto.t2 p{overflow-wrap: anywhere;}
 
 @media (max-width: 768px){

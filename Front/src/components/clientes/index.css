@@ -3,7 +3,7 @@
 .section-clientes .titulo { margin: 1em 0 0;}.section-clientes .filtros { margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end; }
 .section-clientes .input-container { position: relative;}
 .section-clientes .icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(0, 0, 0, 0.5); pointer-events: none; }
-.section-clientes .filtros .input { height: 38px; min-width: 240px; border-radius: 30px; padding: 0 40px 0 16px; border: none; background: var(--cinza-3, #ececec); color: var(--texto-opacity-7); appearance: none; outline: none; font-size: 0.875rem; transition: background 0.2s; }
+.section-clientes .filtros .input { height: 38px; min-width: 240px; border-radius: 30px; padding: 0 40px 0 16px; border: none; background: var(--cinza-3, #ececec); color: var(--texto-opacity-7); appearance: none; outline: none; font-size: 0.875rem; transition: background 0.2s; box-sizing: border-box;}
 .section-clientes .filtros .input::placeholder { color: var(--texto-opacity-7); }
 .section-clientes .filtros .input:focus { background: var(--cinza-claro); }
 /* Lista CRUD */

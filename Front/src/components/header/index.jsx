@@ -83,9 +83,6 @@ function Header({ dark, setDark }) {
         <div className="conteudo-95">
           <div className="conteudo">
             <div className="perfil">
-              <div className="imagem-container">
-                <img src="" alt="" className="foto_perfil" />
-              </div>
 
               <div className="textos">
                 <div className="nome">
@@ -118,9 +115,6 @@ function Header({ dark, setDark }) {
               >
                 <span>{isPortuguese ? t("common.languages.pt") : t("common.languages.en")}</span>
               </button>
-              <div className="icone">
-                <Bell size={30} />
-              </div>
               <button
                 type="button"
                 className={`mobile-menu-toggle ${menuOpen ? "open" : ""}`}
@@ -136,9 +130,6 @@ function Header({ dark, setDark }) {
 
       <section className={`mobile-navigation ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
         <div className="mobile-menu">
-          <div className="mobile-menu-header">
-            <span>{t("nav.menu")}</span>
-          </div>
           <div className="mobile-menu-links">
             {links.map(({ label, href, icone }) => (
               <NavLink
