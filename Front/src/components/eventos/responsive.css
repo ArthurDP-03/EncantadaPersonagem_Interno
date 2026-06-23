@@ -1,0 +1,7 @@
+/* Arquivo de responsividade temporário para eventos */
+.section-eventos .conteudo { padding: 0 1rem 100px 1rem; }
+.section-eventos .filtros { flex-direction: column; align-items: stretch; justify-content: flex-start; }
+.section-eventos .filtros .input { min-width: 0; width: 100%; }
+.section-eventos .lista-eventos { justify-content: center; }
+.section-eventos .lista-eventos .card-eventos { width: min(100%, 252px); }
+.section-eventos .modal > form { padding: 1rem; width: min(100%, 100%); margin: 0 0.5rem; }
