@@ -6,6 +6,7 @@ import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
+import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
@@ -15,6 +16,7 @@ import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import java.util.List;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,13 @@ public class EventoService {
     @Transactional(readOnly = true)
     public List<EventoResponse> listar() {
         return eventoRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventoResponse> listarEventosEscaladosDoAtor(String atorEmail) {
+        return eventoRepository.findEventosEscaladosDoAtor(atorEmail).stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -74,6 +83,19 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
         return toResponse(evento);
+    }
+
+    @Transactional(readOnly = true)
+    public EventoResponse buscarPorIdAutorizado(int id, Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return buscarPorId(id);
+        }
+
+        if (!eventoRepository.existsEventoVinculadoAoAtor(id, authentication.getName())) {
+            throw new ForbiddenException("Ator não possui vínculo com este evento");
+        }
+
+        return buscarPorId(id);
     }
 
     @Transactional
@@ -159,5 +181,10 @@ public class EventoService {
                 evento.getAdministradorCriador().getId(),
                 evento.getAdministradorCriador().getNome(),
                 personagens);
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 }

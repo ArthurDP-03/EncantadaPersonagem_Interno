@@ -33,6 +33,10 @@ export const getEventos = async (): Promise<EventoResponse[]> => {
   return request("/eventos");
 };
 
+export const getMeusEventosAtor = async (): Promise<EventoResponse[]> => {
+  return request("/eventos/ator/me");
+};
+
 export const getEventoById = async (id: number): Promise<EventoResponse> => {
   return request(`/eventos/${id}`);
 };

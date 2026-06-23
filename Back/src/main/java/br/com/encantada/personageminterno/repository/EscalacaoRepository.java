@@ -18,6 +18,12 @@ public interface EscalacaoRepository extends JpaRepository<Escalacao, Integer> {
 
     List<Escalacao> findByEventoPersonagemEventoId(Integer eventoId);
 
+    List<Escalacao> findByAtorEmailAndStatusNot(
+            String atorEmail,
+            EscalacaoStatus status);
+
+    boolean existsByIdAndAtorEmail(Integer id, String atorEmail);
+
     @Query("""
             SELECT COUNT(e) > 0
             FROM Escalacao e

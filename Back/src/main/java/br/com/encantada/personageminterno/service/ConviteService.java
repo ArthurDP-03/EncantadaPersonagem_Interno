@@ -161,9 +161,19 @@ public class ConviteService {
 
     @Transactional(readOnly = true)
     public List<ConviteResponse> listarMeus(String atorEmail) {
+        return listarMeus(atorEmail, ConviteStatus.PENDENTE);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ConviteResponse> listarMeus(String atorEmail, ConviteStatus status) {
         Ator ator = atorRepository.findByEmail(atorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Ator autenticado não encontrado"));
-        return conviteRepository.findByAtorIdAndStatus(ator.getId(), ConviteStatus.PENDENTE).stream()
+
+        List<Convite> convites = status == null
+                ? conviteRepository.findByAtorId(ator.getId())
+                : conviteRepository.findByAtorIdAndStatus(ator.getId(), status);
+
+        return convites.stream()
                 .map(c -> toResponse(c))
                 .toList();
     }

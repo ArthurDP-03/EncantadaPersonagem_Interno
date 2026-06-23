@@ -11,6 +11,7 @@ import {
   Drama,
   Users,
   Bell,
+  Mail,
   Moon,
   Sun,
   LogOut,
@@ -19,7 +20,7 @@ import {
 } from "lucide-react";
 
 function Header({ dark, setDark }) {
-  const { user, logout } = useAuth();
+  const { user, logout, hasRole } = useAuth();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,7 +38,7 @@ function Header({ dark, setDark }) {
   }
 
   const links =
-    user?.role === "ADMIN"
+    hasRole("ADMIN")
       ? [
           { label: t("nav.general"), href: "/", icone: <House size={18} /> },
           {
@@ -69,9 +70,14 @@ function Header({ dark, setDark }) {
       : [
           { label: t("nav.general"), href: "/", icone: <House size={18} /> },
           {
-            label: t("nav.events"),
+            label: "Eventos",
             href: "/eventos",
             icone: <CalendarDays size={18} />,
+          },
+          {
+            label: "Convites",
+            href: "/convites",
+            icone: <Mail size={18} />,
           },
         ];
 
@@ -93,7 +99,7 @@ function Header({ dark, setDark }) {
                 </div>
                 <div className="cargo">
                   <p>
-                    {user.role === "ADMIN"
+                    {hasRole("ADMIN")
                       ? t("common.roles.admin")
                       : t("common.roles.actor")}
                   </p>

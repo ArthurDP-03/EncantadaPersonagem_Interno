@@ -3,6 +3,7 @@ package br.com.encantada.personageminterno.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,12 +131,34 @@ public class EscalacaoService {
     }
 
     @Transactional(readOnly = true)
+    public EscalacaoResponse buscarPorIdAutorizado(int id, Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return buscarPorId(id);
+        }
+
+        if (!escalacaoRepository.existsByIdAndAtorEmail(id, authentication.getName())) {
+            throw new ForbiddenException("Ator não pertence a esta escalação");
+        }
+
+        return buscarPorId(id);
+    }
+
+    @Transactional(readOnly = true)
     public List<EscalacaoResponse> listarPorEvento(int eventoId) {
         if (!eventoRepository.existsById(eventoId)) {
             throw new ResourceNotFoundException("Evento não encontrado");
         }
 
         return escalacaoRepository.findByEventoPersonagemEventoId(eventoId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EscalacaoResponse> listarMinhas(String atorEmail) {
+        return escalacaoRepository
+                .findByAtorEmailAndStatusNot(atorEmail, EscalacaoStatus.CANCELADA)
                 .stream()
                 .map(this::toResponse)
                 .toList();
@@ -159,5 +182,10 @@ public class EscalacaoService {
                 e.getStatus(),
                 e.getDataEscolha(),
                 e.getDataConfirmacaoAtor());
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 }

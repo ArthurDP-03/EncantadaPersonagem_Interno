@@ -59,3 +59,7 @@ export const getEscalacoesByEventoId = async (
 ): Promise<EscalacaoResponse[]> => {
   return request(`/escalacoes/evento/${eventoId}`);
 };
+
+export const getMinhasEscalacoes = async (): Promise<EscalacaoResponse[]> => {
+  return request("/escalacoes/ator/me");
+};
