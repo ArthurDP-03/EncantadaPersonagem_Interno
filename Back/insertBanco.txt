@@ -49,16 +49,16 @@ INSERT INTO cliente (nome, telefone, email) VALUES
 -- PERSONAGEM (10 registros)
 -- =========================
 INSERT INTO personagem (nome, descricao, foto) VALUES
-('Alice', 'Alice no País das Maravilhas', NULL),
-('Cinderela', 'Princesa clássica', NULL),
-('Princesa Encantada', 'Personagem original', NULL),
-('Chapeleiro Maluco', 'Personagem excêntrico', NULL),
-('Branca de Neve', 'Conto clássico', NULL),
-('Elsa', 'Rainha do gelo', NULL),
-('Anna', 'Princesa de Arendelle', NULL),
-('Rapunzel', 'Cabelos mágicos', NULL),
-('Peter Pan', 'Menino que não cresce', NULL),
-('Capitão Gancho', 'Vilão clássico', NULL);
+('Alice', 'Alice no País das Maravilhas', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/ead9785c-2ba6-4e20-91d9-11fa7066ccbf.png'),
+('Cinderela', 'Princesa clássica', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/08375dfd-a41a-464d-ad60-aed73eaedd40.jpg'),
+('Princesa Encantada', 'Personagem original', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/ecde151f-69ee-4770-b41d-3fd21370dcb4.jpg'),
+('Chapeleiro Maluco', 'Personagem excêntrico', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/f1f0a741-c1bb-417c-9c05-80a9fc5bc423.png'),
+('Branca de Neve', 'Conto clássico', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/391f7421-14b2-459d-a5b1-7e858d31621c.webp'),
+('Elsa', 'Rainha do gelo', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/953c707a-b688-4a15-9d4a-70d8d6c85284.jpg'),
+('Anna', 'Princesa de Arendelle', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/d72e63f2-9369-47aa-9976-7e67749b2c04.jpg'),
+('Rapunzel', 'Cabelos mágicos', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/53218bfc-b352-415c-9c27-1a40ce120518.jpg'),
+('Peter Pan', 'Menino que não cresce', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/3b3304b3-b705-44b1-8f53-3e826bdf8221.jpg'),
+('Capitão Gancho', 'Vilão clássico', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/b3d7bf5b-f769-438f-a7e6-892fc1cf8d55.jpg');
 
 -- =========================
 -- PERSONAGEM ITEM (10 registros)
@@ -136,3 +136,6 @@ INSERT INTO escalacao (
 (8,8,8,8,'CANCELADA',NOW(),NULL),
 (9,9,9,9,'PENDENTE_CONFIRMACAO_ATOR',NOW(),NULL),
 (10,10,10,10,'CONFIRMADA',NOW(),NOW());
+
+use encantada;
+select * from personagem;
