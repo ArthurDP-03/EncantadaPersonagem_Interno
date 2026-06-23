@@ -373,6 +373,29 @@
   cursor: wait;
 }
 
+.evento-detalhes-delete-button {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--vermelho);
+  cursor: pointer;
+}
+
+.evento-detalhes-delete-button:hover {
+  background: rgba(201, 123, 123, 0.12);
+  color: var(--vermelho-escuro);
+}
+
+.evento-detalhes-delete-button:disabled {
+  opacity: 0.62;
+  cursor: wait;
+}
+
 .evento-detalhes-modal {
   position: fixed;
   inset: 0;

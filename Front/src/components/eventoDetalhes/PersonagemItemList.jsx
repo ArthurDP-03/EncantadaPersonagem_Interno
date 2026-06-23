@@ -1,11 +1,13 @@
-import { Search, Plus, X } from "lucide-react";
+import { Search, Plus, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 function PersonagemItemList({
   personagensEvento,
   personagemItensDisponiveis,
   adicionandoPersonagemItemId,
+  removendoEventoPersonagemId,
   onAdicionar,
+  onRemover,
 }) {
   const [modalAberto, setModalAberto] = useState(false);
   const [busca, setBusca] = useState("");
@@ -62,6 +64,16 @@ function PersonagemItemList({
                 </div>
                 <div className="evento-detalhes-meta">
                   <span>Item #{personagem.personagemItemId}</span>
+                  <button
+                    className="evento-detalhes-delete-button"
+                    type="button"
+                    title="Remover personagem do evento"
+                    aria-label={`Remover ${personagem.personagemNome} do evento`}
+                    disabled={Boolean(removendoEventoPersonagemId)}
+                    onClick={() => onRemover(personagem)}
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               </article>
             ))

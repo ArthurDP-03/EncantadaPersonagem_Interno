@@ -25,11 +25,13 @@ function EventoDetalhes() {
     carregando,
     salvando,
     adicionandoPersonagemItemId,
+    removendoEventoPersonagemId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
     adicionarPersonagemItem,
+    removerPersonagemItem,
   } = useEventoDetalhes(Number(id));
 
   if (carregando) {
@@ -85,7 +87,9 @@ function EventoDetalhes() {
               personagensEvento={personagensEvento}
               personagemItensDisponiveis={personagemItensDisponiveis}
               adicionandoPersonagemItemId={adicionandoPersonagemItemId}
+              removendoEventoPersonagemId={removendoEventoPersonagemId}
               onAdicionar={adicionarPersonagemItem}
+              onRemover={removerPersonagemItem}
             />
             <ConvitesList convites={convites} />
             <EscalacaoList

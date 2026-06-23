@@ -4,6 +4,7 @@ import { getEventoById, atualizarEvento } from "../services/eventosService";
 import {
   adicionarPersonagemAoEvento,
   listarPersonagensDoEvento,
+  removerPersonagemDoEvento,
 } from "../services/eventoPersonagemService";
 import { getPersonagemItens } from "../services/personagemItemService";
 import { listarPorEventoPersonagem } from "../services/conviteService";
@@ -72,6 +73,7 @@ export function useEventoDetalhes(eventoId) {
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [adicionandoPersonagemItemId, setAdicionandoPersonagemItemId] = useState(null);
+  const [removendoEventoPersonagemId, setRemovendoEventoPersonagemId] = useState(null);
   const [erro, setErro] = useState(null);
 
   const carregarDados = useCallback(async () => {
@@ -186,6 +188,44 @@ export function useEventoDetalhes(eventoId) {
     }
   };
 
+  const removerPersonagemItem = async (personagemEvento) => {
+    const resultado = await Swal.fire({
+      icon: "warning",
+      title: "Remover personagem do evento?",
+      text: `${personagemEvento.personagemNome} (${personagemEvento.personagemItemCodigo}) voltará a ficar disponível.`,
+      showCancelButton: true,
+      confirmButtonText: "Remover",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#c97b7b",
+    });
+
+    if (!resultado.isConfirmed) return false;
+
+    try {
+      setRemovendoEventoPersonagemId(personagemEvento.id);
+      await removerPersonagemDoEvento(personagemEvento.id);
+      await carregarDados();
+
+      Swal.fire({
+        icon: "success",
+        title: "Personagem removido do evento",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return true;
+    } catch (err) {
+      console.error("Erro ao remover personagem do evento:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível remover o personagem",
+        text: obterMensagemErro(err, "Verifique se não existe escalação para este personagem"),
+      });
+      return false;
+    } finally {
+      setRemovendoEventoPersonagemId(null);
+    }
+  };
+
   return {
     evento,
     form,
@@ -198,10 +238,12 @@ export function useEventoDetalhes(eventoId) {
     carregando,
     salvando,
     adicionandoPersonagemItemId,
+    removendoEventoPersonagemId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
     adicionarPersonagemItem,
+    removerPersonagemItem,
   };
 }
