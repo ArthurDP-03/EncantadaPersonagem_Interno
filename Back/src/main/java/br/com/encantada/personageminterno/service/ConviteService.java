@@ -15,6 +15,7 @@ import br.com.encantada.personageminterno.domain.entity.Convite;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import br.com.encantada.personageminterno.domain.enums.ConviteStatus;
+import br.com.encantada.personageminterno.domain.enums.EscalacaoStatus;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
@@ -180,6 +181,44 @@ public class ConviteService {
         }
         c.setStatus(ConviteStatus.CANCELADO);
         conviteRepository.save(c);
+    }
+
+    @Transactional
+    public ConviteResponse reativar(int conviteId, String adminEmail) {
+        Convite c = conviteRepository.findById(conviteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
+
+        administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        if (c.getStatus() != ConviteStatus.CANCELADO) {
+            throw new BusinessException("Apenas convites cancelados podem ser reativados");
+        }
+
+        EventoPersonagem ep = c.getEventoPersonagem();
+        EventoStatus st = ep.getEvento().getStatus();
+        if (st == EventoStatus.CANCELADO || st == EventoStatus.FINALIZADO) {
+            throw new BusinessException("Não é possível reativar convites em evento " + st);
+        }
+
+        if (escalacaoRepository.existsByEventoPersonagemIdAndStatusNot(
+                ep.getId(), EscalacaoStatus.CANCELADA)) {
+            throw new BusinessException("Este personagem já possui escalação ativa");
+        }
+
+        if (conviteRepository.existsAtorComConviteAtivoEmOutroPersonagemDoEvento(
+                ep.getEvento().getId(), c.getAtor().getId(), ep.getId())
+                || escalacaoRepository.existsAtorEscaladoEmOutroPersonagemDoEvento(
+                        ep.getEvento().getId(), c.getAtor().getId(), ep.getId())) {
+            throw new BusinessException(
+                    "Ator " + c.getAtor().getNome() + " já está vinculado a outro personagem deste evento");
+        }
+
+        c.setStatus(ConviteStatus.PENDENTE);
+        c.setDataResposta(null);
+        c.setDataEnvio(LocalDateTime.now());
+        c.setDataExpiracao(calcularExpiracao(ep.getEvento().getDataInicio()));
+        return toResponse(conviteRepository.save(c));
     }
 
     /** True quando todos convites do EP estão RECUSADO (e existe pelo menos 1). */

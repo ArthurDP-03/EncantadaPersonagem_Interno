@@ -1,6 +1,7 @@
 package br.com.encantada.personageminterno.repository;
 
 import br.com.encantada.personageminterno.domain.entity.Escalacao;
+import br.com.encantada.personageminterno.domain.enums.EscalacaoStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,10 @@ import java.util.List;
 public interface EscalacaoRepository extends JpaRepository<Escalacao, Integer> {
 
     boolean existsByEventoPersonagemId(Integer eventoPersonagemId);
+
+    boolean existsByEventoPersonagemIdAndStatusNot(
+            Integer eventoPersonagemId,
+            EscalacaoStatus status);
 
     List<Escalacao> findByEventoPersonagemEventoId(Integer eventoId);
 

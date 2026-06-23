@@ -75,3 +75,9 @@ export const cancelarConvite = async (id: number): Promise<void> => {
   });
 };
 
+export const reativarConvite = async (id: number): Promise<ConviteResponse> => {
+  return request(`/convites/${id}/reativar`, {
+    method: "PATCH",
+  });
+};
+

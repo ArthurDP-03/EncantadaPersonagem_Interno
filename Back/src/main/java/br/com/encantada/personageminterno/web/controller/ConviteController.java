@@ -127,4 +127,19 @@ public class ConviteController {
         conviteService.cancelar(id, authentication.getName());
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Reativar convite", description = "Reativa um convite cancelado, retornando-o para PENDENTE. Restrito a administradores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Convite reativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Convite não pode ser reativado"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN"),
+            @ApiResponse(responseCode = "404", description = "Convite não encontrado")
+    })
+    @PatchMapping("/{id}/reativar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ConviteResponse> reativar(@PathVariable Integer id, Authentication authentication) {
+        return ResponseEntity.ok(conviteService.reativar(id, authentication.getName()));
+    }
 }

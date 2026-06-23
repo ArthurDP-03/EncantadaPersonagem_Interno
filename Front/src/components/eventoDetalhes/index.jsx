@@ -39,6 +39,7 @@ function EventoDetalhes() {
     adicionarConvitesPersonagem,
     excluirConvitePersonagem,
     adicionarConviteNaEscalacao,
+    reativarConvitePersonagem,
   } = useEventoDetalhes(Number(id));
 
   if (carregando) {
@@ -109,6 +110,7 @@ function EventoDetalhes() {
               onAdicionarConvites={adicionarConvitesPersonagem}
               onExcluirConvite={excluirConvitePersonagem}
               onAdicionarEscalacao={adicionarConviteNaEscalacao}
+              onReativarConvite={reativarConvitePersonagem}
             />
             <EscalacaoList
               escalacoes={escalacoes}

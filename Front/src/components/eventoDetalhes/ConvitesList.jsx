@@ -1,8 +1,9 @@
-import { CheckCircle2, Plus, Search, Trash2, UserPlus, X } from "lucide-react";
+import { CheckCircle2, Plus, RotateCcw, Search, Trash2, UserPlus, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const isEscalacaoAtiva = (escala) => escala.status !== "CANCELADA";
 const isConviteAtivo = (convite) => ["PENDENTE", "ACEITO"].includes(convite.status);
+const filtrosConvite = ["TODOS", "PENDENTE", "ACEITO", "RECUSADO", "EXPIRADO", "CANCELADO"];
 
 function ConvitesList({
   personagensEvento,
@@ -15,10 +16,12 @@ function ConvitesList({
   onAdicionarConvites,
   onExcluirConvite,
   onAdicionarEscalacao,
+  onReativarConvite,
 }) {
   const [personagemSelecionado, setPersonagemSelecionado] = useState(null);
   const [atoresSelecionados, setAtoresSelecionados] = useState([]);
   const [buscaAtor, setBuscaAtor] = useState("");
+  const [filtroStatus, setFiltroStatus] = useState("TODOS");
 
   const convitesPorPersonagem = useMemo(() => {
     return convites.reduce((acc, convite) => {
@@ -77,18 +80,26 @@ function ConvitesList({
       });
   }, [atores, buscaAtor, idsAtoresIndisponiveis, personagemModal]);
 
+  const convitesFiltrados = useMemo(() => {
+    if (!personagemModal) return [];
+    if (filtroStatus === "TODOS") return personagemModal.convites;
+    return personagemModal.convites.filter((convite) => convite.status === filtroStatus);
+  }, [filtroStatus, personagemModal]);
+
   const totalConvites = convites.length;
 
   const abrirModal = (personagem) => {
     setPersonagemSelecionado(personagem);
     setAtoresSelecionados([]);
     setBuscaAtor("");
+    setFiltroStatus("TODOS");
   };
 
   const fecharModal = () => {
     setPersonagemSelecionado(null);
     setAtoresSelecionados([]);
     setBuscaAtor("");
+    setFiltroStatus("TODOS");
   };
 
   const alternarAtor = (atorId) => {
@@ -190,10 +201,25 @@ function ConvitesList({
                   <span>{personagemModal.convites.length}</span>
                 </div>
 
+                <div className="evento-detalhes-filter">
+                  <select
+                    value={filtroStatus}
+                    aria-label="Filtrar convites por status"
+                    onChange={(event) => setFiltroStatus(event.target.value)}
+                  >
+                    {filtrosConvite.map((status) => (
+                      <option key={status} value={status}>
+                        {status === "TODOS" ? "Todos os convites" : status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div className="evento-detalhes-modal-list evento-detalhes-convites-modal-list">
-                  {personagemModal.convites.length > 0 ? (
-                    personagemModal.convites.map((convite) => {
+                  {convitesFiltrados.length > 0 ? (
+                    convitesFiltrados.map((convite) => {
                       const podeEscalar = convite.status === "ACEITO" && !personagemModal.escalacao;
+                      const podeReativar = convite.status === "CANCELADO" && !personagemModal.escalacao;
 
                       return (
                         <article key={convite.id} className="evento-detalhes-list-item">
@@ -219,6 +245,19 @@ function ConvitesList({
                                   <span>{escalandoConviteId === convite.id ? "Adicionando" : "Escalar"}</span>
                                 </button>
                               )}
+                              {podeReativar && (
+                                <button
+                                  className="evento-detalhes-icon-button"
+                                  type="button"
+                                  title="Reativar convite"
+                                  aria-label={`Reativar convite de ${convite.atorNome}`}
+                                  disabled={Boolean(processandoConviteId || escalandoConviteId)}
+                                  onClick={() => onReativarConvite(convite)}
+                                >
+                                  <RotateCcw size={16} />
+                                  <span>{processandoConviteId === convite.id ? "Reativando" : "Reativar"}</span>
+                                </button>
+                              )}
                               <button
                                 className="evento-detalhes-delete-button"
                                 type="button"
@@ -236,7 +275,7 @@ function ConvitesList({
                     })
                   ) : (
                     <div className="evento-detalhes-empty">
-                      <p>Nenhum convite enviado para este personagem.</p>
+                      <p>Nenhum convite encontrado para este filtro.</p>
                     </div>
                   )}
                 </div>

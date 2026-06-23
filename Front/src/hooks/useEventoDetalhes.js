@@ -11,6 +11,7 @@ import {
   cancelarConvite,
   enviarConvites,
   listarPorEventoPersonagem,
+  reativarConvite,
 } from "../services/conviteService";
 import { escolherAtorFinal, getEscalacoesByEventoId } from "../services/escalacaoService";
 import { getAtores } from "../services/atoresService";
@@ -339,6 +340,32 @@ export function useEventoDetalhes(eventoId) {
     }
   };
 
+  const reativarConvitePersonagem = async (convite) => {
+    try {
+      setProcessandoConviteId(convite.id);
+      await reativarConvite(convite.id);
+      await carregarDados();
+
+      Swal.fire({
+        icon: "success",
+        title: "Convite reativado",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return true;
+    } catch (err) {
+      console.error("Erro ao reativar convite:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível reativar o convite",
+        text: obterMensagemErro(err, "Verifique se o ator ainda pode receber convite neste evento"),
+      });
+      return false;
+    } finally {
+      setProcessandoConviteId(null);
+    }
+  };
+
   return {
     evento,
     form,
@@ -365,5 +392,6 @@ export function useEventoDetalhes(eventoId) {
     adicionarConvitesPersonagem,
     excluirConvitePersonagem,
     adicionarConviteNaEscalacao,
+    reativarConvitePersonagem,
   };
 }
