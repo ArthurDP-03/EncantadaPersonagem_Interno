@@ -84,8 +84,17 @@ public class EscalacaoController {
         @ApiResponse(responseCode = "404", description = "Evento não encontrado")
     })
     @GetMapping("/evento/{eventoId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EscalacaoResponse>> listarPorEvento(@PathVariable Integer eventoId) {
         return ResponseEntity.ok(escalacaoService.listarPorEvento(eventoId));
+    }
+
+    @Operation(summary = "Listar minhas escalações", description = "Retorna as escalações vinculadas ao ator autenticado.")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/ator/me")
+    @PreAuthorize("hasRole('ATOR')")
+    public ResponseEntity<List<EscalacaoResponse>> listarMinhas(Authentication authentication) {
+        return ResponseEntity.ok(escalacaoService.listarMinhas(authentication.getName()));
     }
 
     @Operation(summary = "Buscar escalação por ID", description = "Retorna os detalhes completos de uma escalação pelo seu identificador.")
@@ -95,7 +104,9 @@ public class EscalacaoController {
         @ApiResponse(responseCode = "404", description = "Escalação não encontrada")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<EscalacaoResponse> buscarPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(escalacaoService.buscarPorId(id));
+    public ResponseEntity<EscalacaoResponse> buscarPorId(
+            @PathVariable Integer id,
+            Authentication authentication) {
+        return ResponseEntity.ok(escalacaoService.buscarPorIdAutorizado(id, authentication));
     }
 }

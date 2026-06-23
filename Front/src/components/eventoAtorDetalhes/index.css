@@ -1,0 +1,127 @@
+.evento-ator-page {
+  min-height: calc(100vh - 96px);
+  padding: 24px 28px 32px 96px;
+  color: var(--texto);
+}
+
+.evento-ator-back {
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 0 18px;
+  border: 1px solid var(--cinza-medio);
+  border-radius: 30px;
+  background: var(--fundo);
+  color: var(--verde-1);
+  font-weight: var(--semibold);
+  cursor: pointer;
+}
+
+.evento-ator-header {
+  margin-bottom: 18px;
+}
+
+.evento-ator-header span {
+  display: block;
+  color: var(--texto-opacity-5);
+  font-size: 0.78rem;
+  font-weight: var(--bold);
+  text-transform: uppercase;
+}
+
+.evento-ator-header h1 {
+  margin: 2px 0 4px;
+  color: var(--verde-1);
+  font-size: 2rem;
+}
+
+.evento-ator-header p,
+.evento-ator-empty,
+.evento-ator-error {
+  margin: 0;
+  color: var(--texto-opacity-7);
+}
+
+.evento-ator-panel {
+  margin-bottom: 18px;
+  padding: 18px;
+  border: 1px solid var(--op-1);
+  border-radius: 8px;
+  background: var(--fundo);
+  box-shadow: 0 8px 24px var(--sombra-pequena);
+}
+
+.evento-ator-panel h2 {
+  margin: 0 0 14px;
+  color: var(--verde-1);
+  font-size: 1.1rem;
+}
+
+.evento-ator-panel dl {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+.evento-ator-panel dt {
+  color: var(--texto-opacity-5);
+  font-size: 0.76rem;
+  font-weight: var(--bold);
+  text-transform: uppercase;
+}
+
+.evento-ator-panel dd {
+  margin: 4px 0 0;
+}
+
+.evento-ator-personagens {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.evento-ator-personagens article {
+  padding: 12px;
+  border: 1px solid var(--op-1);
+  border-radius: 8px;
+}
+
+.evento-ator-personagens h3 {
+  margin: 4px 0 0;
+  color: var(--texto);
+  font-size: 0.96rem;
+}
+
+.evento-ator-personagens p {
+  margin: 4px 0 0;
+  color: var(--texto-opacity-7);
+}
+
+.evento-ator-kicker {
+  display: block;
+  color: var(--texto-opacity-5);
+  font-size: 0.72rem;
+  font-weight: var(--bold);
+  text-transform: uppercase;
+}
+
+.evento-ator-personagens small {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 0 10px;
+  border-radius: 30px;
+  background: rgba(45, 106, 79, 0.14);
+  color: var(--verde-1);
+  font-size: 0.76rem;
+  font-weight: var(--bold);
+}
+
+@media (max-width: 980px) {
+  .evento-ator-page {
+    padding: 20px;
+  }
+}

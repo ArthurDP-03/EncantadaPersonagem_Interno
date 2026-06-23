@@ -5,7 +5,6 @@ function EventoForm({
   dados,
   onChange,
   clientes,
-  administradores,
   disabled,
   editando,
   salvando,
@@ -149,21 +148,12 @@ function EventoForm({
         </label>
 
         <label>
-          Administrador responsável
-          <select
-            disabled={disabled}
-            value={dados.administradorCriadorId}
-            onChange={(e) =>
-              onChange({ ...dados, administradorCriadorId: e.target.value })
-            }
-          >
-            <option value="">Selecione um administrador</option>
-            {administradores.map((administrador) => (
-              <option key={administrador.id} value={administrador.id}>
-                {administrador.nome}
-              </option>
-            ))}
-          </select>
+          Criado por
+          <input
+            disabled
+            value={dados.administradorCriadorNome || "Administrador não informado"}
+            readOnly
+          />
         </label>
       </div>
     </form>

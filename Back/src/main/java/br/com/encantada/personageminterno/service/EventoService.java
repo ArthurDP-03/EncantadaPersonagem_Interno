@@ -16,6 +16,7 @@ import br.com.encantada.personageminterno.web.dto.evento.EventoRequest;
 import br.com.encantada.personageminterno.web.dto.evento.EventoResponse;
 import br.com.encantada.personageminterno.web.dto.eventopersonagem.EventoPersonagemResponse;
 import java.util.List;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,13 @@ public class EventoService {
     @Transactional(readOnly = true)
     public List<EventoResponse> listar() {
         return eventoRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventoResponse> listarEventosEscaladosDoAtor(String atorEmail) {
+        return eventoRepository.findEventosEscaladosDoAtor(atorEmail).stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -77,18 +85,27 @@ public class EventoService {
         return toResponse(evento);
     }
 
+    @Transactional(readOnly = true)
+    public EventoResponse buscarPorIdAutorizado(int id, Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return buscarPorId(id);
+        }
+
+        if (!eventoRepository.existsEventoVinculadoAoAtor(id, authentication.getName())) {
+            throw new ForbiddenException("Ator não possui vínculo com este evento");
+        }
+
+        return buscarPorId(id);
+    }
+
     @Transactional
     public EventoResponse atualizar(int id, EventoRequest request, String administradorEmail) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
 
-        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+        administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
-            throw new ForbiddenException(
-                    "Voce nao tem permissao para atualizar este evento. Apenas o criador pode modifica-lo");
-        }
         if (!request.dataInicio().isBefore(request.dataFim())) {
             throw new PreconditionFailedException("A data de inicio deve ser anterior a data de fim");
         }
@@ -111,12 +128,8 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
 
-        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+        administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
-
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
-            throw new ForbiddenException("Voce nao tem permissao para deletar este evento");
-        }
 
         eventoRepository.deleteById(id);
     }
@@ -126,12 +139,9 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
 
-        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+        administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
-            throw new ForbiddenException("Voce nao tem permissao para cancelar este evento");
-        }
         if (evento.getStatus() == EventoStatus.CANCELADO) {
             throw new ConflictException("Evento ja esta cancelado");
         }
@@ -171,5 +181,10 @@ public class EventoService {
                 evento.getAdministradorCriador().getId(),
                 evento.getAdministradorCriador().getNome(),
                 personagens);
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 }

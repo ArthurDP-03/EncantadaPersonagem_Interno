@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import br.com.encantada.personageminterno.service.ConviteService;
+import br.com.encantada.personageminterno.domain.enums.ConviteStatus;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteCreateRequest;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteResponse;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteRespostaRequest;
@@ -91,8 +93,10 @@ public class ConviteController {
     })
     @GetMapping("/conviteAtor")
     @PreAuthorize("hasRole('ATOR')")
-    public ResponseEntity<List<ConviteResponse>> listarMeus(Authentication authentication) {
-        return ResponseEntity.ok(conviteService.listarMeus(authentication.getName()));
+    public ResponseEntity<List<ConviteResponse>> listarMeus(
+            @RequestParam(required = false) ConviteStatus status,
+            Authentication authentication) {
+        return ResponseEntity.ok(conviteService.listarMeus(authentication.getName(), status));
     }
 
     @Operation(summary = "Responder convite", description = "Ator aceita ou recusa um convite. Restrito a atores.")
@@ -126,5 +130,20 @@ public class ConviteController {
     public ResponseEntity<Void> cancelar(@PathVariable Integer id, Authentication authentication) {
         conviteService.cancelar(id, authentication.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Reativar convite", description = "Reativa um convite cancelado, retornando-o para PENDENTE. Restrito a administradores.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Convite reativado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Convite não pode ser reativado"),
+            @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado — requer perfil ADMIN"),
+            @ApiResponse(responseCode = "404", description = "Convite não encontrado")
+    })
+    @PatchMapping("/{id}/reativar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ConviteResponse> reativar(@PathVariable Integer id, Authentication authentication) {
+        return ResponseEntity.ok(conviteService.reativar(id, authentication.getName()));
     }
 }

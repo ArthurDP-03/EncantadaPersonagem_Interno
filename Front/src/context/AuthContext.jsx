@@ -3,6 +3,20 @@ import { createContext, useContext, useState, useMemo, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 
+const normalizarRole = (role) => {
+  if (!role) return null
+  if (typeof role === 'string') return role
+  return role.authority || role.role || null
+}
+
+const listarRoles = (user) => {
+  if (!user) return []
+
+  return [user.role, ...(user.roles || []), ...(user.authorities || [])]
+    .map(normalizarRole)
+    .filter(Boolean)
+}
+
 export function decodeToken(token) {
   try {
     const base64Url = token.split('.')[1]
@@ -61,11 +75,8 @@ export function AuthProvider({ children }) {
   }
 
   function hasRole(role) {
-    return (
-      user?.role === role ||
-      user?.roles?.includes?.(role) ||
-      user?.authorities?.includes?.(role)
-    )
+    const roles = listarRoles(user)
+    return roles.includes(role) || roles.includes(`ROLE_${role}`)
   }
 
   return (

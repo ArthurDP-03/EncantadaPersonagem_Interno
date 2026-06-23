@@ -56,8 +56,8 @@ const Home = () => {
 
     const atorCards = [
       { title: t('home.cards.meus_eventos.title'), description: t('home.cards.meus_eventos.description'), icon: CalendarHeart, path: '/eventos' },
-      { title: t('home.cards.minha_agenda.title'), description: t('home.cards.minha_agenda.description'), icon: ClipboardList, path: '/minha-agenda' },
-      { title: t('home.cards.responder_convites.title'), description: t('home.cards.responder_convites.description'), icon: Mail, path: '/meus-convites' },
+      { title: t('home.cards.minha_agenda.title'), description: t('home.cards.minha_agenda.description'), icon: ClipboardList, path: '/eventos' },
+      { title: t('home.cards.responder_convites.title'), description: t('home.cards.responder_convites.description'), icon: Mail, path: '/convites' },
     ];
 
     return hasRole('ADMIN') ? adminCards : atorCards;

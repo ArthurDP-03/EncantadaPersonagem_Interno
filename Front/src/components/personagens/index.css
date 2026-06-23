@@ -5,7 +5,7 @@
 .section-personagens .input-container{position: relative;}
 .section-personagens .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
 
-.section-personagens .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none;}
+.section-personagens .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none; box-sizing: border-box;}
 .section-personagens .filtros .input::placeholder{color: var(--texto-opacity-7);}
 
 .section-personagens .lista-personagem{display: flex; gap: 24px; margin: 24px 0 ; flex-wrap: wrap;}
@@ -83,6 +83,16 @@
 .section-personagens .btn-secundario:hover { background: var(--cinza-medio); }
 
 /* ── Responsivo ── */
+@media (max-width: 900px) {
+  .section-personagens .conteudo { padding: 0 1rem 100px 1rem; }
+  .section-personagens .filtros { flex-direction: column; align-items: stretch; justify-content: flex-start; }
+  .section-personagens .filtros .input { min-width: 0; width: 100%; }
+  .section-personagens .lista-personagem { justify-content: center; }
+  .section-personagens .lista-personagem .card-personagem { width: min(100%, 252px); }
+}
+
 @media (max-width: 600px) {
   .section-personagens .personagens-fab { bottom: 20px; right: 20px; }
+  .section-personagens .conteudo { padding: 0 0.75rem 100px 0.75rem; }
+  .section-personagens .modal > form { padding: 1rem; width: min(100%, 100%); margin: 0 0.5rem; }
 }

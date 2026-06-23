@@ -12,10 +12,24 @@ import './App.css'
 import Personagens from './components/personagens'
 import Clientes from './components/clientes'
 import Eventos from './components/eventos'
+import EventosAtor from './components/eventosAtor'
 import EventoDetalhes from './components/eventoDetalhes'
+import EventoAtorDetalhes from './components/eventoAtorDetalhes'
+import ConvitesAtor from './components/convitesAtor'
 import Colaboradores from './components/colaboradores'
 import { useDarkMode } from './hooks/useDarkMode'
 import Dashboard from './components/dashboard'
+import { useAuth } from './context/AuthContext'
+
+function EventosPorPerfil() {
+  const { hasRole } = useAuth()
+  return hasRole('ADMIN') ? <Eventos /> : <EventosAtor />
+}
+
+function EventoDetalhesPorPerfil() {
+  const { hasRole } = useAuth()
+  return hasRole('ADMIN') ? <EventoDetalhes /> : <EventoAtorDetalhes />
+}
 
 function App() {
   const [dark, setDark] = useDarkMode();
@@ -32,8 +46,9 @@ function App() {
             <Route path="/personagens" element={<PrivateRoute role="ADMIN"><Personagens /></PrivateRoute>} />
             <Route path="/clientes" element={<PrivateRoute role="ADMIN"><Clientes /></PrivateRoute>} />
             <Route path="/colaboradores" element={<PrivateRoute role="ADMIN"><Colaboradores /></PrivateRoute>} />
-            <Route path="/eventos" element={<Eventos />} />
-            <Route path="/eventos/:id" element={<PrivateRoute role="ADMIN"><EventoDetalhes /></PrivateRoute>} />
+            <Route path="/eventos" element={<EventosPorPerfil />} />
+            <Route path="/eventos/:id" element={<EventoDetalhesPorPerfil />} />
+            <Route path="/convites" element={<PrivateRoute role="ATOR"><ConvitesAtor /></PrivateRoute>} />
           </Route>
         </Routes>
       </AuthProvider >

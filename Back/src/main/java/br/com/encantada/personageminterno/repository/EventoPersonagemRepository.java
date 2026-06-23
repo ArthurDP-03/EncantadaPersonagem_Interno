@@ -11,6 +11,8 @@ public interface EventoPersonagemRepository extends JpaRepository<EventoPersonag
 
     boolean existsByEventoIdAndPersonagemItemId(Integer eventoId, Integer personagemItemId);
 
+    boolean existsByPersonagemItemId(Integer personagemItemId);
+
     List<EventoPersonagem> findByEventoId(Integer eventoId);
 
     @Query("SELECT COUNT(ep) FROM EventoPersonagem ep " +
