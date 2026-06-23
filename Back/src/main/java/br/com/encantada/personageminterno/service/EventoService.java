@@ -6,7 +6,6 @@ import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
-import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
@@ -107,12 +106,8 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
 
-        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+        administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
-
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
-            throw new ForbiddenException("Voce nao tem permissao para deletar este evento");
-        }
 
         eventoRepository.deleteById(id);
     }
@@ -122,12 +117,9 @@ public class EventoService {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento nao encontrado com id: " + id));
 
-        Administrador adminLogado = administradorRepository.findByEmail(administradorEmail)
+        administradorRepository.findByEmail(administradorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado nao encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(adminLogado.getId())) {
-            throw new ForbiddenException("Voce nao tem permissao para cancelar este evento");
-        }
         if (evento.getStatus() == EventoStatus.CANCELADO) {
             throw new ConflictException("Evento ja esta cancelado");
         }

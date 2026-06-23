@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { getEventoById, atualizarEvento } from "../services/eventosService";
-import { listarPersonagensDoEvento } from "../services/eventoPersonagemService";
+import {
+  adicionarPersonagemAoEvento,
+  listarPersonagensDoEvento,
+} from "../services/eventoPersonagemService";
+import { getPersonagemItens } from "../services/personagemItemService";
 import { listarPorEventoPersonagem } from "../services/conviteService";
 import { getEscalacoesByEventoId } from "../services/escalacaoService";
 
@@ -47,15 +51,27 @@ const montarPayloadEvento = (form) => {
 const obterMensagemErro = (err, fallback) =>
   err.data?.message || err.data?.error || fallback;
 
+const filtrarItensDisponiveis = (itens, personagensEvento) => {
+  const itensJaVinculados = new Set(
+    personagensEvento.map((personagem) => personagem.personagemItemId)
+  );
+
+  return itens.filter(
+    (item) => item.status === "DISPONIVEL" && !itensJaVinculados.has(item.id)
+  );
+};
+
 export function useEventoDetalhes(eventoId) {
   const [evento, setEvento] = useState(null);
   const [form, setForm] = useState(eventoInicial);
   const [personagensEvento, setPersonagensEvento] = useState([]);
+  const [personagemItensDisponiveis, setPersonagemItensDisponiveis] = useState([]);
   const [escalacoes, setEscalacoes] = useState([]);
   const [convites, setConvites] = useState([]);
   const [editando, setEditando] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
+  const [adicionandoPersonagemItemId, setAdicionandoPersonagemItemId] = useState(null);
   const [erro, setErro] = useState(null);
 
   const carregarDados = useCallback(async () => {
@@ -65,10 +81,11 @@ export function useEventoDetalhes(eventoId) {
       setCarregando(true);
       setErro(null);
 
-      const [eventoAtual, personagens, escalacoesEvento] = await Promise.all([
+      const [eventoAtual, personagens, escalacoesEvento, personagemItens] = await Promise.all([
         getEventoById(eventoId),
         listarPersonagensDoEvento(eventoId),
         getEscalacoesByEventoId(eventoId),
+        getPersonagemItens(),
       ]);
 
       const convitesPorPersonagem = await Promise.all(
@@ -78,6 +95,7 @@ export function useEventoDetalhes(eventoId) {
       setEvento(eventoAtual);
       setForm(normalizarEventoParaForm(eventoAtual));
       setPersonagensEvento(personagens);
+      setPersonagemItensDisponiveis(filtrarItensDisponiveis(personagemItens, personagens));
       setEscalacoes(escalacoesEvento);
       setConvites(convitesPorPersonagem.flat());
     } catch (err) {
@@ -139,19 +157,51 @@ export function useEventoDetalhes(eventoId) {
     }
   };
 
+  const adicionarPersonagemItem = async (personagemItemId) => {
+    try {
+      setAdicionandoPersonagemItemId(personagemItemId);
+      await adicionarPersonagemAoEvento({
+        eventoId,
+        personagemItemId,
+      });
+      await carregarDados();
+
+      Swal.fire({
+        icon: "success",
+        title: "Personagem adicionado ao evento",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      return true;
+    } catch (err) {
+      console.error("Erro ao adicionar personagem ao evento:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível adicionar o personagem",
+        text: obterMensagemErro(err, "Verifique a disponibilidade do item e tente novamente"),
+      });
+      return false;
+    } finally {
+      setAdicionandoPersonagemItemId(null);
+    }
+  };
+
   return {
     evento,
     form,
     setForm,
     personagensEvento,
+    personagemItensDisponiveis,
     escalacoes,
     convites,
     editando,
     carregando,
     salvando,
+    adicionandoPersonagemItemId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
+    adicionarPersonagemItem,
   };
 }

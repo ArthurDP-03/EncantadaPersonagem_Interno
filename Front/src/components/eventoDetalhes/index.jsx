@@ -6,6 +6,7 @@ import { useEventoDetalhes } from "../../hooks/useEventoDetalhes";
 import EventoForm from "./EventoForm";
 import EscalacaoList from "./EscalacaoList";
 import ConvitesList from "./ConvitesList";
+import PersonagemItemList from "./PersonagemItemList";
 
 function EventoDetalhes() {
   const { id } = useParams();
@@ -17,15 +18,18 @@ function EventoDetalhes() {
     form,
     setForm,
     personagensEvento,
+    personagemItensDisponiveis,
     escalacoes,
     convites,
     editando,
     carregando,
     salvando,
+    adicionandoPersonagemItemId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
+    adicionarPersonagemItem,
   } = useEventoDetalhes(Number(id));
 
   if (carregando) {
@@ -77,6 +81,12 @@ function EventoDetalhes() {
           </section>
 
           <aside className="evento-detalhes-right">
+            <PersonagemItemList
+              personagensEvento={personagensEvento}
+              personagemItensDisponiveis={personagemItensDisponiveis}
+              adicionandoPersonagemItemId={adicionandoPersonagemItemId}
+              onAdicionar={adicionarPersonagemItem}
+            />
             <ConvitesList convites={convites} />
             <EscalacaoList
               escalacoes={escalacoes}

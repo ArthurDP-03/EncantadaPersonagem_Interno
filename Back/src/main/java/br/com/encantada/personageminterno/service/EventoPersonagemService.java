@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.encantada.personageminterno.domain.entity.Administrador;
 import br.com.encantada.personageminterno.domain.entity.Convite;
 import br.com.encantada.personageminterno.domain.entity.Evento;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
@@ -14,7 +13,6 @@ import br.com.encantada.personageminterno.domain.enums.EventoStatus;
 import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ConflictException;
-import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.ConviteRepository;
@@ -63,13 +61,12 @@ public class EventoPersonagemService {
      */
     @Transactional
     public EventoPersonagemResponse trocarPersonagem(int epId, TrocarPersonagemRequest req, String adminEmail) {
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
         EventoPersonagem ep = epRepository.findById(epId)
                 .orElseThrow(() -> new ResourceNotFoundException("EventoPersonagem não encontrado"));
 
-        validarPermissaoAdmin(ep, admin);
         validarEventoEditavel(ep);
 
         if (escalacaoRepository.existsByEventoPersonagemId(ep.getId())) {
@@ -85,6 +82,7 @@ public class EventoPersonagemService {
             throw new ConflictException("Este item de personagem já está vinculado ao evento");
         }
 
+        PersonagemItem itemAntigo = ep.getPersonagemItem();
         PersonagemItem novoItem = personagemItemRepository.findById(req.novoPersonagemItemId())
                 .orElseThrow(() -> new ResourceNotFoundException("Item de personagem não encontrado"));
         if (novoItem.getStatus() != PersonagemItemStatus.DISPONIVEL) {
@@ -96,7 +94,11 @@ public class EventoPersonagemService {
             conviteRepository.deleteAll(antigos);
         }
 
+        itemAntigo.setStatus(PersonagemItemStatus.DISPONIVEL);
+        novoItem.setStatus(PersonagemItemStatus.EM_USO);
         ep.setPersonagemItem(novoItem);
+        personagemItemRepository.save(itemAntigo);
+        personagemItemRepository.save(novoItem);
         return toResponse(epRepository.save(ep));
     }
 
@@ -106,13 +108,12 @@ public class EventoPersonagemService {
      */
     @Transactional
     public void removerPersonagem(int epId, String adminEmail) {
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
         EventoPersonagem ep = epRepository.findById(epId)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento-personagem não encontrado"));
 
-        validarPermissaoAdmin(ep, admin);
         validarEventoEditavel(ep);
 
         if (escalacaoRepository.existsByEventoPersonagemId(ep.getId())) {
@@ -123,7 +124,10 @@ public class EventoPersonagemService {
         if (!convites.isEmpty()) {
             conviteRepository.deleteAll(convites);
         }
+        PersonagemItem personagemItem = ep.getPersonagemItem();
         epRepository.delete(ep);
+        personagemItem.setStatus(PersonagemItemStatus.DISPONIVEL);
+        personagemItemRepository.save(personagemItem);
     }
 
     @Transactional
@@ -131,12 +135,9 @@ public class EventoPersonagemService {
         Evento evento = eventoRepository.findById(req.eventoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com id: " + req.eventoId()));
 
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!evento.getAdministradorCriador().getId().equals(admin.getId())) {
-            throw new ForbiddenException("Você não tem permissão para modificar este evento");
-        }
         if (evento.getStatus() == EventoStatus.CANCELADO || evento.getStatus() == EventoStatus.FINALIZADO) {
             throw new BusinessException("Não é possível adicionar personagens em evento " + evento.getStatus());
         }
@@ -162,6 +163,8 @@ public class EventoPersonagemService {
                 .personagemItem(personagemItem)
                 .build();
         EventoPersonagem salvo = epRepository.save(ep);
+        personagemItem.setStatus(PersonagemItemStatus.EM_USO);
+        personagemItemRepository.save(personagemItem);
         return toResponse(salvo);
     }
 
@@ -182,13 +185,12 @@ public class EventoPersonagemService {
      */
     @Transactional
     public List<ConviteResponse> reabrirConvites(int epId, ReabrirConvitesRequest req, String adminEmail) {
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
         EventoPersonagem ep = epRepository.findById(epId)
                 .orElseThrow(() -> new ResourceNotFoundException("EventoPersonagem não encontrado"));
 
-        validarPermissaoAdmin(ep, admin);
         validarEventoEditavel(ep);
 
         if (escalacaoRepository.existsByEventoPersonagemId(ep.getId())) {
@@ -206,13 +208,6 @@ public class EventoPersonagemService {
         return conviteService.enviarConvites(
                 new ConviteCreateRequest(ep.getId(), req.convites()),
                 adminEmail);
-    }
-
-    private void validarPermissaoAdmin(EventoPersonagem ep, Administrador admin) {
-        Integer criadorId = ep.getEvento().getAdministradorCriador().getId();
-        if (!criadorId.equals(admin.getId())) {
-            throw new ForbiddenException("Você não tem permissão para gerenciar este evento");
-        }
     }
 
     private void validarEventoEditavel(EventoPersonagem ep) {

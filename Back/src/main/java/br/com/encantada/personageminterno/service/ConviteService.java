@@ -14,6 +14,7 @@ import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import br.com.encantada.personageminterno.domain.enums.ConviteStatus;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
+import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
@@ -75,8 +76,11 @@ public class ConviteService {
             PersonagemItem item = personagemItemRepository.findById(par.personagemItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item de personagem " + par.personagemItemId() + " não encontrado"));
 
-            if (!item.getPersonagem().getId().equals(ep.getPersonagemItem().getPersonagem().getId())) {
-                throw new BusinessException("Item " + item.getCodigo() + " não pertence ao personagem do evento");
+            if (!item.getId().equals(ep.getPersonagemItem().getId())) {
+                throw new BusinessException("Item " + item.getCodigo() + " não está vinculado a este evento-personagem");
+            }
+            if (item.getStatus() != PersonagemItemStatus.EM_USO) {
+                throw new BusinessException("Item " + item.getCodigo() + " não está em uso neste evento");
             }
 
             Convite c = Convite.builder()
@@ -150,12 +154,9 @@ public class ConviteService {
         Convite c = conviteRepository.findById(conviteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
 
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!c.getAdministrador().getId().equals(admin.getId())) {
-            throw new ForbiddenException("Você não tem permissão para cancelar este convite");
-        }
         if (c.getStatus() != ConviteStatus.PENDENTE) {
             throw new BusinessException("Apenas convites pendentes podem ser cancelados");
         }

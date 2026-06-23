@@ -60,7 +60,7 @@ INSERT INTO personagem (nome, descricao, foto) VALUES
 
 -- id_personagem_item = 1 | Palhaço Alegre
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(1, 'PAL-001', 'DISPONIVEL');
+(1, 'PAL-001', 'EM_USO');
 
 -- id_personagem_item = 2 | Palhaço Alegre (em manutenção)
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
@@ -68,11 +68,15 @@ INSERT INTO personagem_item (id_personagem, codigo, status) VALUES
 
 -- id_personagem_item = 3 | Princesa Encantada
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(2, 'PRI-001', 'DISPONIVEL');
+(2, 'PRI-001', 'EM_USO');
 
 -- id_personagem_item = 4 | Homem Aranha
 INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
 (3, 'HOM-001', 'EM_USO');
+
+-- id_personagem_item = 5 | Princesa Encantada (disponível para novos eventos)
+INSERT INTO personagem_item (id_personagem, codigo, status) VALUES
+(2, 'PRI-002', 'DISPONIVEL');
 
 -- ===================================
 -- TABELA: EVENTO
@@ -108,10 +112,6 @@ INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES
 INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
 (2, 4);
 
--- id_evento_personagem = 4 | Evento 3 + PAL-002 (Palhaço Alegre)
-INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
-(3, 2);
-
 -- ===================================
 -- TABELA: CONVITE
 -- ===================================
@@ -127,10 +127,6 @@ INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_persona
 -- Convite pendente: Carlos Oliveira para ep 3 (Evento 2 / HOM-001)
 INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
 (3, 3, 1, 4, 'PENDENTE', '2026-06-02 09:00:00', NULL);
-
--- Convite aceito: João Silva para ep 4 (Evento 3 / PAL-002)
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
-(4, 1, 1, 2, 'ACEITO', '2026-06-01 11:00:00', '2026-06-01 16:45:00');
 
 -- ===================================
 -- TABELA: ESCALACAO
@@ -148,6 +144,4 @@ INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_adm
 INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
 (3, 3, 4, 1, '2026-06-02 10:00:00', 'PENDENTE_CONFIRMACAO_ATOR', NULL);
 
--- Escalação confirmada: João Silva / PAL-002 / ep 4
-INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
-(4, 1, 2, 1, '2026-06-01 16:30:00', 'CONFIRMADA', '2026-06-01 18:00:00');
+

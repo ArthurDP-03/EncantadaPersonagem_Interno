@@ -3,7 +3,9 @@ package br.com.encantada.personageminterno.service;
 import br.com.encantada.personageminterno.domain.entity.Personagem;
 import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
+import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
+import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.repository.PersonagemRepository;
 import br.com.encantada.personageminterno.web.dto.personagemitem.PersonagemItemRequest;
@@ -18,11 +20,14 @@ public class PersonagemItemService {
 
     private final PersonagemItemRepository personagemItemRepository;
     private final PersonagemRepository personagemRepository;
+    private final EventoPersonagemRepository eventoPersonagemRepository;
 
     public PersonagemItemService(PersonagemItemRepository personagemItemRepository,
-                                 PersonagemRepository personagemRepository) {
+                                 PersonagemRepository personagemRepository,
+                                 EventoPersonagemRepository eventoPersonagemRepository) {
         this.personagemItemRepository = personagemItemRepository;
         this.personagemRepository = personagemRepository;
+        this.eventoPersonagemRepository = eventoPersonagemRepository;
     }
 
     @Transactional(readOnly = true)
@@ -74,6 +79,7 @@ public class PersonagemItemService {
         PersonagemItem item = personagemItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item de personagem não encontrado com id: " + id));
 
+        validarMudancaStatus(item, request.status());
         item.setStatus(request.status());
         return toResponse(personagemItemRepository.save(item));
     }
@@ -94,5 +100,16 @@ public class PersonagemItemService {
                 item.getCodigo(),
                 item.getStatus()
         );
+    }
+
+    private void validarMudancaStatus(PersonagemItem item, PersonagemItemStatus novoStatus) {
+        boolean vinculadoAoEvento = eventoPersonagemRepository.existsByPersonagemItemId(item.getId());
+
+        if (vinculadoAoEvento && novoStatus != PersonagemItemStatus.EM_USO) {
+            throw new BusinessException("Item vinculado a evento deve permanecer EM_USO");
+        }
+        if (!vinculadoAoEvento && novoStatus == PersonagemItemStatus.EM_USO) {
+            throw new BusinessException("Item sem vínculo com evento não pode ser marcado como EM_USO");
+        }
     }
 }

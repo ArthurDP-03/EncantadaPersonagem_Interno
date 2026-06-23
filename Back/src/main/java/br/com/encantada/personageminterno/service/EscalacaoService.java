@@ -23,7 +23,6 @@ import br.com.encantada.personageminterno.repository.ConviteRepository;
 import br.com.encantada.personageminterno.repository.EscalacaoRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.EventoRepository;
-import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.web.dto.escalacao.EscalacaoCreateRequest;
 import br.com.encantada.personageminterno.web.dto.escalacao.EscalacaoResponse;
 
@@ -33,7 +32,6 @@ public class EscalacaoService {
     private final EscalacaoRepository escalacaoRepository;
     private final EventoPersonagemRepository epRepository;
     private final ConviteRepository conviteRepository;
-    private final PersonagemItemRepository personagemItemRepository;
     private final AdministradorRepository administradorRepository;
     private final EventoRepository eventoRepository;
 
@@ -41,13 +39,11 @@ public class EscalacaoService {
             EscalacaoRepository escalacaoRepository,
             EventoPersonagemRepository epRepository,
             ConviteRepository conviteRepository,
-            PersonagemItemRepository personagemItemRepository,
             AdministradorRepository administradorRepository,
             EventoRepository eventoRepository) {
         this.escalacaoRepository = escalacaoRepository;
         this.epRepository = epRepository;
         this.conviteRepository = conviteRepository;
-        this.personagemItemRepository = personagemItemRepository;
         this.administradorRepository = administradorRepository;
         this.eventoRepository = eventoRepository;
     }
@@ -72,18 +68,14 @@ public class EscalacaoService {
             throw new BusinessException("Ator não aceitou o convite");
         }
 
-        PersonagemItem item = personagemItemRepository.findById(req.personagemItemId())
-                .orElseThrow(() -> new ResourceNotFoundException("PersonagemItem não encontrado"));
+        PersonagemItem item = ep.getPersonagemItem();
 
-        if (!item.getPersonagem().getId().equals(ep.getPersonagemItem().getPersonagem().getId())) {
-            throw new BusinessException("O item escolhido não pertence ao personagem do evento");
+        if (!item.getId().equals(req.personagemItemId())) {
+            throw new BusinessException("O item escolhido não é o item vinculado a este evento-personagem");
         }
-        if (item.getStatus() != PersonagemItemStatus.DISPONIVEL) {
+        if (item.getStatus() != PersonagemItemStatus.EM_USO) {
             throw new BusinessException("PersonagemItem indisponível");
         }
-
-        item.setStatus(PersonagemItemStatus.EM_USO);
-        personagemItemRepository.save(item);
 
         Escalacao esc = Escalacao.builder()
                 .eventoPersonagem(ep)
@@ -119,20 +111,11 @@ public class EscalacaoService {
         Escalacao e = escalacaoRepository.findById(escalacaoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Escalação não encontrada"));
 
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!e.getAdministrador().getId().equals(admin.getId())) {
-            throw new ForbiddenException("Você não tem permissão para cancelar esta escalação");
-        }
         if (e.getStatus() == EscalacaoStatus.CANCELADA) {
             throw new BusinessException("Escalação já está cancelada");
-        }
-
-        PersonagemItem item = e.getPersonagemItem();
-        if (item.getStatus() == PersonagemItemStatus.EM_USO) {
-            item.setStatus(PersonagemItemStatus.DISPONIVEL);
-            personagemItemRepository.save(item);
         }
 
         e.setStatus(EscalacaoStatus.CANCELADA);
