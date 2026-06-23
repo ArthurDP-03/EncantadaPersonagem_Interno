@@ -133,27 +133,6 @@ function Eventos() {
 
           <h1 className="titulo t1">{t('events.title')}</h1>
 
-          <div className="filtros">
-            <div className="input-container">
-              <select className="input" value={ordem} onChange={e => setOrdem(e.target.value)}>
-                <option value="">{t('common.order')}</option>
-                <option value="az">{t('common.orderAZ')}</option>
-                <option value="za">{t('common.orderZA')}</option>
-              </select>
-              <ChevronDown className="icon" size={18} />
-            </div>
-            <div className="input-container">
-              <input
-                type="text"
-                placeholder={t('common.search')}
-                className="input"
-                value={busca}
-                onChange={e => setBusca(e.target.value)}
-              />
-              <Search className="icon" size={18} />
-            </div>
-          </div>
-
           <div className="timeline">
             {grupos.length === 0 ? (
               <div className="eventos-vazio">{t('events.empty')}</div>
