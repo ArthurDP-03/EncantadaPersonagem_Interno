@@ -3,6 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { listarMeusConvites } from "../../services/conviteService";
+import { getMinhasEscalacoes } from "../../services/escalacaoService";
 import { getEventoById } from "../../services/eventosService";
 import { formatarPeriodoEvento, formatarStatus } from "../../utils/formatters";
 
@@ -12,6 +14,8 @@ function EventoAtorDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [evento, setEvento] = useState(null);
+  const [convitesEvento, setConvitesEvento] = useState([]);
+  const [escalacoesEvento, setEscalacoesEvento] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
@@ -20,7 +24,16 @@ function EventoAtorDetalhes() {
       try {
         setCarregando(true);
         setErro(null);
-        setEvento(await getEventoById(Number(id)));
+        const eventoId = Number(id);
+        const [eventoAtual, minhasEscalacoes, meusConvites] = await Promise.all([
+          getEventoById(eventoId),
+          getMinhasEscalacoes(),
+          listarMeusConvites(),
+        ]);
+
+        setEvento(eventoAtual);
+        setEscalacoesEvento(minhasEscalacoes.filter((escala) => escala.eventoId === eventoId));
+        setConvitesEvento(meusConvites.filter((convite) => convite.eventoId === eventoId));
       } catch (err) {
         console.error("Erro ao carregar evento do ator:", err);
         const mensagem = obterMensagemErro(err, "Você não possui acesso a este evento");
@@ -86,17 +99,28 @@ function EventoAtorDetalhes() {
       </section>
 
       <section className="evento-ator-panel">
-        <h2>Personagens</h2>
+        <h2>Sua participação</h2>
         <div className="evento-ator-personagens">
-          {evento.personagens?.length > 0 ? (
-            evento.personagens.map((personagem) => (
-              <article key={personagem.id}>
-                <h3>{personagem.personagemNome}</h3>
-                <p>{personagem.personagemItemCodigo}</p>
+          {escalacoesEvento.length > 0 ? (
+            escalacoesEvento.map((escala) => (
+              <article key={escala.id}>
+                <span className="evento-ator-kicker">Personagem escalado</span>
+                <h3>{escala.personagemNome}</h3>
+                <p>Item {escala.personagemItemCodigo}</p>
+                <small>{escala.status.replaceAll("_", " ")}</small>
+              </article>
+            ))
+          ) : convitesEvento.length > 0 ? (
+            convitesEvento.map((convite) => (
+              <article key={convite.id}>
+                <span className="evento-ator-kicker">Convite</span>
+                <h3>{convite.personagemNome}</h3>
+                <p>Item {convite.personagemItemCodigo}</p>
+                <small>{convite.status}</small>
               </article>
             ))
           ) : (
-            <p className="evento-ator-empty">Nenhum personagem listado para este evento.</p>
+            <p className="evento-ator-empty">Nenhum personagem vinculado ao seu usuário neste evento.</p>
           )}
         </div>
       </section>

@@ -89,7 +89,7 @@
 }
 
 .evento-ator-personagens h3 {
-  margin: 0;
+  margin: 4px 0 0;
   color: var(--texto);
   font-size: 0.96rem;
 }
@@ -97,6 +97,27 @@
 .evento-ator-personagens p {
   margin: 4px 0 0;
   color: var(--texto-opacity-7);
+}
+
+.evento-ator-kicker {
+  display: block;
+  color: var(--texto-opacity-5);
+  font-size: 0.72rem;
+  font-weight: var(--bold);
+  text-transform: uppercase;
+}
+
+.evento-ator-personagens small {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 0 10px;
+  border-radius: 30px;
+  background: rgba(45, 106, 79, 0.14);
+  color: var(--verde-1);
+  font-size: 0.76rem;
+  font-weight: var(--bold);
 }
 
 @media (max-width: 980px) {
