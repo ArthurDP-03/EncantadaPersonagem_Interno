@@ -164,7 +164,7 @@ function Eventos() {
                               <button
                                 className="btn-icone btn-editar"
                                 type="button"
-                                title="Detalhes do evento"
+                                title={t('events.detailsButton') || 'Detalhes do evento'}
                                 onClick={() => navigate(`/eventos/${evento.id}`)}
                               >
                                 <Pencil size={16} />
