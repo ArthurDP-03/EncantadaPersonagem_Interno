@@ -104,7 +104,7 @@ CREATE TABLE convite (
   data_expiracao DATETIME,
 
   CONSTRAINT chk_convite_status
-    CHECK (status IN ('PENDENTE', 'ACEITO', 'RECUSADO')),
+    CHECK (status IN ('PENDENTE', 'ACEITO', 'RECUSADO', 'EXPIRADO', 'CANCELADO')),
 
   CONSTRAINT fk_convite_ep
     FOREIGN KEY (id_evento_personagem)
