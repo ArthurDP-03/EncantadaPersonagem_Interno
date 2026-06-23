@@ -45,8 +45,17 @@ public class EventoController {
             @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido")
     })
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EventoResponse>> listar() {
         return ResponseEntity.ok(eventoService.listar());
+    }
+
+    @Operation(summary = "Listar eventos escalados do ator", description = "Retorna apenas os eventos em que o ator autenticado está escalado.")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/ator/me")
+    @PreAuthorize("hasRole('ATOR')")
+    public ResponseEntity<List<EventoResponse>> listarEventosEscaladosDoAtor(Authentication authentication) {
+        return ResponseEntity.ok(eventoService.listarEventosEscaladosDoAtor(authentication.getName()));
     }
 
     @Operation(
@@ -60,8 +69,10 @@ public class EventoController {
             @ApiResponse(responseCode = "404", description = "Evento não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<EventoResponse> buscarPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(eventoService.buscarPorId(id));
+    public ResponseEntity<EventoResponse> buscarPorId(
+            @PathVariable Integer id,
+            Authentication authentication) {
+        return ResponseEntity.ok(eventoService.buscarPorIdAutorizado(id, authentication));
     }
 
     @Operation(
@@ -75,6 +86,7 @@ public class EventoController {
             @ApiResponse(responseCode = "401", description = "Token JWT ausente ou inválido")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventoResponse> criar(
             @Valid @RequestBody EventoRequest request,
             Authentication authentication) {

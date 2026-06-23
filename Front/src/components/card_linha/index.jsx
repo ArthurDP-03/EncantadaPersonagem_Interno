@@ -1,8 +1,13 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
 import Swal from "sweetalert2";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./index.css"
 
 function Card_linha({ titulo, informacoes, onDeletar, onEditar }) {
+  const { t } = useTranslation();
+  const [menuAberto, setMenuAberto] = useState(false);
+
   return (
     <div className="card-linha">
       <div className="textos">
@@ -24,6 +29,40 @@ function Card_linha({ titulo, informacoes, onDeletar, onEditar }) {
         <button className="btn-icone btn-deletar" type="button" onClick={onDeletar}>
           <Trash2 size={16} />
         </button>
+        <button
+          className="btn-icone btn-mais"
+          type="button"
+          onClick={() => setMenuAberto((prev) => !prev)}
+          aria-label={t('common.moreOptions') || 'Mais opções'}
+        >
+          <MoreHorizontal size={16} />
+        </button>
+        {menuAberto && (
+          <div className="card-linha-menu">
+            {onEditar && (
+              <button
+                className="card-linha-menu-item"
+                type="button"
+                onClick={() => {
+                  setMenuAberto(false);
+                  onEditar();
+                }}
+              >
+                {t('common.edit')}
+              </button>
+            )}
+            <button
+              className="card-linha-menu-item excluir"
+              type="button"
+              onClick={() => {
+                setMenuAberto(false);
+                onDeletar();
+              }}
+            >
+              {t('common.delete')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

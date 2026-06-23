@@ -2,7 +2,9 @@ package br.com.encantada.personageminterno.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +15,9 @@ import br.com.encantada.personageminterno.domain.entity.Convite;
 import br.com.encantada.personageminterno.domain.entity.EventoPersonagem;
 import br.com.encantada.personageminterno.domain.entity.PersonagemItem;
 import br.com.encantada.personageminterno.domain.enums.ConviteStatus;
+import br.com.encantada.personageminterno.domain.enums.EscalacaoStatus;
 import br.com.encantada.personageminterno.domain.enums.EventoStatus;
+import br.com.encantada.personageminterno.domain.enums.PersonagemItemStatus;
 import br.com.encantada.personageminterno.exception.BusinessException;
 import br.com.encantada.personageminterno.exception.ForbiddenException;
 import br.com.encantada.personageminterno.exception.PreconditionFailedException;
@@ -21,6 +25,7 @@ import br.com.encantada.personageminterno.exception.ResourceNotFoundException;
 import br.com.encantada.personageminterno.repository.AdministradorRepository;
 import br.com.encantada.personageminterno.repository.AtorRepository;
 import br.com.encantada.personageminterno.repository.ConviteRepository;
+import br.com.encantada.personageminterno.repository.EscalacaoRepository;
 import br.com.encantada.personageminterno.repository.EventoPersonagemRepository;
 import br.com.encantada.personageminterno.repository.PersonagemItemRepository;
 import br.com.encantada.personageminterno.web.dto.convite.ConviteAtorItemRequest;
@@ -36,18 +41,21 @@ public class ConviteService {
     private final AtorRepository atorRepository;
     private final AdministradorRepository administradorRepository;
     private final PersonagemItemRepository personagemItemRepository;
+    private final EscalacaoRepository escalacaoRepository;
 
     public ConviteService(
             ConviteRepository conviteRepository,
             EventoPersonagemRepository epRepository,
             AtorRepository atorRepository,
             AdministradorRepository administradorRepository,
-            PersonagemItemRepository personagemItemRepository) {
+            PersonagemItemRepository personagemItemRepository,
+            EscalacaoRepository escalacaoRepository) {
         this.conviteRepository = conviteRepository;
         this.epRepository = epRepository;
         this.atorRepository = atorRepository;
         this.administradorRepository = administradorRepository;
         this.personagemItemRepository = personagemItemRepository;
+        this.escalacaoRepository = escalacaoRepository;
     }
 
     @Transactional
@@ -65,18 +73,33 @@ public class ConviteService {
         }
 
         List<Convite> criados = new ArrayList<>();
+        Set<Integer> atoresNoPayload = new HashSet<>();
         for (ConviteAtorItemRequest par : req.convites()) {
+            if (!atoresNoPayload.add(par.atorId())) {
+                throw new BusinessException("Ator " + par.atorId() + " foi informado mais de uma vez");
+            }
             if (conviteRepository.findByEventoPersonagemIdAndAtorId(ep.getId(), par.atorId()).isPresent()) {
                 continue;
             }
             Ator ator = atorRepository.findById(par.atorId())
                     .orElseThrow(() -> new ResourceNotFoundException("Ator " + par.atorId() + " não encontrado"));
 
+            if (conviteRepository.existsAtorComConviteAtivoEmOutroPersonagemDoEvento(
+                    ep.getEvento().getId(), ator.getId(), ep.getId())
+                    || escalacaoRepository.existsAtorEscaladoEmOutroPersonagemDoEvento(
+                            ep.getEvento().getId(), ator.getId(), ep.getId())) {
+                throw new BusinessException(
+                        "Ator " + ator.getNome() + " já está vinculado a outro personagem deste evento");
+            }
+
             PersonagemItem item = personagemItemRepository.findById(par.personagemItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item de personagem " + par.personagemItemId() + " não encontrado"));
 
-            if (!item.getPersonagem().getId().equals(ep.getPersonagemItem().getPersonagem().getId())) {
-                throw new BusinessException("Item " + item.getCodigo() + " não pertence ao personagem do evento");
+            if (!item.getId().equals(ep.getPersonagemItem().getId())) {
+                throw new BusinessException("Item " + item.getCodigo() + " não está vinculado a este evento-personagem");
+            }
+            if (item.getStatus() != PersonagemItemStatus.EM_USO) {
+                throw new BusinessException("Item " + item.getCodigo() + " não está em uso neste evento");
             }
 
             Convite c = Convite.builder()
@@ -138,9 +161,19 @@ public class ConviteService {
 
     @Transactional(readOnly = true)
     public List<ConviteResponse> listarMeus(String atorEmail) {
+        return listarMeus(atorEmail, ConviteStatus.PENDENTE);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ConviteResponse> listarMeus(String atorEmail, ConviteStatus status) {
         Ator ator = atorRepository.findByEmail(atorEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Ator autenticado não encontrado"));
-        return conviteRepository.findByAtorIdAndStatus(ator.getId(), ConviteStatus.PENDENTE).stream()
+
+        List<Convite> convites = status == null
+                ? conviteRepository.findByAtorId(ator.getId())
+                : conviteRepository.findByAtorIdAndStatus(ator.getId(), status);
+
+        return convites.stream()
                 .map(c -> toResponse(c))
                 .toList();
     }
@@ -150,17 +183,52 @@ public class ConviteService {
         Convite c = conviteRepository.findById(conviteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
 
-        Administrador admin = administradorRepository.findByEmail(adminEmail)
+        administradorRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
 
-        if (!c.getAdministrador().getId().equals(admin.getId())) {
-            throw new ForbiddenException("Você não tem permissão para cancelar este convite");
-        }
         if (c.getStatus() != ConviteStatus.PENDENTE) {
             throw new BusinessException("Apenas convites pendentes podem ser cancelados");
         }
         c.setStatus(ConviteStatus.CANCELADO);
         conviteRepository.save(c);
+    }
+
+    @Transactional
+    public ConviteResponse reativar(int conviteId, String adminEmail) {
+        Convite c = conviteRepository.findById(conviteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
+
+        administradorRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador autenticado não encontrado"));
+
+        if (c.getStatus() != ConviteStatus.CANCELADO) {
+            throw new BusinessException("Apenas convites cancelados podem ser reativados");
+        }
+
+        EventoPersonagem ep = c.getEventoPersonagem();
+        EventoStatus st = ep.getEvento().getStatus();
+        if (st == EventoStatus.CANCELADO || st == EventoStatus.FINALIZADO) {
+            throw new BusinessException("Não é possível reativar convites em evento " + st);
+        }
+
+        if (escalacaoRepository.existsByEventoPersonagemIdAndStatusNot(
+                ep.getId(), EscalacaoStatus.CANCELADA)) {
+            throw new BusinessException("Este personagem já possui escalação ativa");
+        }
+
+        if (conviteRepository.existsAtorComConviteAtivoEmOutroPersonagemDoEvento(
+                ep.getEvento().getId(), c.getAtor().getId(), ep.getId())
+                || escalacaoRepository.existsAtorEscaladoEmOutroPersonagemDoEvento(
+                        ep.getEvento().getId(), c.getAtor().getId(), ep.getId())) {
+            throw new BusinessException(
+                    "Ator " + c.getAtor().getNome() + " já está vinculado a outro personagem deste evento");
+        }
+
+        c.setStatus(ConviteStatus.PENDENTE);
+        c.setDataResposta(null);
+        c.setDataEnvio(LocalDateTime.now());
+        c.setDataExpiracao(calcularExpiracao(ep.getEvento().getDataInicio()));
+        return toResponse(conviteRepository.save(c));
     }
 
     /** True quando todos convites do EP estão RECUSADO (e existe pelo menos 1). */

@@ -1,5 +1,6 @@
 import "./index.css";
-import { Navigate, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,20 +11,26 @@ import {
   Drama,
   Users,
   Bell,
+  Mail,
   Moon,
   Sun,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 
 function Header({ dark, setDark }) {
-  const { user, logout } = useAuth();
+  const { user, logout, hasRole } = useAuth();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
   const currentLanguage = i18n.resolvedLanguage || i18n.language || "pt-BR";
   const isPortuguese = currentLanguage.startsWith("pt");
 
   function handleLogout() {
     logout();
-    Navigate("/login");
+    setMenuOpen(false);
+    navigate("/login");
   }
 
   function toggleLanguage() {
@@ -31,7 +38,7 @@ function Header({ dark, setDark }) {
   }
 
   const links =
-    user?.role === "ADMIN"
+    hasRole("ADMIN")
       ? [
           { label: t("nav.general"), href: "/", icone: <House size={18} /> },
           {
@@ -63,9 +70,14 @@ function Header({ dark, setDark }) {
       : [
           { label: t("nav.general"), href: "/", icone: <House size={18} /> },
           {
-            label: t("nav.events"),
+            label: "Eventos",
             href: "/eventos",
             icone: <CalendarDays size={18} />,
+          },
+          {
+            label: "Convites",
+            href: "/convites",
+            icone: <Mail size={18} />,
           },
         ];
 
@@ -77,9 +89,6 @@ function Header({ dark, setDark }) {
         <div className="conteudo-95">
           <div className="conteudo">
             <div className="perfil">
-              <div className="imagem-container">
-                <img src="" alt="" className="foto_perfil" />
-              </div>
 
               <div className="textos">
                 <div className="nome">
@@ -87,7 +96,7 @@ function Header({ dark, setDark }) {
                 </div>
                 <div className="cargo">
                   <p>
-                    {user.role === "ADMIN"
+                    {hasRole("ADMIN")
                       ? t("common.roles.admin")
                       : t("common.roles.actor")}
                   </p>
@@ -112,10 +121,43 @@ function Header({ dark, setDark }) {
               >
                 <span>{isPortuguese ? t("common.languages.pt") : t("common.languages.en")}</span>
               </button>
-              <div className="icone">
-                <Bell size={30} />
-              </div>
+              <button
+                type="button"
+                className={`mobile-menu-toggle ${menuOpen ? "open" : ""}`}
+                onClick={() => setMenuOpen((prev) => !prev)}
+                aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+              >
+                {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={`mobile-navigation ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+        <div className="mobile-menu">
+          <div className="mobile-menu-links">
+            {links.map(({ label, href, icone }) => (
+              <NavLink
+                key={href}
+                to={href}
+                className={({ isActive }) => `link ${isActive ? "ativo" : ""}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                <div className="texto">
+                  <p>{label}</p>
+                </div>
+                <div className="icone">{icone}</div>
+              </NavLink>
+            ))}
+            <button onClick={handleLogout} className="link logout">
+              <div className="texto">
+                <p>{t("nav.logout")}</p>
+              </div>
+              <div className="icone">
+                <LogOut size={18} />
+              </div>
+            </button>
           </div>
         </div>
       </section>

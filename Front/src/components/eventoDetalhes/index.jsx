@@ -1,33 +1,45 @@
 import "./index.css";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAdministradores } from "../../hooks/useAdministradores";
 import { useClientes } from "../../hooks/useClientes";
 import { useEventoDetalhes } from "../../hooks/useEventoDetalhes";
 import EventoForm from "./EventoForm";
 import EscalacaoList from "./EscalacaoList";
 import ConvitesList from "./ConvitesList";
+import PersonagemItemList from "./PersonagemItemList";
 
 function EventoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { clientes } = useClientes();
-  const { administradores } = useAdministradores();
 
   const {
     evento,
     form,
     setForm,
     personagensEvento,
+    personagemItensDisponiveis,
     escalacoes,
     convites,
+    atores,
     editando,
     carregando,
     salvando,
+    adicionandoPersonagemItemId,
+    removendoEventoPersonagemId,
+    processandoConviteId,
+    enviandoConvitesEventoPersonagemId,
+    escalandoConviteId,
     erro,
     iniciarEdicao,
     cancelarEdicao,
     salvarEvento,
+    adicionarPersonagemItem,
+    removerPersonagemItem,
+    adicionarConvitesPersonagem,
+    excluirConvitePersonagem,
+    adicionarConviteNaEscalacao,
+    reativarConvitePersonagem,
   } = useEventoDetalhes(Number(id));
 
   if (carregando) {
@@ -69,7 +81,6 @@ function EventoDetalhes() {
               dados={form}
               onChange={setForm}
               clientes={clientes}
-              administradores={administradores}
               disabled={!editando}
               editando={editando}
               salvando={salvando}
@@ -80,11 +91,31 @@ function EventoDetalhes() {
           </section>
 
           <aside className="evento-detalhes-right">
+            <PersonagemItemList
+              personagensEvento={personagensEvento}
+              personagemItensDisponiveis={personagemItensDisponiveis}
+              adicionandoPersonagemItemId={adicionandoPersonagemItemId}
+              removendoEventoPersonagemId={removendoEventoPersonagemId}
+              onAdicionar={adicionarPersonagemItem}
+              onRemover={removerPersonagemItem}
+            />
+            <ConvitesList
+              personagensEvento={personagensEvento}
+              convites={convites}
+              escalacoes={escalacoes}
+              atores={atores}
+              processandoConviteId={processandoConviteId}
+              enviandoConvitesEventoPersonagemId={enviandoConvitesEventoPersonagemId}
+              escalandoConviteId={escalandoConviteId}
+              onAdicionarConvites={adicionarConvitesPersonagem}
+              onExcluirConvite={excluirConvitePersonagem}
+              onAdicionarEscalacao={adicionarConviteNaEscalacao}
+              onReativarConvite={reativarConvitePersonagem}
+            />
             <EscalacaoList
               escalacoes={escalacoes}
               personagensEvento={personagensEvento}
             />
-            <ConvitesList convites={convites} />
           </aside>
         </div>
       </div>

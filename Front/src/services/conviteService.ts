@@ -55,8 +55,9 @@ export const listarEnviadosADM = async (): Promise<ConviteResponse[]> => {
   return request("/convites/enviadosADM");
 };
 
-export const listarMeusConvites = async (): Promise<ConviteResponse[]> => {
-  return request("/convites/conviteAtor");
+export const listarMeusConvites = async (status?: ConviteStatus): Promise<ConviteResponse[]> => {
+  const query = status ? `?status=${status}` : "";
+  return request(`/convites/conviteAtor${query}`);
 };
 
 export const responderConvite = async (
@@ -72,6 +73,12 @@ export const responderConvite = async (
 export const cancelarConvite = async (id: number): Promise<void> => {
   return request(`/convites/${id}`, {
     method: "DELETE",
+  });
+};
+
+export const reativarConvite = async (id: number): Promise<ConviteResponse> => {
+  return request(`/convites/${id}/reativar`, {
+    method: "PATCH",
   });
 };
 

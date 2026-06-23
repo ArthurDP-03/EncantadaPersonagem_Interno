@@ -5,7 +5,7 @@
 .section-colaboradores .input-container{position: relative;}
 .section-colaboradores .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
 
-.section-colaboradores .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none;}
+.section-colaboradores .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none; box-sizing: border-box;}
 .section-colaboradores .filtros .input::placeholder{color: var(--texto-opacity-7);}
 
 
@@ -196,4 +196,15 @@
 .section-colaboradores .btn-create:hover {
   transform: scale(1.08);
   box-shadow: 0 6px 24px var(--op-5);
+}
+
+@media (max-width: 768px) {
+  .section-colaboradores .conteudo { padding: 0 1rem 100px 1rem; }
+  .section-colaboradores .filtros { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0.75rem; }
+  .section-colaboradores .filtros .input { min-width: 0; width: 100%; }
+  .section-colaboradores .input-container { width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .section-colaboradores .btn-create { bottom: 20px; right: 20px; }
 }

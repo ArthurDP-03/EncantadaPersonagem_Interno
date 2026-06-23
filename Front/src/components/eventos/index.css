@@ -2,10 +2,10 @@
 .section-eventos .conteudo{padding: 0 0 100px 100px;}
 .section-eventos .titulo{margin: 1em 0 0;}
 .section-eventos .filtros{margin: 1em 0 0; display: flex; gap: 0.5em; justify-content: flex-end;}
-.section-eventos .input-container{position: relative;}
+.section-eventos .input-container{position: relative; width: 100%;}
 .section-eventos .icon{position: absolute; right: 12px; top: 50%; transform: translateY(-50%);}
 
-.section-eventos .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none;}
+.section-eventos .filtros .input{height: 38px; min-width: 240px; border-radius: 30px;padding: 0 16px; border: none; background: var(--cinza-3); color: var(--texto-opacity-7);   appearance: none; width: 100%;}
 .section-eventos .filtros .input::placeholder{color: var(--texto-opacity-7);}
 
 .section-eventos .lista-eventos{display: flex; gap: 24px; margin: 0 0 24px ; flex-wrap: wrap;}
@@ -32,6 +32,7 @@
   top: 8px;
   right: 8px;
   display: flex;
+  align-items: flex-start;
   gap: 4px;
 }
 
@@ -45,15 +46,18 @@
   border: none;
   cursor: pointer;
   transition: background 0.16s, transform 0.14s;
+  background: rgba(255,255,255,0.85);
+  color: var(--texto);
 }
 
-.section-eventos .btn-icone:hover { transform: scale(1.15); }
+.section-eventos .btn-icone:hover { transform: scale(1.05); background: rgba(255,255,255,1); }
 
 .section-eventos .btn-editar { background: rgba(255,255,255,0.85); color: var(--texto-cinza-medio); }
 .section-eventos .btn-editar:hover { background: rgba(255,255,255,1); color: var(--texto-cinza-escuro); }
 
 .section-eventos .btn-deletar { background: rgba(255,255,255,0.85); color: var(--vermelho); }
 .section-eventos .btn-deletar:hover { background: rgba(255,255,255,1); color: var(--vermelho-escuro); }
+
 
 /* ── Vazio ── */
 .section-eventos .eventos-vazio { text-align: center; color: var(--texto-opacity-45); padding: 3rem 0; font-size: 0.9rem; }
@@ -93,6 +97,12 @@
 .section-eventos .btn-secundario:hover { background: var(--cinza-medio); }
 
 /* ── Responsivo ── */
+@media (max-width: 768px) {
+  .section-eventos .conteudo { padding: 0 1rem 100px 1rem; }
+  .section-eventos .filtros { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0.75rem; }
+  .section-eventos .filtros .input { min-width: 0; width: 100%; }
+}
+
 @media (max-width: 600px) {
   .section-eventos .form-evento-linha { flex-direction: column; }
   .section-eventos .eventos-fab { bottom: 20px; right: 20px; }

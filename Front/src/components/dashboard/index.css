@@ -107,13 +107,20 @@
 /* RESPONSIVO */
 
 @media (max-width: 1000px) {
-  .section-dashboard .conteudo {
+  /* .section-dashboard .conteudo {
+    padding-left: 0;
+  } */
+
+  .dashboard-grid {
+    grid-template-columns: auto
+  }
+}
+
+@media (max-width: 768px){
+    .section-dashboard .conteudo {
     padding-left: 0;
   }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 600px) {

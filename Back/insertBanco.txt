@@ -17,78 +17,73 @@ INSERT INTO administrador (nome, email, senha, telefone) VALUES
 -- ===================================
 
 -- Senha: P@ssw0rd
-INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES 
-('João Silva', 'joao.silva@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234567', 'M', 1.75, 72.50, 'Ator experiente em teatro infantil', TRUE);
-
--- Senha: P@ssw0rd
-INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES 
-('Maria Santos', 'maria.santos@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234568', 'F', 1.65, 60.00, 'Especializada em personagens femininos', TRUE);
-
--- Senha: P@ssw0rd
-INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES 
-('Carlos Oliveira', 'carlos.oliveira@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234569', 'M', 1.80, 80.00, 'Malabarista e acrobata', TRUE);
+INSERT INTO ator (nome, email, senha, telefone, genero, altura, peso, observacao, ativo) VALUES
+('João Silva', 'joao.silva@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234567', 'M', 1.75, 72.50, 'Ator experiente em teatro infantil', TRUE),
+('Maria Santos', 'maria.santos@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234568', 'F', 1.65, 60.00, 'Especializada em personagens femininos', TRUE),
+('Carlos Oliveira', 'carlos.oliveira@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234569', 'M', 1.80, 80.00, 'Malabarista e acrobata', TRUE),
+('Beatriz Lima', 'beatriz.lima@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234570', 'F', 1.70, 58.00, 'Dança, contação de histórias e recepção', TRUE),
+('Rafael Costa', 'rafael.costa@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234571', 'M', 1.82, 78.00, 'Performance de pirata e personagens de aventura', TRUE),
+('Fernanda Rocha', 'fernanda.rocha@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234572', 'F', 1.62, 55.00, 'Experiência com festas escolares', TRUE),
+('Diego Martins', 'diego.martins@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234573', 'M', 1.76, 74.00, 'Animador musical e mestre de cerimônias', TRUE),
+('Larissa Almeida', 'larissa.almeida@email.com', '$2a$10$zsTEQuaVgyICNOR9LsiuEeJPLB.4/RciVL.ashHrjOkVGkD3oo.ne', '11991234574', 'F', 1.68, 61.00, 'Personagens de inverno e princesas', TRUE);
 
 -- ===================================
 -- TABELA: CLIENTE
 -- ===================================
 
-INSERT INTO cliente (nome, telefone, email) VALUES 
-('Escola Marista Centro', '11998765432', 'eventos@marista.com');
-
-INSERT INTO cliente (nome, telefone, email) VALUES 
-('Buffet Premium Eventos', '11998765433', 'contato@buffetpremium.com');
-
-INSERT INTO cliente (nome, telefone, email) VALUES 
-('Hotel Grand Plaza', '11998765434', 'eventos@grandplaza.com');
+INSERT INTO cliente (nome, telefone, email) VALUES
+('Escola Marista Centro', '11998765432', 'eventos@marista.com'),
+('Buffet Premium Eventos', '11998765433', 'contato@buffetpremium.com'),
+('Hotel Grand Plaza', '11998765434', 'eventos@grandplaza.com'),
+('Shopping Jardim Sul', '11998765435', 'marketing@jardimsul.com'),
+('Condomínio Reserva Verde', '11998765436', 'sindico@reservaverde.com'),
+('Instituto Criança Feliz', '11998765437', 'agenda@criancafeliz.org');
 
 -- ===================================
 -- TABELA: PERSONAGEM
 -- ===================================
 
-INSERT INTO personagem (nome, descricao, foto) VALUES 
-('Palhaço Alegre', 'Personagem divertido com nariz vermelho', '/images/palhaço.jpg');
-
-INSERT INTO personagem (nome, descricao, foto) VALUES 
-('Princesa Encantada', 'Personagem mágico com vestido de gala', '/images/princesa.jpg');
-
-INSERT INTO personagem (nome, descricao, foto) VALUES 
-('Homem Aranha', 'Super-herói com poderes aracnídeos', '/images/homem-aranha.jpg');
+INSERT INTO personagem (nome, descricao, foto) VALUES
+('Alice', 'Alice no País das Maravilhas', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/ead9785c-2ba6-4e20-91d9-11fa7066ccbf.png'),
+('Cinderela', 'Princesa clássica', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/08375dfd-a41a-464d-ad60-aed73eaedd40.jpg'),
+('Princesa Encantada', 'Personagem original', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/ecde151f-69ee-4770-b41d-3fd21370dcb4.jpg'),
+('Chapeleiro Maluco', 'Personagem excêntrico', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/f1f0a741-c1bb-417c-9c05-80a9fc5bc423.png'),
+('Branca de Neve', 'Conto clássico', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/391f7421-14b2-459d-a5b1-7e858d31621c.webp'),
+('Elsa', 'Rainha do gelo', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/953c707a-b688-4a15-9d4a-70d8d6c85284.jpg'),
+('Anna', 'Princesa de Arendelle', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/d72e63f2-9369-47aa-9976-7e67749b2c04.jpg'),
+('Rapunzel', 'Cabelos mágicos', 'https://encantada-personagens.s3.us-east-2.amazonaws.com/personagens/53218bfc-b352-415c-9c27-1a40ce120518.jpg');
 
 -- ===================================
 -- TABELA: PERSONAGEM_ITEM
 -- ===================================
 
--- id_personagem_item = 1 | Palhaço Alegre
-INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(1, 'PAL-001', 'DISPONIVEL');
-
--- id_personagem_item = 2 | Palhaço Alegre (em manutenção)
-INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(1, 'PAL-002', 'MANUTENCAO');
-
--- id_personagem_item = 3 | Princesa Encantada
-INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(2, 'PRI-001', 'DISPONIVEL');
-
--- id_personagem_item = 4 | Homem Aranha
-INSERT INTO personagem_item (id_personagem, codigo, status) VALUES 
-(3, 'HOM-001', 'EM_USO');
+INSERT INTO personagem_item (id_personagem, codigo, status) VALUES
+(1, 'ALI-001', 'EM_USO'),
+(1, 'ALI-002', 'DISPONIVEL'),
+(2, 'CIN-001', 'EM_USO'),
+(3, 'PEN-001', 'EM_USO'),
+(2, 'CIN-002', 'DISPONIVEL'),
+(4, 'CHA-001', 'EM_USO'),
+(5, 'BRA-001', 'EM_USO'),
+(6, 'ELS-001', 'EM_USO'),
+(7, 'ANN-001', 'EM_USO'),
+(8, 'RAP-001', 'EM_USO'),
+(3, 'PEN-002', 'DISPONIVEL'),
+(2, 'CIN-003', 'EM_USO'),
+(4, 'CHA-002', 'DISPONIVEL'),
+(7, 'ANN-002', 'MANUTENCAO');
 
 -- ===================================
 -- TABELA: EVENTO
 -- ===================================
 
--- id_evento = 1
-INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
-('Aniversário Infantil - Tema Encantado', 'Festa com personagens para 50 crianças', '2026-07-15 14:00:00', '2026-07-15 17:00:00', 'Rua das Flores 123, São Paulo', 'CONFIRMADO', 'CARTAO_CREDITO', 2500.00, 1, 1);
-
--- id_evento = 2
-INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
-('Evento Corporativo - Confraternização', 'Show com personagens para funcionários', '2026-08-20 18:00:00', '2026-08-20 22:00:00', 'Av. Paulista 1000, São Paulo', 'RASCUNHO', 'TRANSFERENCIA', 5000.00, 1, 2);
-
--- id_evento = 3
-INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES 
-('Casamento - Recepção', 'Animação com personagens temáticos', '2026-09-10 19:00:00', '2026-09-10 23:59:00', 'Grand Plaza Hotel, Avenida Imigrantes 500', 'CONFIRMADO', 'CARTAO_CREDITO', 8000.00, 1, 3);
+INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, tipo_pagamento, valor_total, id_administrador_criador, id_cliente) VALUES
+('Aniversário Infantil - Tema Encantado', 'Festa com personagens para 50 crianças', '2026-07-15 14:00:00', '2026-07-15 17:00:00', 'Rua das Flores 123, São Paulo', 'CONFIRMADO', 'CARTAO_CREDITO', 2500.00, 1, 1),
+('Evento Corporativo - Confraternização', 'Show com personagens para funcionários', '2026-08-20 18:00:00', '2026-08-20 22:00:00', 'Av. Paulista 1000, São Paulo', 'RASCUNHO', 'TRANSFERENCIA', 5000.00, 1, 2),
+('Casamento - Recepção', 'Animação com personagens temáticos', '2026-09-10 19:00:00', '2026-09-10 23:59:00', 'Grand Plaza Hotel, Avenida Imigrantes 500', 'CONFIRMADO', 'CARTAO_CREDITO', 8000.00, 1, 3),
+('Ação de Férias no Shopping', 'Interação com crianças durante campanha de férias', '2026-07-25 13:00:00', '2026-07-25 19:00:00', 'Shopping Jardim Sul, Piso L2', 'CONFIRMADO', 'PIX', 4200.00, 2, 4),
+('Festa do Condomínio', 'Evento ao ar livre com brincadeiras e fotos', '2026-10-12 10:00:00', '2026-10-12 14:00:00', 'Rua Ipê Amarelo 88, São Paulo', 'RASCUNHO', 'BOLETO', 3100.00, 2, 5),
+('Visita Solidária', 'Apresentação para crianças atendidas pelo instituto', '2026-11-08 09:00:00', '2026-11-08 12:00:00', 'Instituto Criança Feliz, Auditório', 'CONFIRMADO', 'PIX', 0.00, 1, 6);
 
 -- ===================================
 -- TABELA: EVENTO_PERSONAGEM
@@ -96,58 +91,47 @@ INSERT INTO evento (titulo, descricao, data_inicio, data_fim, endereco, status, 
 -- Relaciona evento + personagem_item (fantasias específicas)
 -- ===================================
 
--- id_evento_personagem = 1 | Evento 1 + PAL-001 (Palhaço Alegre)
-INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
-(1, 1);
-
--- id_evento_personagem = 2 | Evento 1 + PRI-001 (Princesa Encantada)
-INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
-(1, 3);
-
--- id_evento_personagem = 3 | Evento 2 + HOM-001 (Homem Aranha)
-INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
-(2, 4);
-
--- id_evento_personagem = 4 | Evento 3 + PAL-002 (Palhaço Alegre)
-INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES 
-(3, 2);
+INSERT INTO evento_personagem (id_evento, id_personagem_item) VALUES
+(1, 1),
+(1, 3),
+(2, 4),
+(2, 6),
+(3, 7),
+(4, 8),
+(4, 9),
+(5, 10),
+(6, 12);
 
 -- ===================================
 -- TABELA: CONVITE
 -- ===================================
 
--- Convite aceito: João Silva para ep 1 (Evento 1 / PAL-001)
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
-(1, 1, 1, 1, 'ACEITO', '2026-06-01 10:00:00', '2026-06-01 15:30:00');
-
--- Convite aceito: Maria Santos para ep 2 (Evento 1 / PRI-001)
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
-(2, 2, 1, 3, 'ACEITO', '2026-06-01 10:15:00', '2026-06-01 14:00:00');
-
--- Convite pendente: Carlos Oliveira para ep 3 (Evento 2 / HOM-001)
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
-(3, 3, 1, 4, 'PENDENTE', '2026-06-02 09:00:00', NULL);
-
--- Convite aceito: João Silva para ep 4 (Evento 3 / PAL-002)
-INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta) VALUES 
-(4, 1, 1, 2, 'ACEITO', '2026-06-01 11:00:00', '2026-06-01 16:45:00');
+INSERT INTO convite (id_evento_personagem, id_ator, id_administrador, id_personagem_item, status, data_envio, data_resposta, data_expiracao) VALUES
+(1, 1, 1, 1, 'ACEITO', '2026-06-01 10:00:00', '2026-06-01 15:30:00', '2026-06-10 23:59:59'),
+(1, 3, 1, 1, 'RECUSADO', '2026-06-01 10:05:00', '2026-06-01 16:10:00', '2026-06-10 23:59:59'),
+(2, 2, 1, 3, 'ACEITO', '2026-06-01 10:15:00', '2026-06-01 14:00:00', '2026-06-10 23:59:59'),
+(2, 5, 1, 3, 'PENDENTE', '2026-06-01 10:20:00', NULL, '2026-06-10 23:59:59'),
+(3, 3, 1, 4, 'PENDENTE', '2026-06-02 09:00:00', NULL, '2026-06-12 23:59:59'),
+(4, 6, 2, 6, 'ACEITO', '2026-06-02 09:30:00', '2026-06-02 13:00:00', '2026-06-12 23:59:59'),
+(5, 5, 2, 7, 'ACEITO', '2026-06-03 11:00:00', '2026-06-03 14:45:00', '2026-06-13 23:59:59'),
+(5, 7, 2, 7, 'CANCELADO', '2026-06-03 11:10:00', NULL, '2026-06-13 23:59:59'),
+(6, 8, 2, 8, 'ACEITO', '2026-06-04 08:00:00', '2026-06-04 12:20:00', '2026-06-14 23:59:59'),
+(7, 7, 2, 9, 'PENDENTE', '2026-06-04 08:10:00', NULL, '2026-06-14 23:59:59'),
+(8, 4, 2, 10, 'ACEITO', '2026-06-05 15:00:00', '2026-06-05 18:30:00', '2026-06-15 23:59:59'),
+(8, 3, 2, 10, 'EXPIRADO', '2026-06-05 15:05:00', NULL, '2026-06-06 23:59:59'),
+(9, 2, 1, 12, 'ACEITO', '2026-06-06 09:00:00', '2026-06-06 11:15:00', '2026-06-16 23:59:59'),
+(9, 6, 1, 12, 'RECUSADO', '2026-06-06 09:05:00', '2026-06-06 12:40:00', '2026-06-16 23:59:59');
 
 -- ===================================
 -- TABELA: ESCALACAO
 -- ===================================
 
--- Escalação confirmada: João Silva / PAL-001 / ep 1
-INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
-(1, 1, 1, 1, '2026-06-01 16:00:00', 'CONFIRMADA', '2026-06-01 17:30:00');
-
--- Escalação confirmada: Maria Santos / PRI-001 / ep 2
-INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
-(2, 2, 3, 1, '2026-06-01 16:15:00', 'CONFIRMADA', '2026-06-01 17:45:00');
-
--- Escalação pendente: Carlos Oliveira / HOM-001 / ep 3
-INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
-(3, 3, 4, 1, '2026-06-02 10:00:00', 'PENDENTE_CONFIRMACAO_ATOR', NULL);
-
--- Escalação confirmada: João Silva / PAL-002 / ep 4
-INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES 
-(4, 1, 2, 1, '2026-06-01 16:30:00', 'CONFIRMADA', '2026-06-01 18:00:00');
+-- Cada escalação abaixo possui convite ACEITO com o mesmo evento_personagem, ator e personagem_item.
+INSERT INTO escalacao (id_evento_personagem, id_ator, id_personagem_item, id_administrador, data_escolha, status, data_confirmacao_ator) VALUES
+(1, 1, 1, 1, '2026-06-01 16:00:00', 'CONFIRMADA', '2026-06-01 17:30:00'),
+(2, 2, 3, 1, '2026-06-01 16:15:00', 'CONFIRMADA', '2026-06-01 17:45:00'),
+(4, 6, 6, 2, '2026-06-02 14:00:00', 'CONFIRMADA', '2026-06-02 15:20:00'),
+(5, 5, 7, 2, '2026-06-03 15:00:00', 'CONFIRMADA', '2026-06-03 16:10:00'),
+(6, 8, 8, 2, '2026-06-04 13:00:00', 'CONFIRMADA', '2026-06-04 14:25:00'),
+(8, 4, 10, 2, '2026-06-05 19:00:00', 'CONFIRMADA', '2026-06-05 20:10:00'),
+(9, 2, 12, 1, '2026-06-06 12:00:00', 'CONFIRMADA', '2026-06-06 13:35:00');
